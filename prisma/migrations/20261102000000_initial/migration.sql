@@ -1,0 +1,14 @@
+CREATE TYPE "EnquiryStatus" AS ENUM ('NEW', 'CONTACTED', 'RESOLVED');
+CREATE TABLE "Admin" ("id" TEXT NOT NULL, "email" TEXT NOT NULL, "passwordHash" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP(3) NOT NULL, CONSTRAINT "Admin_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "Category" ("id" TEXT NOT NULL, "name" TEXT NOT NULL, "slug" TEXT NOT NULL, "description" TEXT, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP(3) NOT NULL, CONSTRAINT "Category_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "Product" ("id" TEXT NOT NULL, "name" TEXT NOT NULL, "slug" TEXT NOT NULL, "description" TEXT NOT NULL, "imageUrl" TEXT, "originalPrice" DECIMAL(10,2) NOT NULL, "discountedPrice" DECIMAL(10,2) NOT NULL, "availability" TEXT NOT NULL DEFAULT 'In stock', "active" BOOLEAN NOT NULL DEFAULT true, "categoryId" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP(3) NOT NULL, CONSTRAINT "Product_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "GeneralEnquiry" ("id" TEXT NOT NULL, "name" TEXT NOT NULL, "mobile" TEXT NOT NULL, "email" TEXT, "message" TEXT NOT NULL, "status" "EnquiryStatus" NOT NULL DEFAULT 'NEW', "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP(3) NOT NULL, CONSTRAINT "GeneralEnquiry_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
+CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+CREATE UNIQUE INDEX "Category_slug_key" ON "Category"("slug");
+CREATE UNIQUE INDEX "Product_slug_key" ON "Product"("slug");
+CREATE INDEX "Product_categoryId_active_idx" ON "Product"("categoryId", "active");
+CREATE INDEX "Product_name_idx" ON "Product"("name");
+CREATE INDEX "GeneralEnquiry_status_createdAt_idx" ON "GeneralEnquiry"("status", "createdAt");
+ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Product" ADD CONSTRAINT "Product_prices_valid_check" CHECK ("originalPrice" > 0 AND "discountedPrice" > 0 AND "discountedPrice" <= "originalPrice");

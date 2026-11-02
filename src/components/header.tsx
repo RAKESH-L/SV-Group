@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { Sparkles } from "lucide-react";
+export function Header() { const phone=process.env.NEXT_PUBLIC_WHATSAPP_NUMBER; return <header className="site-header"><Link href="/" className="brand"><span className="brand-mark"><Sparkles size={19}/></span><span>SV <b>GROUPS</b></span></Link><nav><Link href="/catalogue">Catalogue</Link><Link href="/cart">Price calculator</Link><Link href="/contact">Contact</Link>{phone&&<a className="nav-cta" href={`https://wa.me/${phone.replace(/\D/g,"")}`} target="_blank" rel="noreferrer">WhatsApp us <span>↗</span></a>}</nav></header>; }

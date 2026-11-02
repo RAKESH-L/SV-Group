@@ -1,0 +1,2 @@
+import Link from "next/link";
+export function Footer() { return <footer className="footer"><div><Link href="/" className="brand"><span className="brand-mark">✦</span><span>SV <b>GROUPS</b></span></Link><p>A brighter celebration, made thoughtful.</p></div><div className="footer-links"><Link href="/catalogue">Browse catalogue</Link><Link href="/contact">General enquiries</Link><a href="/admin/login">Admin</a></div><small>© {new Date().getFullYear()} SV Groups · Catalogue and indicative prices only. No online sales.</small></footer>; }

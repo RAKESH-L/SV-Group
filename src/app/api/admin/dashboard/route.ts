@@ -1,0 +1,4 @@
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { getAdminId } from "@/lib/auth";
+export async function GET() { if (!(await getAdminId())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); const [totalProducts, activeProducts, totalCategories, newEnquiries, recentEnquiries, products, categories] = await Promise.all([db.product.count(), db.product.count({ where: { active: true } }), db.category.count(), db.generalEnquiry.count({ where: { status: "NEW" } }), db.generalEnquiry.findMany({ orderBy: { createdAt: "desc" }, take: 8 }), db.product.findMany({ include: { category: true }, orderBy: { updatedAt: "desc" } }), db.category.findMany({ orderBy: { name: "asc" } })]); return NextResponse.json({ totalProducts, activeProducts, totalCategories, newEnquiries, recentEnquiries, products, categories }); }

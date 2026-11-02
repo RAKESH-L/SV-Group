@@ -20,7 +20,7 @@ Do not send passwords, API keys, or database URLs in chat. Do not commit `.env`,
 | GitHub | Private source repository and deployment trigger |
 | Vercel | Next.js hosting, preview deployments, production URL |
 | Supabase PostgreSQL | Product, category, admin, and general-enquiry data |
-| Supabase Storage (optional) | Public product catalogue images; admin uploads use a server-only service key |
+| Supabase Storage | Public product catalogue images; admin uploads use short-lived signed upload tokens |
 | Resend (optional) | Email notification for general enquiries |
 | Upstash Redis (recommended for production) | Shared contact/login rate limits across serverless instances |
 
@@ -142,20 +142,24 @@ The contact endpoint stores general enquiries in PostgreSQL even if email notifi
 
 Use Resend's current domain setup instructions for the DNS records required for your account. [Resend domain verification](https://resend.com/docs/dashboard/domains/introduction)
 
-## 6. Optional: configure product image uploads with Supabase Storage
+## 6. Configure product image uploads with Supabase Storage
 
-1. In the same Supabase project, open **Storage** and create a bucket called `product-images`.
-2. Set the bucket to **Public** only if product images are intended to be publicly viewable (they are catalogue images). Anyone with an image URL can view files in a public bucket; do not upload private material.
-3. In Supabase project settings, copy the project URL and service-role key.
-4. Add these Vercel Production variables and redeploy:
+The admin upload uses a signed URL so image bytes go directly from the browser to Supabase, not through a Vercel function. The server checks the signed-in admin, validates the upload reservation, verifies the saved file's type and size, and then returns its public URL. The service-role key is only used by server code.
 
-   - `SUPABASE_URL` — the project URL.
-   - `SUPABASE_SERVICE_ROLE_KEY` — sensitive; server-side only, never use a `NEXT_PUBLIC_` prefix.
+1. In the existing Supabase project, open **Project Settings → API** and copy the project URL, the public anon/publishable key, and the server-side service-role/secret key. The anon key is public; the service-role key is sensitive.
+2. Put the values only in the ignored root `.env` file and in Vercel Production variables:
+
+   - `SUPABASE_URL` — project URL (server only).
+   - `SUPABASE_SECRET_KEY` — preferred `sb_secret_` server-only key. The existing `SUPABASE_SERVICE_ROLE_KEY` name is supported for legacy service-role keys; the code prefers `SUPABASE_SECRET_KEY` when both exist.
+   - `NEXT_PUBLIC_SUPABASE_URL` — same project URL.
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — public `sb_publishable_` or legacy anon key; never use a secret/service-role key here.
    - `SUPABASE_STORAGE_BUCKET` — `product-images`.
 
-5. Sign in to `/admin`, add a product, and upload a small JPEG, PNG, WebP, or AVIF image under 5 MB.
+3. Locally, run `npm run storage:configure`. This command only creates or updates the `product-images` bucket. It enables public reads, allows JPEG/PNG/WebP/AVIF, and enforces a 15 MiB limit. It does not delete objects or modify other buckets. Supabase's global limit must also be at least 15 MiB; the Free plan supports up to 50 MB globally.
+4. Add the same five variables to Vercel Production, marking `SUPABASE_SERVICE_ROLE_KEY` sensitive, then redeploy.
+5. Sign in to `/admin`, add a product and upload an image. Verify its public catalogue display. The form checks the 15 MB ceiling locally and the bucket enforces it on upload; the app also verifies the stored object before saving its URL.
 
-Supabase service-role keys bypass Storage access policies. Keep this key secret. [Supabase bucket access models](https://supabase.com/docs/guides/storage/buckets/fundamentals), [Supabase Storage security](https://supabase.com/docs/guides/storage/security/access-control)
+Anyone can view images in a public bucket, so only put catalogue images there. Uploads are limited to signed URLs issued to authenticated admins. [Supabase signed uploads](https://supabase.com/docs/reference/javascript/file-buckets-createsigneduploadurl), [Supabase bucket limits](https://supabase.com/docs/guides/storage/uploads/file-limits), [Supabase bucket configuration](https://supabase.com/docs/reference/javascript/file-buckets-updatebucket)
 
 ## 7. Recommended for production: shared rate limiting
 

@@ -52,7 +52,7 @@ Open `http://localhost:3000`; the admin area is at `/admin`. For local schema it
 
 ## Optional services
 
-**Supabase Storage:** create a Supabase project and a `product-images` bucket (or set `SUPABASE_STORAGE_BUCKET`). Configure `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. The server keeps the service key private. The current implementation returns public object URLs, so configure the bucket for public reads; do not store sensitive images there. Uploads are limited to JPEG, PNG, WebP or AVIF files under 5 MB.
+**Supabase Storage:** use the existing project and configure `SUPABASE_URL`, preferred `SUPABASE_SECRET_KEY` (legacy `SUPABASE_SERVICE_ROLE_KEY` is also supported), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_STORAGE_BUCKET=product-images`. The secret key stays server-side; the public publishable/anon key is only used with an admin-authorized, one-time upload token. Run `npm run storage:configure` to create or update this bucket with public reads, JPEG/PNG/WebP/AVIF restrictions, and a 15 MiB file cap. Upload bytes go directly from the browser to Supabase. Do not store private images in this public bucket. The global Storage limit must also be at least 15 MiB.
 
 **Resend:** verify a sending domain and configure `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and `ADMIN_NOTIFICATION_EMAIL`. Enquiries are saved even if notification delivery fails; check server logs and the provider dashboard.
 

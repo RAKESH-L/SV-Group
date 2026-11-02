@@ -10,7 +10,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "storage:configure": "tsx scripts/configure-storage.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

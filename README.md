@@ -76,7 +76,7 @@ Vercel build runs `prisma generate && next build`. Do not run schema-changing mi
 
 - Keep dependencies patched and review Vercel runtime logs and Resend/Upstash service dashboards. Configure an error monitor such as Sentry before production if alerting is needed.
 - Back up PostgreSQL and periodically test restoration. Restrict database and Supabase project access to the operators who need it.
-- Admin provisioning is through the one-time seed. There is no public registration or password reset flow.
+- Admin provisioning and password rotation use the seed from a trusted terminal. There is no public registration or password reset flow. Running `npm run db:seed` updates the hash for `ADMIN_EMAIL` to the current `ADMIN_PASSWORD` in `.env`.
 - Protect the admin account with a unique long password. Rotate the session secret to invalidate existing sessions.
 - The fallback in-memory rate limiter does not coordinate across serverless instances; configure Upstash before production.
 - Product-order, booking, purchase-request, payment and delivery workflows remain absent and disabled. Any future proposal requires documented review by qualified counsel and the relevant licensing authorities, a separate product decision, and a new security and compliance review. This application does not assess legal permissions.

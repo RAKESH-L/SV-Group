@@ -123,7 +123,7 @@ Do this from a trusted computer and terminal. These commands change the **produc
 6. Remove the temporary root `.env` after the migration and seed are complete. Keep real credentials only in your password manager and provider secret settings.
 7. Visit `https://YOUR-VERCEL-DOMAIN/admin/login` and sign in with the admin email and password you set. Admin sessions expire after eight hours.
 
-**Existing admin account:** the current seed uses `upsert` with an empty update, so re-running it does not reset a password for an email already in the database. If that email already exists, use the already-associated password. To change it, use a reviewed password-reset procedure; do not assume reseeding changed it.
+**Existing admin account:** the seed upserts the configured email and updates its bcrypt password hash from the current `ADMIN_PASSWORD`. After changing that value in the ignored local `.env`, rerun `npm run db:seed` to rotate the admin password. Keep the new password private and never put it in `.env.example`.
 
 ## 5. Optional: configure enquiry email with Resend
 

@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getAdminId } from "@/lib/auth";
 import { rateLimited } from "@/lib/rate-limit";
+import { detectProductImageType, productImageSource, SUPPORTED_RASTER_IMAGE_TYPES } from "@/lib/image-signature";
+import { MAX_PRODUCT_IMAGE_BYTES, normalizeProductImage, ProductImageError } from "@/lib/product-image";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
-const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
-const allowedExtensions: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif" };
+const allowedTypes = new Set(SUPPORTED_RASTER_IMAGE_TYPES);
+const uuidPattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+const imagePathPattern = new RegExp(`^${uuidPattern}\\.(jpg|png|webp|avif|gif|bmp|tiff|heic|heif)$`);
 
 function storageConfig() {
   const url = process.env.SUPABASE_URL;
@@ -17,12 +19,9 @@ function storageConfig() {
   return url && key ? { client: createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }), bucket } : null;
 }
 
-function fileSignatureMatches(type: string, bytes: Buffer) {
-  if (type === "image/png") return bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
-  if (type === "image/jpeg") return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
-  if (type === "image/webp") return bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP";
-  if (type === "image/avif") return bytes.toString("ascii", 4, 8) === "ftyp" && ["avif", "avis"].includes(bytes.toString("ascii", 8, 12));
-  return false;
+async function discard(config: NonNullable<ReturnType<typeof storageConfig>>, path: string) {
+  const { error } = await config.client.storage.from(config.bucket).remove([path]);
+  if (error) console.error("Could not remove rejected product image", error.message);
 }
 
 export async function POST(req: NextRequest) {
@@ -36,18 +35,17 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null) as { contentType?: unknown; size?: unknown } | null;
   const contentType = typeof body?.contentType === "string" ? body.contentType : "";
   const size = typeof body?.size === "number" ? body.size : 0;
-  if (!allowedTypes.has(contentType)) return NextResponse.json({ error: "Use a JPEG, PNG, WebP or AVIF image." }, { status: 400 });
-  if (!Number.isInteger(size) || size < 1 || size > MAX_IMAGE_BYTES) return NextResponse.json({ error: "Maximum image size is 15 MB." }, { status: 400 });
+  const source = productImageSource(contentType);
+  if (!source || !allowedTypes.has(contentType)) return NextResponse.json({ error: "This image format is not supported. Choose a valid JPEG, PNG, WebP, AVIF, GIF, BMP, TIFF, HEIC, or HEIF image." }, { status: 400 });
+  if (!Number.isSafeInteger(size) || size < 1 || size > MAX_PRODUCT_IMAGE_BYTES) return NextResponse.json({ error: "Maximum source image size is 15 MB." }, { status: 400 });
 
-  const extension = contentType === "image/jpeg" ? "jpg" : contentType.split("/")[1];
-  const path = `${crypto.randomUUID()}.${extension}`;
+  const path = `${crypto.randomUUID()}.${source.extension}`;
   const { data, error } = await config.client.storage.from(config.bucket).createSignedUploadUrl(path, { upsert: false });
   if (error || !data) {
     console.error("Could not create a signed image upload URL", error?.message);
     return NextResponse.json({ error: "Could not prepare the image upload. Check Storage configuration." }, { status: 502 });
   }
-  const { data: publicData } = config.client.storage.from(config.bucket).getPublicUrl(path);
-  return NextResponse.json({ path, token: data.token, bucket: config.bucket, publicUrl: publicData.publicUrl, contentType, maxBytes: MAX_IMAGE_BYTES });
+  return NextResponse.json({ path, token: data.token, bucket: config.bucket, contentType, maxBytes: MAX_PRODUCT_IMAGE_BYTES });
 }
 
 export async function PUT(req: NextRequest) {
@@ -55,38 +53,72 @@ export async function PUT(req: NextRequest) {
   if (!adminId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   if (await rateLimited(`upload-verify:${adminId}:${ip}`, 10, 60_000)) return NextResponse.json({ error: "Too many upload requests. Try again shortly." }, { status: 429 });
+
   const body = await req.json().catch(() => null) as { path?: unknown; contentType?: unknown; size?: unknown } | null;
   const path = typeof body?.path === "string" ? body.path : "";
-  const contentType = typeof body?.contentType === "string" ? body.contentType : "";
+  const advertisedType = typeof body?.contentType === "string" ? body.contentType : "";
   const size = typeof body?.size === "number" ? body.size : 0;
-  if (!/^[0-9a-f-]{36}\.(jpg|png|webp|avif)$/.test(path) || !allowedTypes.has(contentType) || !path.endsWith(`.${allowedExtensions[contentType]}`) || !Number.isInteger(size) || size < 1 || size > MAX_IMAGE_BYTES) {
+  const source = productImageSource(advertisedType);
+  if (!imagePathPattern.test(path) || !source || !allowedTypes.has(advertisedType) || !path.endsWith(`.${source.extension}`) || !Number.isSafeInteger(size) || size < 1 || size > MAX_PRODUCT_IMAGE_BYTES) {
     return NextResponse.json({ error: "Invalid image upload details." }, { status: 400 });
   }
+
   const config = storageConfig();
   if (!config) return NextResponse.json({ error: "Image storage is not configured yet." }, { status: 503 });
-  const { data, error } = await config.client.storage.from(config.bucket).download(path);
+  const bucket = config.client.storage.from(config.bucket);
+  const { data, error } = await bucket.download(path);
   if (error || !data) {
     console.error("Could not verify uploaded image", error?.message);
-    return NextResponse.json({ error: "Uploaded image could not be verified." }, { status: 400 });
+    return NextResponse.json({ error: "Uploaded image could not be read from Storage." }, { status: 400 });
   }
-  if (data.size !== size || data.size > MAX_IMAGE_BYTES || data.type !== contentType) {
-    await config.client.storage.from(config.bucket).remove([path]);
-    return NextResponse.json({ error: "Uploaded image failed size or format verification." }, { status: 400 });
+  if (data.size !== size || data.size > MAX_PRODUCT_IMAGE_BYTES) {
+    await discard(config, path);
+    return NextResponse.json({ error: "Uploaded source image failed the 15 MB size check." }, { status: 400 });
   }
+
   const bytes = Buffer.from(await data.arrayBuffer());
-  if (!fileSignatureMatches(contentType, bytes)) {
-    await config.client.storage.from(config.bucket).remove([path]);
-    return NextResponse.json({ error: "The uploaded file does not match its image type." }, { status: 400 });
+  const detected = detectProductImageType(bytes);
+  if (!detected || detected.contentType !== advertisedType) {
+    await discard(config, path);
+    return NextResponse.json({ error: "The uploaded file contents do not match a supported image format." }, { status: 400 });
   }
-  const { data: publicData } = config.client.storage.from(config.bucket).getPublicUrl(path);
-  return NextResponse.json({ url: publicData.publicUrl });
+
+  let normalized: Awaited<ReturnType<typeof normalizeProductImage>>;
+  try { normalized = await normalizeProductImage(bytes, advertisedType); }
+  catch (cause) {
+    await discard(config, path);
+    const message = cause instanceof ProductImageError ? cause.message : "The image could not be safely decoded. Try another image or export it to JPEG or PNG.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+
+  const finalPath = `${path.slice(0, 36)}.webp`;
+  const { error: uploadError } = await bucket.upload(finalPath, normalized.buffer, { contentType: "image/webp", cacheControl: "31536000", upsert: true });
+  if (uploadError) {
+    console.error("Could not save normalized product image", uploadError.message);
+    await discard(config, path);
+    return NextResponse.json({ error: "The optimized image could not be saved to Storage. Try a smaller image or check the bucket limit." }, { status: 502 });
+  }
+  if (finalPath !== path) {
+    const { error: removeError } = await bucket.remove([path]);
+    if (removeError) {
+      console.error("Could not remove temporary source image", removeError.message);
+      await discard(config, finalPath);
+      return NextResponse.json({ error: "Image processing finished but Storage could not clean up its temporary source. Please retry." }, { status: 502 });
+    }
+  }
+
+  const { data: publicData } = config.client.storage.from(config.bucket).getPublicUrl(finalPath);
+  return NextResponse.json({ path: finalPath, url: publicData.publicUrl, contentType: "image/webp", size: normalized.buffer.length, sourceFormat: normalized.sourceFormat, animated: normalized.animated });
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!(await getAdminId())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const adminId = await getAdminId();
+  if (!adminId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  if (await rateLimited(`upload-delete:${adminId}:${ip}`, 20, 60_000)) return NextResponse.json({ error: "Too many cleanup requests. Try again shortly." }, { status: 429 });
   const body = await req.json().catch(() => null) as { path?: unknown } | null;
   const path = typeof body?.path === "string" ? body.path : "";
-  if (!/^[0-9a-f-]{36}\.(jpg|png|webp|avif)$/.test(path)) return NextResponse.json({ error: "Invalid image path." }, { status: 400 });
+  if (!imagePathPattern.test(path)) return NextResponse.json({ error: "Invalid image path." }, { status: 400 });
   const config = storageConfig();
   if (!config) return NextResponse.json({ error: "Image storage is not configured yet." }, { status: 503 });
   const { error } = await config.client.storage.from(config.bucket).remove([path]);

@@ -1,5 +1,6 @@
 import { loadEnvConfig } from "@next/env";
 import { createClient } from "@supabase/supabase-js";
+import { SUPPORTED_RASTER_IMAGE_TYPES } from "../src/lib/image-signature";
 
 loadEnvConfig(process.cwd());
 
@@ -42,7 +43,7 @@ async function main() {
   const options = {
     public: true,
     fileSizeLimit: 15 * 1024 * 1024,
-    allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/avif"],
+    allowedMimeTypes: SUPPORTED_RASTER_IMAGE_TYPES,
   };
   const result = existing
     ? await client.storage.updateBucket(bucket, options)
@@ -53,7 +54,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`Supabase Storage bucket ${bucket} is configured for public reads, 15 MB maximum, and JPEG/PNG/WebP/AVIF.`);
+  console.log(`Supabase Storage bucket ${bucket} is configured for public reads, 15 MB maximum, supported raster source formats, and normalized WebP product images.`);
 }
 
 main().catch(() => {

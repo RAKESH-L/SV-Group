@@ -2,34 +2,16 @@ import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFP
 import type { CartLine } from "@/lib/cart-calculations";
 import { toPaise } from "@/lib/cart-calculations";
 import { business } from "@/lib/business";
+import { ESTIMATE_MARGIN, ESTIMATE_PAGE_HEIGHT, ESTIMATE_PAGE_WIDTH, ESTIMATE_RIGHT, estimatePdfPalette, formatEstimatePdfPaise, printablePdfText, wrapPdfText } from "@/lib/pdf-design";
 
-const pageWidth = 595.28;
-const pageHeight = 841.89;
-const left = 40;
-const right = pageWidth - 40;
+const pageWidth = ESTIMATE_PAGE_WIDTH;
+const pageHeight = ESTIMATE_PAGE_HEIGHT;
+const left = ESTIMATE_MARGIN;
+const right = ESTIMATE_RIGHT;
 const tableColumns = [40, 160, 192, 254, 320, 390, 465, 555];
-const formatPdfPaise = (amount: number) => `INR ${new Intl.NumberFormat("en-IN", { minimumFractionDigits: amount % 100 === 0 ? 0 : 2, maximumFractionDigits: 2 }).format(amount / 100)}`;
 
-function printable(value: string) { return value.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/[^\u0020-\u00ff\u2013\u2014\u2018\u2019\u201c\u201d\u20ac]/g, "?").trim(); }
-function wrap(value: string, font: PDFFont, size: number, maxWidth: number) {
-  const words = printable(value).split(/\s+/); const lines: string[] = []; let line = "";
-  for (const word of words) {
-    let rest = word;
-    while (font.widthOfTextAtSize(rest, size) > maxWidth) {
-      let split = 1;
-      while (split < rest.length && font.widthOfTextAtSize(rest.slice(0, split + 1), size) <= maxWidth) split++;
-      const part = rest.slice(0, split); rest = rest.slice(split);
-      if (line) { lines.push(line); line = ""; }
-      lines.push(part);
-    }
-    const next = line ? `${line} ${rest}` : rest;
-    if (line && font.widthOfTextAtSize(next, size) > maxWidth) { lines.push(line); line = rest; } else line = next;
-  }
-  if (line) lines.push(line);
-  return lines.length ? lines : [""];
-}
 function rightText(page: PDFPage, value: string, x: number, y: number, width: number, font: PDFFont, size: number, color: ReturnType<typeof rgb>) {
-  const safe = printable(value); page.drawText(safe, { x: x + width - font.widthOfTextAtSize(safe, size) - 4, y, size, font, color });
+  const safe = printablePdfText(value); page.drawText(safe, { x: x + width - font.widthOfTextAtSize(safe, size) - 4, y, size, font, color });
 }
 
 async function loadLogo(pdf: PDFDocument): Promise<PDFImage> {
@@ -57,7 +39,7 @@ export async function createPersonalEstimatePdf(lines: CartLine[]) {
   const regular = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const logo = await loadLogo(pdf);
-  const ink = rgb(0.13, 0.11, 0.09), muted = rgb(0.39, 0.36, 0.31), gold = rgb(0.78, 0.53, 0.19), pale = rgb(1, 0.97, 0.91), dark = rgb(0.11, 0.09, 0.07), white = rgb(0.98, 0.95, 0.88);
+  const { ink, muted, gold, pale, dark, white } = estimatePdfPalette;
   const totals = lines.reduce((sum, line) => {
     const qty = Math.max(0, Math.trunc(line.quantity));
     const originalUnit = toPaise(line.product.originalPrice), indicativeUnit = toPaise(line.product.discountedPrice);
@@ -91,20 +73,20 @@ export async function createPersonalEstimatePdf(lines: CartLine[]) {
   for (const line of lines) {
     const quantity = Math.max(0, Math.trunc(line.quantity));
     if (quantity < 1) continue;
-    const nameLines = wrap(line.product.name, regular, 7.2, tableColumns[1] - tableColumns[0] - 10);
+    const nameLines = wrapPdfText(line.product.name, regular, 7.2, tableColumns[1] - tableColumns[0] - 10);
     const rowHeight = Math.max(27, nameLines.length * 9 + 12);
     if (y - rowHeight < 78) { newPage(); drawTableHeader(); }
     page.drawRectangle({ x: left, y: y - rowHeight, width: right - left, height: rowHeight, color: lines.indexOf(line) % 2 ? pale : rgb(1, 1, 1) });
     nameLines.forEach((nameLine, index) => page.drawText(nameLine, { x: tableColumns[0] + 5, y: y - 13 - index * 9, size: 7.2, font: regular, color: ink }));
     const originalUnit = toPaise(line.product.originalPrice), indicativeUnit = toPaise(line.product.discountedPrice);
-    const values = [String(quantity), formatPdfPaise(originalUnit), formatPdfPaise(indicativeUnit), formatPdfPaise(originalUnit * quantity), formatPdfPaise(indicativeUnit * quantity), formatPdfPaise((originalUnit - indicativeUnit) * quantity)];
+    const values = [String(quantity), formatEstimatePdfPaise(originalUnit), formatEstimatePdfPaise(indicativeUnit), formatEstimatePdfPaise(originalUnit * quantity), formatEstimatePdfPaise(indicativeUnit * quantity), formatEstimatePdfPaise((originalUnit - indicativeUnit) * quantity)];
     values.forEach((value, index) => rightText(page, value, tableColumns[index + 1], y - 16, tableColumns[index + 2] - tableColumns[index + 1], regular, 6.5, ink));
     page.drawLine({ start: { x: left, y: y - rowHeight }, end: { x: right, y: y - rowHeight }, thickness: 0.35, color: rgb(0.83, 0.79, 0.71) });
     y -= rowHeight;
   }
 
   const disclaimer = "This is a personal price estimate for informational use only. It is not a quotation for acceptance, order, reservation, invoice, or confirmation of sale. Prices are indicative and may change.";
-  const disclaimerLines = wrap(disclaimer, regular, 7.5, right - left - 20);
+  const disclaimerLines = wrapPdfText(disclaimer, regular, 7.5, right - left - 20);
   const summaryHeight = 147, disclaimerHeight = disclaimerLines.length * 10 + 24;
   if (y - summaryHeight - disclaimerHeight < 56) { newPage(); y -= 12; }
   y -= 12;
@@ -112,8 +94,8 @@ export async function createPersonalEstimatePdf(lines: CartLine[]) {
   page.drawText("ESTIMATE SUMMARY", { x: left + 14, y: y - 20, size: 9, font: bold, color: gold });
   const rows: [string, string][] = [
     ["Distinct products", String(lines.length)], ["Total quantity", String(totals.quantity)],
-    ["Original subtotal", formatPdfPaise(totals.original)], ["Indicative subtotal", formatPdfPaise(totals.indicative)],
-    ["Total estimated savings", formatPdfPaise(savings)], ["Estimated final total", formatPdfPaise(totals.indicative)],
+    ["Original subtotal", formatEstimatePdfPaise(totals.original)], ["Indicative subtotal", formatEstimatePdfPaise(totals.indicative)],
+    ["Total estimated savings", formatEstimatePdfPaise(savings)], ["Estimated final total", formatEstimatePdfPaise(totals.indicative)],
   ];
   rows.forEach(([label, value], index) => {
     const rowY = y - 39 - index * 17;

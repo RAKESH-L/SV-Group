@@ -10,3 +10,7 @@ export function adminInformationPdfFilename(mobile: string, reference: string) {
   const suffix = reference.replace(/^SVG-/i, "").replace(/[^a-z0-9-]/gi, "").slice(0, 64) || "reference";
   return `SVG-${nationalNumber}-${suffix}.pdf`;
 }
+
+export function adminEstimatePdfFilename(mobile: string, reference: string) {
+  return adminInformationPdfFilename(mobile, reference).replace(/\.pdf$/i, "-estimate.pdf");
+}

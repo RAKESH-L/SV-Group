@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUpRight } from "lucide-react";
 import type { Prisma } from "@prisma/client";
 import { ProductCard, type ProductView } from "@/components/product-card";
 import { db } from "@/lib/db";
+import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
 
 export const metadata: Metadata = {
   title: "Categories | Sri Vinayaka Groups",
@@ -74,5 +75,6 @@ export default async function CategoriesPage() {
       <p>{databaseAvailable ? "There are no active products to display just yet. Please check back soon." : "Please try again in a little while."}</p>
       {databaseAvailable && <Link className="button button-outline" href="/catalogue">View the catalogue</Link>}
     </div>}
+    <LegalComplianceNotice variant="compact"/>
   </main>;
 }

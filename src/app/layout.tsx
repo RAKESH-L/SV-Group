@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { CartProvider } from "@/components/cart-provider";
 export const metadata: Metadata = {
   title: "Sri Vinayaka Groups | Tumkur",
   description: "Explore the Sri Vinayaka Groups festive catalogue. Get in touch with our team in Tumkur, Karnataka.",
@@ -19,4 +20,4 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Sri Vinayaka Groups | Tumkur", images: ["/branding/sv-logo-og.png"] },
 };
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en"><body><Header/><div className="main-content">{children}</div><Footer/></body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en"><body><CartProvider><Header/><div className="main-content">{children}</div><Footer/></CartProvider></body></html>; }

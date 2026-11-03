@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { discountPercent, money } from "@/lib/format";
+import type { ReactNode } from "react";
 
 export type ProductView = {
   id: string;
@@ -14,7 +15,7 @@ export type ProductView = {
   category: { name: string; slug: string };
 };
 
-export function ProductCard({ product, compact = false }: { product: ProductView; compact?: boolean }) {
+export function ProductCard({ product, compact = false, quantityControl }: { product: ProductView; compact?: boolean; quantityControl?: ReactNode }) {
   const off = discountPercent(product.originalPrice, product.discountedPrice);
   const href = `/catalogue/${product.slug}`;
 
@@ -30,6 +31,7 @@ export function ProductCard({ product, compact = false }: { product: ProductView
         {product.description && <p className="product-card-description">{product.description}</p>}
         <div className="price-line"><strong>{money(product.discountedPrice)}</strong><del>{money(product.originalPrice)}</del></div>
         <div className="availability"><i/> {product.availability}</div>
+        {quantityControl}
         <Link className="product-card-details" href={href}>View Details <span aria-hidden="true">↗</span></Link>
       </div>
     </article>;

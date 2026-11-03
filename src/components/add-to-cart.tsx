@@ -1,4 +1,16 @@
 "use client";
 import { useState } from "react";
 import type { ProductView } from "@/components/product-card";
-export function AddToCart({ product }: { product: ProductView }) { const [added,setAdded]=useState(false); function add() { try { const key="sv-cart-v1", lines=JSON.parse(localStorage.getItem(key)||"[]") as {product:ProductView;quantity:number}[]; const found=lines.find(l=>l.product.id===product.id); if(found) found.quantity=Math.min(99,found.quantity+1); else lines.push({product,quantity:1}); localStorage.setItem(key,JSON.stringify(lines)); window.dispatchEvent(new Event("sv-cart-updated")); setAdded(true); setTimeout(()=>setAdded(false),1800); } catch { setAdded(false); } } return <button className="button button-gold" onClick={add}>{added ? "Added to calculator ✓" : "Add to price calculator ↗"}</button>; }
+import { useCart } from "@/components/cart-provider";
+import { isSelectableAvailability } from "@/lib/cart-calculations";
+export function AddToCart({ product }: { product: ProductView }) {
+  const [added, setAdded] = useState(false);
+  const { lines, ready, setQuantity } = useCart();
+  const available = isSelectableAvailability(product.availability);
+  function add() {
+    const current = lines.find(line => line.product.id === product.id)?.quantity || 0;
+    setQuantity(product, current + 1);
+    setAdded(true); setTimeout(() => setAdded(false), 1800);
+  }
+  return <button className="button button-gold" disabled={!ready || !available} onClick={add}>{!available ? "Currently unavailable" : added ? "Added to calculator ✓" : "Add to price calculator ↗"}</button>;
+}

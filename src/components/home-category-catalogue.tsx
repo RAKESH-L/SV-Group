@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { ProductCard, type ProductView } from "@/components/product-card";
+import { ProductQuantityControl } from "@/components/product-quantity-control";
+import { FloatingPriceSummary } from "@/components/floating-price-summary";
 
 export type HomeProductCategory = { id: string; name: string; slug: string; products: ProductView[] };
 
@@ -26,10 +28,11 @@ export function HomeCategoryCatalogue({ categories, unavailable = false }: { cat
             <span>{category.products.length} {category.products.length === 1 ? "product" : "products"}</span>
           </header>
           <div className="home-product-grid">
-            {category.products.map(product => <ProductCard key={product.id} product={product} compact/>)}
+            {category.products.map(product => <ProductCard key={product.id} product={product} compact quantityControl={<ProductQuantityControl product={product}/>}/>)}
           </div>
         </section>)}
       </div>
+      <FloatingPriceSummary/>
     </> : <div className="home-category-empty" role="status">
       <h3>{unavailable ? "The collection is temporarily unavailable." : "The collection is being prepared."}</h3>
       <p>{unavailable ? "Please try again in a little while." : "There are no active products to display right now. Please check back soon."}</p>

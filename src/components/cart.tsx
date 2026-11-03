@@ -25,15 +25,15 @@ export function Cart() {
             <strong className="line-total">{formatPaiseExact(amount.indicativeLinePaise)}</strong>
             <button type="button" className="icon-button" onClick={() => remove(product.id)} aria-label={`Remove ${product.name}`}><Trash2 size={17}/></button>
           </div>
-          <dl className="cart-line-pricing">
+          <section className="cart-price-breakdown" aria-label={`Price breakdown for ${product.name}`}><h3>Product price breakdown</h3><dl className="cart-line-pricing">
             <div><dt>Quantity</dt><dd>{amount.quantity}</dd></div>
-            <div><dt>Original unit</dt><dd>{formatPaiseExact(amount.originalUnitPaise)}</dd></div>
-            <div><dt>Discount</dt><dd>{amount.discountPercent.toFixed(2)}%</dd></div>
-            <div><dt>Indicative unit</dt><dd>{formatPaiseExact(amount.indicativeUnitPaise)}</dd></div>
-            <div><dt>Original total</dt><dd>{formatPaiseExact(amount.originalLinePaise)}</dd></div>
-            <div><dt>Estimated savings</dt><dd>{formatPaiseExact(amount.savingsPaise)}</dd></div>
-            <div className="cart-line-indicative"><dt>Indicative total</dt><dd>{formatPaiseExact(amount.indicativeLinePaise)}</dd></div>
-          </dl>
+            <div><dt>Original unit price</dt><dd>{formatPaiseExact(amount.originalUnitPaise)}</dd></div>
+            <div><dt>Discount percentage</dt><dd>{amount.discountPercent.toFixed(2)}%</dd></div>
+            <div><dt>Discounted unit price</dt><dd>{formatPaiseExact(amount.indicativeUnitPaise)}</dd></div>
+            <div><dt>Original line total</dt><dd>{formatPaiseExact(amount.originalLinePaise)}</dd></div>
+            <div><dt>Total savings</dt><dd>{formatPaiseExact(amount.savingsPaise)}</dd></div>
+            <div className="cart-line-indicative"><dt>Discounted / indicative line total</dt><dd>{formatPaiseExact(amount.indicativeLinePaise)}</dd></div>
+          </dl></section>
         </article>;
       })}
       <button className="text-button" onClick={clear}>Clear selection</button>

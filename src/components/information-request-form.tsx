@@ -46,12 +46,12 @@ export function InformationRequestForm({ topics, onClose }: { topics: RequestTop
           <label>Customer name<input name="name" required minLength={2} maxLength={100} autoComplete="name" placeholder="Your name"/></label>
           <label>Mobile number<input name="mobile" type="tel" required inputMode="tel" autoComplete="tel" pattern="(\+91[ -]?)?[6-9][0-9]{9}" title="Enter a valid Indian mobile number, with optional +91 prefix." placeholder="+91 98765 43210"/></label>
           <label>General enquiry <span>(optional)</span><textarea name="message" maxLength={1000} rows={3} placeholder="What information can we help with?"/></label>
-          <div className="information-topics"><strong>Product information topics</strong>{topics.length ? <ul>{topics.map(topic => <li key={topic.id}>{topic.name}</li>)}</ul> : <p>No specific products selected. You can still send a general enquiry.</p>}</div>
+          <div className="information-topics"><strong>Product information topics</strong>{topics.length ? <ul>{topics.map(topic => <li key={topic.id}>{topic.name}</li>)}</ul> : <p>No specific products selected. You can still send a general enquiry.</p>}<p className="information-local-pricing-note">Only product names are included in this request. Calculator quantities and prices stay in your browser and are not sent.</p></div>
           <label className="information-consent"><input type="checkbox" name="consent" required/><span>I have read the <a href="/privacy" target="_blank" rel="noreferrer">Privacy Notice</a> and understand this submission is for general information only.</span></label>
           <label className="information-honeypot" aria-hidden="true">Leave this field empty<input name="website" tabIndex={-1} autoComplete="off"/></label>
           {error && <p className="form-status error" role="alert">{error}</p>}
           <button className="button button-gold information-submit" disabled={busy}>{busy ? "Sending request…" : "Send information request ↗"}</button>
-          <small>Your calculator selection stays on this device and is not cleared when you submit.</small>
+          <small>Your local calculator selection is not cleared when you submit.</small>
         </form>
       </>}
     </section>

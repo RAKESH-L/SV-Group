@@ -22,6 +22,32 @@ export function calculateCartTotals(lines: CartLine[]) {
   }, { originalPaise: 0, indicativePaise: 0, totalQuantity: 0 });
 }
 
+export function calculateLineAmounts(line: CartLine) {
+  const quantity = Math.max(0, Math.min(MAX_CALCULATOR_QUANTITY, Math.trunc(line.quantity)));
+  const originalUnitPaise = toPaise(line.product.originalPrice);
+  const indicativeUnitPaise = toPaise(line.product.discountedPrice);
+  const originalLinePaise = originalUnitPaise * quantity;
+  const indicativeLinePaise = indicativeUnitPaise * quantity;
+  const savingsPaise = originalLinePaise - indicativeLinePaise;
+  return {
+    quantity,
+    originalUnitPaise,
+    indicativeUnitPaise,
+    originalLinePaise,
+    indicativeLinePaise,
+    savingsPaise,
+    discountPercent: originalUnitPaise > 0 ? (savingsPaise / originalLinePaise) * 100 : 0,
+  };
+}
+
+export function calculateEffectiveDiscountPercent(originalPaise: number, savingsPaise: number) {
+  return originalPaise > 0 ? (savingsPaise / originalPaise) * 100 : 0;
+}
+
+export function formatPaiseExact(amount: number) {
+  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 100);
+}
+
 export function isSelectableAvailability(value: string) {
   return !/(?:out\s+of\s+stock|unavailable|sold\s+out|not\s+available|not\s+in\s+stock|discontinued|coming\s+soon|stock\s*:\s*0)/i.test(value.trim());
 }

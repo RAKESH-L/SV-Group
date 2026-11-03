@@ -2,17 +2,6 @@ import Link from "next/link";
 import { ArrowUpRight, Gavel, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { business } from "@/lib/business";
 
-const references = [
-  {
-    label: "Supreme Court judgment · 23 October 2018",
-    href: "https://api.sci.gov.in/supremecourt/2015/32461/32461_2015_Judgement_23-Oct-2018.pdf",
-  },
-  {
-    label: "PESO circular · 11 April 2023",
-    href: "https://peso.gov.in/sites/default/files/2023-04/ban%20on%20online%20sale%20of%20fw.pdf",
-  },
-];
-
 export function LegalComplianceNotice({ variant = "full" }: { variant?: "full" | "compact" }) {
   if (variant === "compact") {
     return <aside className="legal-notice-compact" aria-label="Legal compliance information">
@@ -46,10 +35,6 @@ export function LegalComplianceNotice({ variant = "full" }: { variant?: "full" |
           <a href={business.emailHref}><Mail size={15} aria-hidden="true"/> <span>Email: {business.email}</span></a>
           <span><MapPin size={15} aria-hidden="true"/> <span>Location: {business.address}</span></span>
         </address>
-        <div className="legal-reference-block">
-          <h3>Official references</h3>
-          {references.map(reference => <a key={reference.href} href={reference.href} target="_blank" rel="noopener noreferrer">{reference.label}<ArrowUpRight size={14} aria-hidden="true"/></a>)}
-        </div>
       </div>
 
       <div className="legal-notice-signoff"><p>Thank you for visiting Sri Vinayaka Groups. We appreciate your understanding and cooperation.</p><span><strong>{business.name}</strong><span>Legal notice for final business/legal review before commercial launch.</span></span></div>

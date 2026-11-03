@@ -14,6 +14,18 @@ enum EnquiryStatus {
   RESOLVED
 }
 
+enum InformationEnquiryStatus {
+  NEW
+  REVIEWED
+  CLOSED
+}
+
+enum EmailDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
 model Admin {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -62,4 +74,34 @@ model GeneralEnquiry {
   updatedAt DateTime      @updatedAt
 
   @@index([status, createdAt])
+}
+
+model InformationEnquiry {
+  id               String                  @id @default(cuid())
+  reference        String                  @unique
+  idempotencyKey   String                  @unique
+  name             String
+  mobile           String
+  message          String?                 @db.Text
+  productNames     String[]                @default([])
+  consentAt        DateTime
+  status           InformationEnquiryStatus @default(NEW)
+  emailStatus      EmailDeliveryStatus     @default(PENDING)
+  emailMessageId   String?
+  emailErrorCode   String?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  @@index([status, createdAt])
+  @@index([emailStatus, createdAt])
+  @@index([mobile, createdAt])
+}
+
+model InformationRequestRateLimit {
+  key         String   @id
+  windowStart DateTime
+  count       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  @@index([windowStart])
 }

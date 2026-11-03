@@ -194,6 +194,18 @@ Vercel displays the required records for the specific project and domain. [Verce
 - Confirm the local price calculator works and that it is not presented as checkout or an order facility.
 - Check the Vercel deployment log for runtime errors after these steps.
 
+## 10. Product information requests and PDF notifications
+
+The Price Calculator can submit a non-transactional information request. It sends selected product IDs only; the server resolves current active product names. Quantities, prices and totals remain in the browser and are never included. The request is saved before email is attempted, and a failed notification remains visible in **Admin → Information Requests** for an authorized retry. Private PDFs are generated on demand and are not placed in public Storage.
+
+1. Apply the additive `InformationEnquiry` migration with `npm run db:deploy`; do not reset the database.
+2. In Vercel Production, set `ADMIN_NOTIFICATION_EMAIL` to the admin inbox, `RESEND_API_KEY` as a Secret, and `RESEND_FROM_EMAIL` as a Secret using a sender identity verified and authorized by Resend. The Gmail recipient is not assumed to be a valid sender.
+3. The app records provider acceptance as `SENT`, not inbox delivery. Verify delivery in the Resend dashboard and recipient mailbox.
+4. Set `CRON_SECRET` as a Secret. The daily Production cron removes information-enquiry records more than 180 days old. The new information-request endpoint uses atomic PostgreSQL-backed rate limits with a one-way hash of the source IP; the daily cleanup also removes expired rate-limit keys. Existing general enquiries continue to use Upstash when configured and the existing in-memory fallback otherwise.
+5. Test with synthetic details, check the provider state, and remove the test record afterward.
+
+The Privacy Notice is available at `/privacy`; the legal notice remains subject to final business/legal review before any commercial launch.
+
 ## Common issues
 
 | Symptom | Check |

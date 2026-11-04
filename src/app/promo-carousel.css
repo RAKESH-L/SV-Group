@@ -1,0 +1,122 @@
+/* Compact 3D announcement deck — each card is 400 × 100px on desktop.
+   Mobile cards shrink horizontally but remain 100px tall, so the entire band
+   occupies a modest amount of the first viewport. */
+.promo-carousel-band{position:relative;z-index:2;overflow:hidden;background:linear-gradient(180deg,#1c1510,#17110e);border-bottom:1px solid rgba(229,183,103,.2)}
+.promo-carousel-shell{width:min(100%,1200px);margin:0 auto;padding:10px 15px 8px;isolation:isolate}
+.promo-carousel-overline{display:flex;justify-content:center;align-items:center;gap:8px;margin:0;color:#d6aa69;font-size:8px;font-weight:800;letter-spacing:.21em;line-height:16px}
+.promo-carousel-overline svg{color:#e5b669}
+.promo-carousel-overline>span{color:#e2a55e;margin:0 3px}
+.promo-carousel-stage{height:126px;position:relative;perspective:1100px;perspective-origin:50% 50%;overflow:hidden;--promo-shift:clamp(206px,32vw,365px)}
+.promo-3d-card{position:absolute;top:50%;left:50%;height:100px;width:min(400px,calc(100% - 45px));max-width:400px;display:flex;gap:10px;align-items:center;padding:11px 13px;border:1px solid rgba(242,190,112,.53);border-radius:10px;overflow:hidden;isolation:isolate;color:#f7ecd9;background:linear-gradient(112deg,#47291b 0%,#2c1c16 48%,#170f0d 100%);box-shadow:0 12px 29px rgba(0,0,0,.28),inset 0 1px rgba(255,235,193,.15);backface-visibility:hidden;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.22,1,.36,1),opacity .55s,filter .6s,box-shadow .55s;will-change:transform}
+.promo-3d-card:before{content:"";position:absolute;z-index:-1;right:-30px;top:-85px;width:170px;height:170px;border-radius:50%;border:1px solid rgba(255,225,161,.18);box-shadow:0 0 0 22px rgba(255,216,152,.04),0 0 0 51px rgba(255,216,152,.025);pointer-events:none}
+.promo-3d-card:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(110deg,transparent 0%,rgba(255,230,168,.07) 52%,transparent 69%);pointer-events:none}
+.promo-3d-card-2{background:linear-gradient(113deg,#2d4840,#1c3029 55%,#101e18);border-color:rgba(199,211,158,.45)}
+.promo-3d-card-3{background:linear-gradient(113deg,#43313e,#2a232e 57%,#17141d);border-color:rgba(240,191,160,.47)}
+.promo-3d-active{z-index:4;opacity:1;filter:none;transform:translate(-50%,-50%) rotateY(0deg) scale(1);box-shadow:0 15px 29px rgba(0,0,0,.31),0 0 21px rgba(218,158,75,.11)}
+.promo-3d-previous{z-index:2;opacity:.62;filter:saturate(.72);transform:translate(calc(-50% - var(--promo-shift)),-50%) rotateY(30deg) scale(.8);pointer-events:none}
+.promo-3d-next{z-index:2;opacity:.62;filter:saturate(.72);transform:translate(calc(-50% + var(--promo-shift)),-50%) rotateY(-30deg) scale(.8);pointer-events:none}
+.promo-3d-ornament{width:42px;height:49px;flex:0 0 42px;display:grid;place-items:center;color:#f2c675;background:radial-gradient(circle,rgba(238,175,81,.18),transparent 80%);border:1px solid rgba(241,193,104,.52);border-radius:50%;box-shadow:0 0 15px rgba(228,173,93,.09)}
+.promo-3d-card-2 .promo-3d-ornament{color:#dfddac;border-color:rgba(218,222,174,.46)}
+.promo-3d-card-3 .promo-3d-ornament{color:#f4c5b3;border-color:rgba(244,197,179,.44)}
+.promo-3d-copy{flex:1 1 auto;min-width:0;display:flex;justify-content:center;flex-direction:column;gap:2px;line-height:1.15}
+.promo-3d-eyebrow{color:#eac78d;font-weight:800;font-size:7px;letter-spacing:.14em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.promo-3d-title{display:block;color:#fff1dc;font:700 clamp(13px,1.5vw,17px)/1.16 'DM Sans',sans-serif;letter-spacing:-.035em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.promo-3d-description{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;color:#e5d5c3;font-size:9px;line-height:1.38;overflow:hidden}
+.promo-3d-link{z-index:2;display:flex;flex:none;width:76px;min-height:45px;align-items:center;justify-content:center;gap:2px;padding:6px 2px 6px 7px;border-left:1px solid rgba(245,206,142,.3);color:#ffd894;font-size:8px;font-weight:750;line-height:1.4;transition:color .2s}
+.promo-3d-link>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+.promo-3d-link>svg{flex:none}
+.promo-3d-link:hover{color:#fff3d5}
+.promo-3d-link:focus-visible{outline:2px solid #f8d78f;outline-offset:2px}
+.promo-3d-glimmer{position:absolute;right:16px;top:1px;font-size:16px;color:#ffcd80;opacity:.56;animation:promoStarPulse 3.5s ease-in-out infinite}
+.promo-3d-active:after{animation:promoLightSweep 7s linear infinite}
+@keyframes promoStarPulse{0%,100%{opacity:.28;transform:scale(.78)}50%{opacity:.92;transform:scale(1.15)}}
+@keyframes promoLightSweep{0%,70%{opacity:0;transform:translateX(-30%)}85%{opacity:1}100%{opacity:0;transform:translateX(55%)}}
+.promo-carousel-navigation{display:flex;align-items:center;justify-content:center;gap:11px;height:28px;position:relative}
+.promo-carousel-arrow{width:25px;height:25px;display:grid;place-items:center;border:1px solid rgba(233,189,121,.28);border-radius:50%;background:transparent;color:#e7bc76;cursor:pointer;transition:background .2s,border-color .2s}
+.promo-carousel-arrow:hover{background:rgba(231,187,102,.1);border-color:#d4aa68}
+.promo-carousel-arrow:focus-visible,.promo-carousel-dots button:focus-visible{outline:2px solid #f6d48d;outline-offset:2px}
+.promo-carousel-dots{display:flex;align-items:center;gap:8px}
+.promo-carousel-dots button{height:7px;width:7px;padding:0;background:rgba(227,179,110,.34);border:0;border-radius:99px;cursor:pointer;transition:width .3s,background .3s}
+.promo-carousel-dots button.is-active{background:#edc47f;width:20px}
+.promo-carousel-count{position:absolute;right:6px;color:#a28d6f;font-size:9px;letter-spacing:.08em}
+
+/* The light theme uses soft ivory around the deck; cards are jewel-toned with
+   warm terracotta and forest-green accents for excellent contrast. */
+html[data-theme="light"] .promo-carousel-band{background:linear-gradient(180deg,#f1ede2,#faf7f0);border-color:#ddd9cb}
+html[data-theme="light"] .promo-carousel-overline{color:#8e593d}
+html[data-theme="light"] .promo-carousel-overline svg,html[data-theme="light"] .promo-carousel-overline>span{color:#bb633e}
+html[data-theme="light"] .promo-3d-card-1{background:linear-gradient(112deg,#a94a2e,#883b30 53%,#552e28);border-color:#bd805f;color:#fff7eb}
+html[data-theme="light"] .promo-3d-card-2{background:linear-gradient(113deg,#295a48,#204637 58%,#173e31);border-color:#90b09a}
+html[data-theme="light"] .promo-3d-card-3{background:linear-gradient(115deg,#a67b3f,#8f6839 54%,#6c4a2c);border-color:#dbb47c}
+html[data-theme="light"] .promo-3d-card .promo-3d-title{color:#fff8e7}
+html[data-theme="light"] .promo-3d-card .promo-3d-eyebrow{color:#ffe1ad}
+html[data-theme="light"] .promo-3d-card .promo-3d-description{color:#f8e8d6}
+html[data-theme="light"] .promo-3d-link{color:#ffedce;border-color:rgba(255,239,208,.4)}
+html[data-theme="light"] .promo-3d-link:hover{color:#fff}
+html[data-theme="light"] .promo-3d-ornament{color:#ffe0a5;border-color:rgba(255,226,169,.65)}
+html[data-theme="light"] .promo-3d-glimmer{color:#fff0c4}
+html[data-theme="light"] .promo-carousel-arrow{color:#8e593d;border-color:#c9b9a5}
+html[data-theme="light"] .promo-carousel-arrow:hover{background:#eae3d4}
+html[data-theme="light"] .promo-carousel-dots button{background:#c9bba6}
+html[data-theme="light"] .promo-carousel-dots button.is-active{background:#b55439}
+html[data-theme="light"] .promo-carousel-count{color:#856c54}
+
+/* Admin banners editor: responsive layout and short-card previews. */
+.promo-admin-panel{max-width:1320px}
+.promo-admin-heading{display:flex;gap:13px;align-items:flex-start;margin:0 0 22px}
+.promo-admin-heading>svg{color:var(--gold);flex:none;margin-top:2px}
+.promo-admin-heading h2{margin:0 0 5px}
+.promo-admin-heading p,.promo-admin-note{color:var(--muted);font-size:11px;line-height:1.8;margin:0}
+.promo-admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.promo-admin-card{min-width:0;margin:0;padding:14px;border:1px solid var(--line);background:var(--panel);border-radius:10px;display:flex;flex-direction:column;gap:13px}
+.promo-admin-card legend{padding:0 7px;color:var(--gold);font-weight:800;font-size:13px;letter-spacing:.04em}
+.promo-admin-preview{height:100px;position:relative;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:12px 90px 12px 13px;border:1px solid rgba(234,186,115,.6);border-radius:8px;overflow:hidden;background:linear-gradient(110deg,#4a2c1e,#201712);color:#fff4e1}
+.promo-admin-preview-2{background:linear-gradient(110deg,#355a4b,#15372b)}
+.promo-admin-preview-3{background:linear-gradient(110deg,#684a4f,#241d28)}
+.promo-admin-preview>span{color:#f0c886;font-size:7px;letter-spacing:.15em;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.promo-admin-preview strong{font-size:15px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff8e9}
+.promo-admin-preview small{font-size:8px;line-height:1.4;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;color:#ede3d3}
+.promo-admin-preview em{position:absolute;right:8px;top:28px;max-width:82px;display:flex;align-items:center;gap:4px;font-style:normal;color:#f9d594;font-size:8px;text-align:right}
+.promo-admin-card label{display:grid;gap:5px;color:var(--ink);font-size:11px;font-weight:650}
+.promo-admin-card label>span{font-size:9px;font-weight:400;color:var(--muted)}
+.promo-admin-card input,.promo-admin-card textarea,.promo-admin-card select{display:block;width:100%;min-width:0;padding:10px;background:#17130f;border:1px solid var(--line);color:var(--ink);border-radius:3px;font-size:12px;font-weight:400;outline:none}
+.promo-admin-card textarea{resize:vertical}
+.promo-admin-card input:focus-visible,.promo-admin-card textarea:focus-visible,.promo-admin-card select:focus-visible{border-color:var(--gold);outline:2px solid rgba(231,187,102,.17)}
+.promo-admin-paired{display:grid;grid-template-columns:1fr;gap:10px}
+.promo-admin-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:20px 0 12px}
+.promo-admin-actions .button{min-height:43px}
+.promo-admin-note{border-top:1px solid var(--line);padding-top:12px}
+html[data-theme="light"] .promo-admin-card{background:#fffdf8;border-color:#dedfd3}
+html[data-theme="light"] .promo-admin-card input,html[data-theme="light"] .promo-admin-card textarea,html[data-theme="light"] .promo-admin-card select{background:#fff;color:#194333;border-color:#d7dfd1}
+html[data-theme="light"] .promo-admin-preview-1{background:linear-gradient(110deg,#a44e31,#5b2d26)}
+html[data-theme="light"] .promo-admin-preview-2{background:linear-gradient(110deg,#275c48,#153a2d)}
+html[data-theme="light"] .promo-admin-preview-3{background:linear-gradient(110deg,#a47b40,#74512f)}
+@media(max-width:1050px){.promo-admin-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){
+  .promo-carousel-shell{padding:9px 8px 8px}
+  .promo-carousel-stage{height:122px;--promo-shift:63vw}
+  .promo-3d-card{height:100px;width:calc(100% - 42px);max-width:400px;padding:9px 10px;gap:7px;border-radius:8px}
+  .promo-3d-ornament{width:34px;height:38px;flex-basis:34px}
+  .promo-3d-ornament svg{width:20px;height:20px}
+  .promo-3d-title{font-size:14px}
+  .promo-3d-eyebrow{font-size:7px;letter-spacing:.11em}
+  .promo-3d-description{font-size:8.5px}
+  .promo-3d-link{width:67px;padding:4px 2px 4px 5px;font-size:8px}
+  .promo-3d-link>svg{width:12px}
+  .promo-carousel-overline{font-size:7px;letter-spacing:.14em}
+  .promo-carousel-count{font-size:8px}
+  .promo-admin-grid{grid-template-columns:1fr}
+  .promo-admin-paired{grid-template-columns:1fr 1fr}
+}
+@media(max-width:360px){
+  .promo-3d-card{width:calc(100% - 28px);padding:8px;gap:6px}
+  .promo-3d-ornament{width:29px;flex-basis:29px;height:32px}
+  .promo-3d-link{width:55px;font-size:7px}
+  .promo-3d-title{font-size:12px}
+  .promo-3d-description{font-size:8px}
+  .promo-admin-paired{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .promo-3d-card,.promo-carousel-dots button,.promo-carousel-arrow,.promo-3d-link{transition:none!important}
+  .promo-3d-glimmer,.promo-3d-active:after{animation:none!important}
+}

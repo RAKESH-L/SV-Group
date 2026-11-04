@@ -1,0 +1,214 @@
+/* Two fully separate presentations, published by an authenticated admin.
+   Dark remains the default; the light presentation is entirely opt-in. */
+.light-festival-hero,.light-festival-values{display:none}
+
+/* Admin-only appearance picker (readable in either theme). */
+.theme-admin-panel{max-width:1040px}
+.theme-admin-intro{display:grid;gap:14px;margin:8px 0 22px}
+.theme-admin-heading{display:flex;align-items:flex-start;gap:13px}
+.theme-admin-heading>svg{color:var(--gold);flex:none;margin-top:5px}
+.theme-admin-heading h2{margin:0 0 6px}
+.theme-admin-heading p,.theme-admin-note{margin:0;color:var(--muted);font-size:12px;line-height:1.8}
+.theme-published-status{width:fit-content;margin:0;padding:10px 14px;border:1px solid var(--line);border-radius:6px;font-size:12px}
+.theme-published-status strong{color:var(--gold)}
+.theme-admin-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.theme-option{display:flex;flex-direction:column;gap:12px;min-width:0;text-align:left;padding:14px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);cursor:pointer;transition:border-color .2s,transform .2s,box-shadow .2s}
+.theme-option:hover{transform:translateY(-2px)}
+.theme-option.selected{border-color:var(--gold);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 18%,transparent)}
+.theme-option:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.theme-option-preview{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:174px;padding:23px;border-radius:7px;gap:12px}
+.theme-option-dark .theme-option-preview{background:radial-gradient(ellipse at right,#382417,#17130f 75%);color:#f4ead7}
+.theme-option-light .theme-option-preview{background:radial-gradient(ellipse at right,#fcf6e9,#f0eee4 70%);color:#1b463b}
+.theme-option-mini-head{font-size:9px;letter-spacing:.22em;font-weight:800}
+.theme-option-dark .theme-option-mini-head{color:#e7bb66}
+.theme-option-light .theme-option-mini-head{color:#bd5637}
+.theme-option-mini-heading{font:500 clamp(27px,4vw,46px)/1.05 'Playfair Display',serif}
+.theme-option-mini-button{display:inline-block;padding:7px 12px;font-size:10px;background:#e7bb66;color:#21170d;font-weight:700}
+.theme-option-light .theme-option-mini-button{background:#174238;color:#fff8ee}
+.theme-option-label{display:flex;align-items:center;gap:9px;font-size:16px}
+.theme-option-label>svg:last-child{margin-left:auto}
+.theme-option>small{font-size:11px;line-height:1.65;color:var(--muted)}
+.theme-admin-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:24px 0 12px}
+.theme-admin-actions .button:disabled{cursor:default;opacity:.72}
+.theme-admin-note{padding:13px 0;border-top:1px solid var(--line)}
+@media(max-width:650px){.theme-admin-options{grid-template-columns:1fr;gap:12px}.theme-option-preview{min-height:132px}.theme-admin-actions .button{width:100%}}
+
+/* The light theme uses ivory, deep green and warm terracotta, inspired by the
+   user's two editorial festival screenshots. Original logos and products remain. */
+html[data-theme="light"]{color-scheme:light;--ink:#193a32;--muted:#697970;--gold:#b75034;--gold-dark:#a85338;--bg:#f8f5ed;--panel:#fffefa;--line:rgba(29,65,53,.16);--green:#467862}
+html[data-theme="light"] body{color:#193a32;background:#f8f5ed;background-image:radial-gradient(ellipse at 100% 1%,rgba(226,204,167,.19),transparent 35%)}
+html[data-theme="light"] .contact-strip{background:#163e33;color:#f4ead8;border-color:rgba(255,255,255,.15)}
+html[data-theme="light"] .contact-strip svg{color:#efd2a1}
+html[data-theme="light"] .strip-email,html[data-theme="light"] .contact-strip a{color:#f5e9d7}
+html[data-theme="light"] .site-header{background:rgba(255,253,248,.96);border-bottom:1px solid #e5ded0;box-shadow:0 4px 20px rgba(18,46,37,.04)}
+html[data-theme="light"] .site-header nav{color:#25463d}
+html[data-theme="light"] .site-header nav a:not(.nav-cta){color:#25463d}
+html[data-theme="light"] .site-header nav a:hover,html[data-theme="light"] .site-header nav>a[aria-current="page"]{color:#b75034}
+html[data-theme="light"] .nav-cta{color:#194438;background:transparent;border-color:#bdd0c6}
+html[data-theme="light"] .nav-cta:hover{background:#194438;color:#fff}
+html[data-theme="light"] .sv-wordmark-sv{color:#1d4639}
+html[data-theme="light"] .sv-wordmark-groups{color:#ad7b37}
+html[data-theme="light"] .sv-wordmark-emblem{color:#b9883f}
+html[data-theme="light"] .mobile-menu-toggle{background:#fbf8f2;border-color:#d8d9cb;color:#193a32}
+html[data-theme="light"] .mobile-navigation-menu{background:#fffefa;border-color:#d8ddcf;box-shadow:0 20px 35px rgba(21,59,43,.12)}
+html[data-theme="light"] .mobile-navigation-menu a{color:#294c40}
+html[data-theme="light"] .mobile-navigation-menu a:hover{color:#ad4b32;background:#faf3e9}
+
+/* Festive Light homepage: replaces, not overlays, the dark identity masthead. */
+html[data-theme="light"] .home-contact{display:none}
+html[data-theme="light"] .light-festival-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:clamp(20px,4.5vw,90px);align-items:center;max-width:1740px;margin:auto;padding:clamp(60px,7vw,130px) clamp(23px,7vw,130px) clamp(42px,6vw,110px);background:#f8f5ed}
+html[data-theme="light"] .light-festival-copy{min-width:0}
+html[data-theme="light"] .light-festival-kicker{display:flex;align-items:center;gap:18px;margin:0 0 21px;color:#1d4a3b;font-size:clamp(10px,1vw,14px);font-weight:800;letter-spacing:.25em}
+html[data-theme="light"] .light-kicker-dot{display:block;background:#c15b38;width:11px;height:11px;border-radius:50%;flex:none}
+html[data-theme="light"] .light-festival-brand{font-size:9px;letter-spacing:.19em;font-weight:700;color:#708277}
+html[data-theme="light"] .light-festival-copy h1{color:#173e33;font:500 clamp(63px,7.65vw,140px)/.98 'Playfair Display',serif;letter-spacing:-.06em;margin:38px 0 38px}
+html[data-theme="light"] .light-festival-copy h1 em{display:inline-block;color:#bd5032;font-weight:500;letter-spacing:-.065em}
+html[data-theme="light"] .light-festival-subtitle{font-size:clamp(15px,1.35vw,20px);line-height:1.9;color:#637369;max-width:620px;margin:0 0 37px}
+html[data-theme="light"] .light-festival-cta{display:inline-flex;align-items:center;justify-content:space-between;gap:34px;min-height:66px;padding:18px 24px;background:#184538;color:#fff9ee;font-size:clamp(13px,1.15vw,16px);font-weight:500;min-width:min(100%,365px);transition:transform .2s,background .2s,box-shadow .2s}
+html[data-theme="light"] .light-festival-cta:hover{transform:translateY(-3px);background:#28614e;box-shadow:0 14px 28px rgba(18,61,45,.14)}
+html[data-theme="light"] .light-festival-cta:focus-visible{outline:3px solid #c25c3d;outline-offset:4px}
+html[data-theme="light"] .light-festival-signoff{display:flex;align-items:center;gap:16px;margin:52px 0 0;color:#61786c;font-size:13px}
+html[data-theme="light"] .light-festival-signoff svg{color:#c45c36}
+html[data-theme="light"] .light-festival-illustration{min-width:0;align-self:center;position:relative;background:linear-gradient(155deg,#1b4237,#163c32);border-radius:46% 46% 5px 5px;overflow:hidden;box-shadow:0 22px 48px rgba(24,63,51,.12);isolation:isolate}
+html[data-theme="light"] .light-festival-illustration:before{content:"";position:absolute;inset:-20% -20% 22%;border-radius:50%;border:1px solid rgba(246,213,151,.16);pointer-events:none}
+html[data-theme="light"] .light-festival-illustration svg{display:block;width:100%;height:auto;max-height:650px}
+html[data-theme="light"] .light-art-caption{position:absolute;bottom:0;left:0;right:0;padding:18px clamp(16px,3vw,31px);display:flex;justify-content:space-between;gap:12px;background:#173c32;color:#e8c88b;font-size:clamp(9px,.83vw,13px);letter-spacing:.1em}
+html[data-theme="light"] .light-festival-values{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding:29px clamp(23px,7vw,130px);max-width:1740px;margin:0 auto;border-top:1px solid #e6e2d8;border-bottom:1px solid #e6e2d8;background:#fbf8f1}
+html[data-theme="light"] .light-festival-values span{display:flex;align-items:center;gap:11px;color:#235045;font-size:clamp(11px,1vw,14px)}
+html[data-theme="light"] .light-festival-values svg{flex:none;color:#bc583b}
+
+/* Gentle, subtle sky shots and diya flames. No canvas, flashing or heavy JS. */
+html[data-theme="light"] .festival-flame-front,html[data-theme="light"] .festival-flame-back{transform-box:fill-box;transform-origin:center bottom;animation:festiveFlame 2.6s ease-in-out infinite alternate}
+html[data-theme="light"] .festival-flame-back{animation-delay:-1.2s}
+html[data-theme="light"] .festival-sparkles{transform-origin:340px 310px;animation:festiveTwinkle 5s ease-in-out infinite}
+html[data-theme="light"] .festival-rays{animation:festiveTwinkle 8s ease-in-out infinite reverse}
+html[data-theme="light"] .festival-skyshot-one{animation:festiveSkyshot 8s ease-in-out infinite}
+html[data-theme="light"] .festival-skyshot-two{animation:festiveSkyshot 8s ease-in-out 3s infinite}
+html[data-theme="light"] .festival-burst-one{transform-origin:285px 208px;animation:festiveBurst 8s ease-out infinite}
+html[data-theme="light"] .festival-burst-two{transform-origin:465px 256px;animation:festiveBurst 8s ease-out 3s infinite}
+@keyframes festiveFlame{from{transform:scale(.94) rotate(-2deg);opacity:.93}to{transform:scale(1.045) rotate(2deg);opacity:1}}
+@keyframes festiveTwinkle{0%,100%{opacity:.58}50%{opacity:1}}
+@keyframes festiveSkyshot{0%,8%,77%,100%{opacity:0;transform:translateY(30px)}24%,45%{opacity:.78;transform:translateY(0)}56%{opacity:0;transform:translateY(-10px)}}
+@keyframes festiveBurst{0%,14%,70%,100%{opacity:0;transform:scale(.5)}25%{opacity:.95;transform:scale(1.08)}42%{opacity:.35;transform:scale(1.25)}55%{opacity:0;transform:scale(1.35)}}
+
+/* Global light-mode treatment covers catalogue, cards, calculator, admin and forms. */
+html[data-theme="light"] .home-category-catalogue{background:linear-gradient(180deg,#fcfaf5,#f5f2e9 90%);border-color:#e5e1d6}
+html[data-theme="light"] .home-category-heading h2,html[data-theme="light"] .home-category-heading h2 em{color:#173e33}
+html[data-theme="light"] .home-category-heading h2 em{color:#bc5439}
+html[data-theme="light"] .home-category-heading p,html[data-theme="light"] .home-category-empty p{color:#65766c}
+html[data-theme="light"] .home-category-jumps,html[data-theme="light"] .category-jump-nav{background:rgba(254,251,245,.97);border-color:#e0ddd0;box-shadow:0 10px 26px rgba(25,60,49,.04)}
+html[data-theme="light"] .home-category-jumps a,html[data-theme="light"] .category-jump-nav a{color:#315346}
+html[data-theme="light"] .home-category-jumps a:hover,html[data-theme="light"] .category-jump-nav a:hover{color:#b74e31;background:#f8e9dd}
+html[data-theme="light"] .home-product-category-heading{background:#194638;border-color:#194638;border-left-color:#d59b56;box-shadow:0 8px 20px rgba(21,60,45,.07)}
+html[data-theme="light"] .home-product-category-heading h3{color:#fff7e8}
+html[data-theme="light"] .home-product-category-heading>span{color:#d3dccc}
+html[data-theme="light"] .category-section-heading h2{color:#174335}
+html[data-theme="light"] .product-card,html[data-theme="light"] .product-card-compact{background:#fffefb;border:1px solid #e2e3d9;border-radius:6px;box-shadow:0 8px 22px rgba(34,67,51,.045)}
+html[data-theme="light"] .product-card:hover,html[data-theme="light"] .product-card-compact:hover{border-color:#b6cfc0;box-shadow:0 12px 28px rgba(34,67,51,.11)}
+html[data-theme="light"] .product-photo,html[data-theme="light"] .product-card-compact-image,html[data-theme="light"] .image-placeholder,html[data-theme="light"] .catalogue-placeholder{background:#f4efe6}
+html[data-theme="light"] .product-card h3,html[data-theme="light"] .product-card-compact-info h3,html[data-theme="light"] .product-info h3,html[data-theme="light"] .detail-copy h1{color:#193e32}
+html[data-theme="light"] .product-card-description,html[data-theme="light"] .product-category,html[data-theme="light"] .availability,html[data-theme="light"] .home-quantity-label,html[data-theme="light"] .product-bottom{color:#61766b}
+html[data-theme="light"] .price-line strong,html[data-theme="light"] .detail-prices strong{color:#a94b2d}
+html[data-theme="light"] .price-line del,html[data-theme="light"] .detail-prices del{color:#829087}
+html[data-theme="light"] .home-category-empty,html[data-theme="light"] .empty-state,html[data-theme="light"] .summary-card,html[data-theme="light"] .stat-card,html[data-theme="light"] .admin-form,html[data-theme="light"] .privacy-content{background:#fffefa;border-color:#e0e3d9}
+html[data-theme="light"] .home-quantity-stepper,html[data-theme="light"] .quantity button,html[data-theme="light"] .floating-price-expand{background:#fdf9f1;border-color:#cbd7cc;color:#275245}
+html[data-theme="light"] .home-quantity-stepper output,html[data-theme="light"] .quantity span{color:#23483c}
+html[data-theme="light"] .home-quantity-stepper button:disabled{color:#a8b1a6}
+html[data-theme="light"] .discount-badge{background:#c35b3e;color:#fff}
+html[data-theme="light"] .button-gold{background:#174537;color:#fffaf0}
+html[data-theme="light"] .button-gold:hover{background:#2e6851}
+html[data-theme="light"] .button-outline{color:#174537;border-color:#b7c6b8}
+html[data-theme="light"] .button-outline:hover{color:#ba573b;border-color:#ba573b}
+html[data-theme="light"] .detail-copy>p,html[data-theme="light"] .page-lede,html[data-theme="light"] .catalogue-placeholder small,html[data-theme="light"] .home-category-empty h3{color:#65786d}
+html[data-theme="light"] .contact-layout,html[data-theme="light"] .catalogue-contact,html[data-theme="light"] .information-request-detail{background:#fffefa;border-color:#e4e2d6}
+html[data-theme="light"] .contact-form label,html[data-theme="light"] .admin-form label,html[data-theme="light"] .information-request-filters label{color:#2d5145}
+html[data-theme="light"] .contact-form input,html[data-theme="light"] .contact-form textarea,html[data-theme="light"] .admin-form input,html[data-theme="light"] .admin-form select,html[data-theme="light"] .admin-form textarea,html[data-theme="light"] .inline-create input,html[data-theme="light"] .information-request-filters input,html[data-theme="light"] .information-request-filters select,html[data-theme="light"] .catalogue-tools select,html[data-theme="light"] .search-field{background:#fffefa;color:#234a3c;border-color:#d8dfd5}
+html[data-theme="light"] .search-field input{color:#264c3e}
+html[data-theme="light"] .summary-row,html[data-theme="light"] .summary-total{color:#5d7468}
+html[data-theme="light"] .summary-row span:last-child,html[data-theme="light"] .summary-total strong,html[data-theme="light"] .stat-card strong{color:#1a4c3a}
+html[data-theme="light"] .summary-row.savings span:last-child{color:#a65430}
+html[data-theme="light"] .summary-card>p,html[data-theme="light"] .cart-product small{color:#6c7b72}
+html[data-theme="light"] .cart-product strong,html[data-theme="light"] .line-total,html[data-theme="light"] .cart-line-pricing dd{color:#234e3c}
+html[data-theme="light"] .cart-spark{background:#f1e6d7;color:#b65a33}
+html[data-theme="light"] .cart-price-breakdown{background:#f7f9f3;border-color:#d9e1d5}
+html[data-theme="light"] .cart-price-breakdown h3,html[data-theme="light"] .cart-line-pricing .cart-line-indicative dd{color:#b25233}
+html[data-theme="light"] .cart-line-pricing dt{color:#65766b}
+html[data-theme="light"] .admin-table th{background:#eaf0e7;color:#285444}
+html[data-theme="light"] .admin-table td{color:#2d5244}
+html[data-theme="light"] .admin-table td small,html[data-theme="light"] .admin-panel>p{color:#657a6d}
+html[data-theme="light"] .admin-tabs button{color:#5f7767}
+html[data-theme="light"] .admin-tabs button.active{color:#aa4d30}
+html[data-theme="light"] .admin-table select,html[data-theme="light"] .mini-button{background:#fffefa;color:#285443;border-color:#d7e0d6}
+html[data-theme="light"] .mini-button:hover{color:#b75437;border-color:#bd876a}
+html[data-theme="light"] .status-pill{background:#e9eee6;color:#346049}
+html[data-theme="light"] .catalogue-notice{background:#f1ebe0;color:#496d5a}
+html[data-theme="light"] .information-modal{background:#fffdf7;border-color:#e5dbca;box-shadow:0 30px 90px rgba(13,46,33,.18)}
+html[data-theme="light"] .information-modal-intro,html[data-theme="light"] .information-success>p,html[data-theme="light"] .information-request-form>label:not(.information-consent):not(.information-honeypot),html[data-theme="light"] .information-consent,html[data-theme="light"] .information-request-form label span{color:#4e6a5b}
+html[data-theme="light"] .information-request-form input:not([type=checkbox]),html[data-theme="light"] .information-request-form textarea,html[data-theme="light"] .estimate-editor-controls .quantity input{background:#fff;color:#254b3c;border-color:#d1dcd2}
+html[data-theme="light"] .information-topics,html[data-theme="light"] .estimate-editor-product,html[data-theme="light"] .estimate-customer-panel{background:#f7f7f0;border-color:#d8ded3}
+html[data-theme="light"] .information-topics ul,html[data-theme="light"] .information-topics p,html[data-theme="light"] .estimate-editor-note,html[data-theme="light"] .estimate-editor-price-row,html[data-theme="light"] .estimate-editor-line-total,html[data-theme="light"] .estimate-customer-panel strong,html[data-theme="light"] .estimate-editor-product-heading strong{color:#305245}
+html[data-theme="light"] .estimate-editor-disclaimer{color:#4c6657;background:#f8efe4}
+html[data-theme="light"] .estimate-editor-summary h3{color:#a64d31}
+html[data-theme="light"] .information-request-filters select{min-width:0}
+html[data-theme="light"] .information-request-detail p{color:#647b6b}
+html[data-theme="light"] .privacy-content h2{color:#214d3e}
+html[data-theme="light"] .privacy-content p{color:#576d60}
+html[data-theme="light"] .legal-home-section{background:linear-gradient(180deg,#f2efe5,#f9f5ec)}
+html[data-theme="light"] .legal-home-intro>p{color:#1d4338}
+html[data-theme="light"] .floating-price-summary{background:rgba(253,251,246,.97);box-shadow:0 12px 40px rgba(15,58,38,.16);border-color:#abc5b4}
+html[data-theme="light"] .floating-price-count span,html[data-theme="light"] .floating-price-count small,html[data-theme="light"] .floating-price-values span{color:#5b7566}
+html[data-theme="light"] .floating-price-values strong,html[data-theme="light"] .floating-price-mobile-details strong{color:#255240}
+html[data-theme="light"] .floating-price-values .floating-price-gold{color:#b65334}
+html[data-theme="light"] .floating-price-savings strong{color:#387d5b}
+html[data-theme="light"] .floating-price-mobile-details div{color:#5e7368}
+
+/* The original secondary sections get an editorial light treatment, too. */
+html[data-theme="light"] .hero{background:linear-gradient(135deg,#e9efe6,#f8f4eb);color:#1a4136}
+html[data-theme="light"] .hero-content>p,html[data-theme="light"] .intro-band>p{color:#566f60}
+html[data-theme="light"] .hero h2,html[data-theme="light"] .hero-content h1{color:#173f34}
+html[data-theme="light"] .hero-orb{opacity:.3}
+html[data-theme="light"] .intro-band{background:#eaf0e9;border-color:#d4ded3}
+html[data-theme="light"] .intro-band>div:first-child p{color:#264b3d}
+html[data-theme="light"] .cta-band{background:#e6ebe2;border-color:#d7e2d6}
+html[data-theme="light"] .cta-band h2{color:#1b4739}
+html[data-theme="light"] .cta-flower{color:rgba(188,83,52,.13)}
+
+/* A deep-green footer offers an intentional contrast to warm light pages. */
+html[data-theme="light"] .footer{background:#173b32;border-color:#36584a}
+html[data-theme="light"] .footer .sv-wordmark-sv{color:#f3ede2}
+html[data-theme="light"] .footer .sv-wordmark-groups{color:#e0b771}
+html[data-theme="light"] .footer-contact,html[data-theme="light"] .footer-links,html[data-theme="light"] .footer-links a,html[data-theme="light"] .footer>small{color:#d2dfd4}
+html[data-theme="light"] .footer-contact svg{color:#e4bd7c}
+html[data-theme="light"] .footer>div:first-child p{color:#d5e1d4}
+
+/* Mobile keeps typography clear, with illustration stacked below the headline. */
+@media(max-width:1000px){
+  html[data-theme="light"] .light-festival-hero{grid-template-columns:1fr 1fr;gap:24px;padding:58px 5vw 55px}
+  html[data-theme="light"] .light-festival-copy h1{font-size:clamp(57px,7vw,87px)}
+  html[data-theme="light"] .light-festival-values{gap:12px;padding:22px 5vw}
+}
+@media(max-width:760px){
+  html[data-theme="light"] .light-festival-hero{grid-template-columns:1fr;gap:52px;padding:52px 22px 38px}
+  html[data-theme="light"] .light-festival-copy h1{font-size:clamp(55px,12.5vw,92px);margin:30px 0}
+  html[data-theme="light"] .light-festival-subtitle{font-size:15px;margin-bottom:30px}
+  html[data-theme="light"] .light-festival-signoff{margin-top:35px}
+  html[data-theme="light"] .light-festival-illustration{width:min(100%,630px);margin:0 auto}
+  html[data-theme="light"] .light-festival-values{grid-template-columns:repeat(2,minmax(0,1fr));padding:25px 22px;gap:22px}
+  html[data-theme="light"] .light-festival-values span{font-size:12px}
+  html[data-theme="light"] .light-art-caption{font-size:9px}
+  html[data-theme="light"] .mobile-navigation-menu a{color:#244b3b}
+  html[data-theme="light"] .contact-strip{gap:6px;padding:7px 12px}
+  html[data-theme="light"] .strip-email{max-width:100%;overflow-wrap:anywhere;white-space:normal}
+}
+@media(max-width:400px){
+  html[data-theme="light"] .light-festival-hero{padding:46px 18px 30px}
+  html[data-theme="light"] .light-festival-copy h1{font-size:clamp(48px,12vw,61px)}
+  html[data-theme="light"] .light-festival-cta{min-width:0;width:100%}
+  html[data-theme="light"] .light-festival-values{grid-template-columns:1fr 1fr;gap:16px}
+  html[data-theme="light"] .light-festival-values span{font-size:11px}
+  html[data-theme="light"] .light-art-caption{letter-spacing:0}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-theme="light"] .festival-flame-front,html[data-theme="light"] .festival-flame-back,html[data-theme="light"] .festival-sparkles,html[data-theme="light"] .festival-rays,html[data-theme="light"] .festival-skyshot,html[data-theme="light"] .festival-burst{animation:none!important;transform:none!important}
+  html[data-theme="light"] .light-festival-cta{transition:none}
+}

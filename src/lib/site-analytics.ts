@@ -141,15 +141,15 @@ export async function getSiteAnalyticsSummary() {
       ) AS series("day")
       LEFT JOIN "SiteTrafficDaily" traffic ON traffic."day" = series."day"::date
       LEFT JOIN (
-        SELECT ("createdAt" AT TIME ZONE 'Asia/Kolkata')::date AS "day", COUNT(*)::int AS "count"
+        SELECT (("createdAt" AT TIME ZONE 'UTC') AT TIME ZONE 'Asia/Kolkata')::date AS "day", COUNT(*)::int AS "count"
         FROM "InformationEnquiry"
-        WHERE "createdAt" >= ((now() AT TIME ZONE 'Asia/Kolkata')::date - 13)::timestamp AT TIME ZONE 'Asia/Kolkata'
+        WHERE "createdAt" >= (((now() AT TIME ZONE 'Asia/Kolkata')::date - 13)::timestamp AT TIME ZONE 'Asia/Kolkata') AT TIME ZONE 'UTC'
         GROUP BY 1
       ) info ON info."day" = series."day"::date
       LEFT JOIN (
-        SELECT ("createdAt" AT TIME ZONE 'Asia/Kolkata')::date AS "day", COUNT(*)::int AS "count"
+        SELECT (("createdAt" AT TIME ZONE 'UTC') AT TIME ZONE 'Asia/Kolkata')::date AS "day", COUNT(*)::int AS "count"
         FROM "GeneralEnquiry"
-        WHERE "createdAt" >= ((now() AT TIME ZONE 'Asia/Kolkata')::date - 13)::timestamp AT TIME ZONE 'Asia/Kolkata'
+        WHERE "createdAt" >= (((now() AT TIME ZONE 'Asia/Kolkata')::date - 13)::timestamp AT TIME ZONE 'Asia/Kolkata') AT TIME ZONE 'UTC'
         GROUP BY 1
       ) general ON general."day" = series."day"::date
       ORDER BY series."day"

@@ -195,3 +195,14 @@ body.has-floating-price-summary .home-category-catalogue{padding-bottom:180px}
 .information-request-actions .information-request-delete:hover:not(:disabled){color:#ffcab8;border-color:#e5a58c;background:rgba(156,69,49,.18)}
 .information-request-actions .information-request-delete:disabled{opacity:.48;cursor:wait}
 .information-request-actions .information-request-delete:focus-visible{outline:2px solid #e5a58c;outline-offset:2px}
+
+
+/* Website developer attribution and contact-page entry point. */
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:11px 24px}
+.footer-creator-credit{color:#b9a88c;font-size:10px;line-height:1.7}
+.footer-creator-credit a{color:#e7bb66;text-decoration:none;font-weight:700;border-bottom:1px solid rgba(231,187,102,.3);padding-bottom:2px}
+.footer-creator-credit a:hover{color:#ffe0a1;border-color:#ffe0a1}
+.footer-creator-credit a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+html[data-theme="light"] .footer-creator-credit{color:#dfdfcb}
+html[data-theme="light"] .footer-creator-credit a{color:#f1c581;border-color:rgba(241,197,129,.5)}
+@media(max-width:650px){.footer-bottom{align-items:flex-start;flex-direction:column;gap:8px}.footer-creator-credit{font-size:10px}}

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./light-theme.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";
+import { getPublishedSiteTheme } from "@/lib/site-theme";
+import { connection } from "next/server";
 export const metadata: Metadata = {
   title: "Sri Vinayaka Groups | Tumkur",
   description: "Explore the Sri Vinayaka Groups festive catalogue. Get in touch with our team in Tumkur, Karnataka.",
@@ -20,4 +23,4 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Sri Vinayaka Groups | Tumkur", images: ["/branding/sv-logo-og.png"] },
 };
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en"><body><CartProvider><Header/><div className="main-content">{children}</div><Footer/></CartProvider></body></html>; }
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const theme = await getPublishedSiteTheme(); return <html lang="en" data-theme={theme}><body><CartProvider><Header/><div className="main-content">{children}</div><Footer/></CartProvider></body></html>; }

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Explore the Sri Vinayaka Groups festive catalogue. Get in touch with our team in Tumkur, Karnataka.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sv-groups-catalogue.vercel.app"),
   icons: {
-    icon: [{ url: "/branding/sv-icon.png", sizes: "430x430", type: "image/png" }],
+    icon: [{ url: "/branding/sv-groups-icon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {

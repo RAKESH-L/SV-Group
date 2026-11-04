@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { getAdminId } from "@/lib/auth";
+import { decodeEnquiryMessage } from "@/lib/information-request-snapshot";
 
 const statuses = ["NEW", "REVIEWED", "CLOSED"] as const;
 const filterSchema = z.object({ q: z.string().trim().max(120).optional(), status: z.enum(statuses).optional(), from: z.string().optional(), to: z.string().optional() });
@@ -19,7 +20,10 @@ export async function GET(req: NextRequest) {
     where: { ...(status ? { status } : {}), ...(createdAt ? { createdAt } : {}), ...(q ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { mobile: { contains: q } }, { reference: { contains: q, mode: "insensitive" } }] } : {}) },
     orderBy: { createdAt: "desc" }, take: 200,
   });
-  return NextResponse.json(items);
+  return NextResponse.json(items.map(item => {
+    const stored = decodeEnquiryMessage(item.message);
+    return { ...item, message: stored.message, hasSubmittedQuantities: stored.items.length > 0 };
+  }));
 }
 
 export async function PATCH(req: NextRequest) {

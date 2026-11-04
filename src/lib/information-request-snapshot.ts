@@ -15,7 +15,7 @@ export type SubmittedEstimateItem = {
   indicativeUnitPaise: number;
 };
 
-const PREFIX = "SV_INFORMATION_ESTIMATE_V1:";
+const PREFIX = "SV_INFORMATION_ESTIMATE_V1__e513094cf2b74d4ca9dd104800fafb74__:";
 const MAX_ITEMS = 50;
 
 export function encodeEnquiryMessage(message: string, items: SubmittedEstimateItem[]) {

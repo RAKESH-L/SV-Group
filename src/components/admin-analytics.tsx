@@ -1,13 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Activity, ArrowUpRight, BarChart3, Eye, FileText, Info, MessageSquareText, RefreshCw, Users } from "lucide-react";
+import { Activity, ArrowUpRight, BarChart3, Code2, Eye, FileText, IndianRupee, Info, MessageSquareText, RefreshCw, Users } from "lucide-react";
+import { AdminRecordedOrders, formatRecordedOrderValue } from "@/components/admin-recorded-orders";
 import { useRouter } from "next/navigation";
 
 type Snapshot = { visitors: number; pageViews: number; informationRequests: number; generalEnquiries: number };
 type Analytics = {
   timeZone: string;
   note: string;
+  developerPage: { visitorsToday: number; visitors30: number; viewsToday: number; views30: number; viewsAll: number };
+  orders: { count: number; totalPaise: number; last30Count: number; last30Paise: number; todayCount: number; todayPaise: number };
   today: Snapshot;
   last30: Snapshot;
   allTime: Omit<Snapshot, "visitors">;
@@ -101,6 +104,25 @@ export function AdminAnalytics() {
         <Metric label="General enquiries" value={data.last30.generalEnquiries} icon={<MessageSquareText size={20}/>} note="Currently stored"/>
       </div>
 
+      <div className="analytics-section-label"><span>DEVELOPER PAGE</span><span>Website owner — Rakesh L</span></div>
+      <div className="analytics-metrics">
+        <Metric label="Developer page visitors today" value={data.developerPage.visitorsToday} icon={<Code2 size={20}/>} note="Approximate unique browsers"/>
+        <Metric label="Developer page visitors — 30 days" value={data.developerPage.visitors30} icon={<Users size={20}/>} note="Distinct browsers in 30 days"/>
+        <Metric label="Developer page views — 30 days" value={data.developerPage.views30} icon={<Eye size={20}/>} note="Includes repeat views"/>
+        <Metric label="Developer page views — total" value={data.developerPage.viewsAll} icon={<Eye size={20}/>} note="Since original visit tracking began"/>
+      </div>
+      <div className="analytics-section-label"><span>CONFIRMED ORDER VALUE</span><span>Private manual entries only</span></div>
+      <div className="analytics-order-highlights">
+        <div className="analytics-order-highlight analytics-order-highlight-total">
+          <span><IndianRupee size={17} aria-hidden="true"/> Total confirmed order value</span>
+          <strong>{formatRecordedOrderValue(data.orders.totalPaise)}</strong>
+          <small>Sum of all admin-recorded confirmed orders</small>
+        </div>
+        <div className="analytics-order-highlight"><span>Confirmed orders</span><strong>{number.format(data.orders.count)}</strong><small>Independently confirmed</small></div>
+        <div className="analytics-order-highlight"><span>Last 30 days</span><strong>{formatRecordedOrderValue(data.orders.last30Paise)}</strong><small>{number.format(data.orders.last30Count)} confirmed orders</small></div>
+        <div className="analytics-order-highlight"><span>Today</span><strong>{formatRecordedOrderValue(data.orders.todayPaise)}</strong><small>{number.format(data.orders.todayCount)} confirmed orders</small></div>
+      </div>
+
       <div className="analytics-split-grid">
         <section className="analytics-graph-card" aria-label="Daily website traffic chart">
           <div className="analytics-card-head">
@@ -140,6 +162,8 @@ export function AdminAnalytics() {
           </div> : <p className="analytics-empty">No public page visits have been recorded yet.</p>}
         </section>
       </div>
+
+      <AdminRecordedOrders onChange={refresh}/>
 
       <div className="analytics-total-strip" aria-label="Recorded totals">
         <div><span>All-time tracked page views</span><strong>{number.format(data.allTime.pageViews)}</strong></div>

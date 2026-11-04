@@ -4,6 +4,7 @@ import "./light-theme.css";
 import "./promo-carousel.css";
 import "./hero-artwork.css";
 import "./analytics-dashboard.css";
+import "./analytics-orders.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";

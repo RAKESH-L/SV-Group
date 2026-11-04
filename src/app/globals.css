@@ -188,3 +188,10 @@ body.has-floating-price-summary .home-category-catalogue{padding-bottom:180px}
   .footer-brand .sv-wordmark-footer{font-size:clamp(16px,4.4vw,20px)}
 }
 @media(max-width:350px){.sv-wordmark-header{font-size:11px;gap:.4em}.sv-wordmark-header .sv-wordmark-text{gap:.3em}.sv-wordmark-header .sv-wordmark-groups{letter-spacing:.09em}}
+
+
+/* Admin Information Requests: visible but deliberate destructive action. */
+.information-request-actions .information-request-delete{display:inline-flex;align-items:center;gap:5px;color:#e9a89a;border-color:rgba(213,116,94,.52);background:rgba(165,65,46,.09);min-height:31px;padding:6px 10px;font-weight:700}
+.information-request-actions .information-request-delete:hover:not(:disabled){color:#ffcab8;border-color:#e5a58c;background:rgba(156,69,49,.18)}
+.information-request-actions .information-request-delete:disabled{opacity:.48;cursor:wait}
+.information-request-actions .information-request-delete:focus-visible{outline:2px solid #e5a58c;outline-offset:2px}

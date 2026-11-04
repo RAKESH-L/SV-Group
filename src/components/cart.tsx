@@ -38,6 +38,6 @@ export function Cart() {
       })}
       <button className="text-button" onClick={clear}>Clear selection</button>
     </div><aside className="summary-card"><h2>Indicative price summary</h2><div className="summary-row"><span>Total selected product lines</span><span>{lines.length}</span></div><div className="summary-row"><span>Total quantity</span><span>{totals.totalQuantity}</span></div><div className="summary-row"><span>Total original price</span><span>{formatPaiseExact(totals.originalPaise)}</span></div><div className="summary-row savings"><span>Total discount amount</span><span>{formatPaiseExact(savings)}</span></div><div className="summary-row"><span>Effective discount</span><span>{effectiveDiscount.toFixed(2)}%</span></div><div className="summary-total"><span>Indicative discounted price</span><strong>{formatPaiseExact(totals.indicativePaise)}</strong></div><p>Prices are indicative and may change. This calculator does not create an order, reservation or purchase request.</p><PersonalEstimateDownload lines={lines}/><button className="button button-gold information-request-trigger" onClick={() => setRequestOpen(true)}>Send Information Request</button></aside></div>}
-    {requestOpen&&<InformationRequestForm topics={lines.map(({product})=>({id:product.id,name:product.name}))} onClose={()=>setRequestOpen(false)}/>}
+    {requestOpen&&<InformationRequestForm topics={lines.map(({product,quantity})=>({id:product.id,name:product.name,quantity}))} onClose={()=>setRequestOpen(false)}/>}
   </main>;
 }

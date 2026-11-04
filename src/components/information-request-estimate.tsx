@@ -77,7 +77,7 @@ export function InformationRequestEstimate({ requestId, onClose }: { requestId: 
     <section className="information-modal admin-estimate-modal" role="dialog" aria-modal="true" aria-labelledby="admin-estimate-title">
       <button type="button" className="information-modal-close" onClick={onClose} disabled={busy} aria-label="Close price estimate"><X size={19}/></button>
       <div className="eyebrow">ADMIN ONLY · CURRENT CATALOGUE VALUES</div>
-      <h2 id="admin-estimate-title">Create a <em>price estimate.</em></h2>
+      <h2 id="admin-estimate-title">Download a <em>price summary PDF.</em></h2>
       {loading ? <p role="status" className="page-lede">Loading request products…</p> : error && !data ? <p className="form-status error" role="alert">{error}</p> : data ? <>
         <div className="estimate-customer-panel"><div><small>CUSTOMER</small><strong>{data.enquiry.name}</strong><span>{data.enquiry.mobile}</span></div><div><small>ENQUIRY REFERENCE</small><strong>{data.enquiry.reference}</strong></div></div>
         <p className="estimate-editor-note">Products are matched to this request by exact stored name. Prices are current catalogue values. Enter illustrative quantities here; they remain temporary in this admin browser and are not saved to the enquiry or emailed.</p>
@@ -95,7 +95,7 @@ export function InformationRequestEstimate({ requestId, onClose }: { requestId: 
         <aside className="summary-card estimate-editor-summary"><h3>Indicative price summary</h3><div className="summary-row"><span>Distinct products</span><span>{totals.distinctProducts}</span></div><div className="summary-row"><span>Total selected quantity</span><span>{totals.totalQuantity}</span></div><div className="summary-row"><span>Original subtotal</span><span>{formatPaiseExact(totals.originalSubtotalPaise)}</span></div><div className="summary-row savings"><span>Total discount / savings</span><span>{formatPaiseExact(totals.savingsPaise)}</span></div><div className="summary-row"><span>Effective discount</span><span>{totals.effectiveDiscountPercent.toFixed(2)}%</span></div><div className="summary-total"><span>Indicative final total</span><strong>{formatPaiseExact(totals.indicativeSubtotalPaise)}</strong></div></aside>
         {error&&<p className="form-status error" role="alert">{error}</p>}{notice&&<p className="form-status" role="status">{notice}</p>}
         <p className="estimate-editor-disclaimer">Admin-generated informational estimate. Quantities are administrator-entered and are not necessarily customer-submitted. This is not an order, reservation, invoice or confirmation of sale.</p>
-        <button type="button" className="button button-gold estimate-download-action" disabled={!selected.length||busy} onClick={download}><Download size={16}/>{busy ? "Preparing PDF…" : "Download Detailed PDF"}</button>
+        <button type="button" className="button button-gold estimate-download-action" disabled={!selected.length||busy} onClick={download}><Download size={16}/>{busy ? "Preparing PDF…" : "Download PDF with Price Summary"}</button>
       </> : null}
     </section>
   </div>;

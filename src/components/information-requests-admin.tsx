@@ -15,7 +15,7 @@ export function InformationRequestsAdmin() {
   async function retry(item:RequestItem){setBusy(item.id);setError("");setNotice("");try{const response=await fetch(`/api/admin/information-requests/${item.id}/retry`,{method:"POST"});const data=await response.json();if(!response.ok)throw new Error(data.error||"Notification could not be retried.");await load();setNotice(`Notification accepted by the email provider for ${item.reference}.`)}catch(cause){setError(cause instanceof Error?cause.message:"Could not retry notification.")}finally{setBusy(null)}}
   async function deleteRequest(item: RequestItem) {
     if (busy) return;
-    if (!window.confirm(`Permanently delete information request ${item.reference} from ${item.name}?\\n\\nThis removes the customer details, selected products, recorded quantities and prices, and future access to its PDFs. This cannot be undone. Continue?`)) return;
+    if (!window.confirm(`Permanently delete information request ${item.reference} from ${item.name}?\n\nThis removes the customer details, selected products, recorded quantities and prices, and future access to its PDFs. This cannot be undone. Continue?`)) return;
     setBusy(item.id); setError(""); setNotice("");
     try {
       const response = await fetch(`/api/admin/information-requests/${encodeURIComponent(item.id)}`, {

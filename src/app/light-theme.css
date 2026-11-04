@@ -212,3 +212,8 @@ html[data-theme="light"] .footer>div:first-child p{color:#d5e1d4}
   html[data-theme="light"] .festival-flame-front,html[data-theme="light"] .festival-flame-back,html[data-theme="light"] .festival-sparkles,html[data-theme="light"] .festival-rays,html[data-theme="light"] .festival-skyshot,html[data-theme="light"] .festival-burst{animation:none!important;transform:none!important}
   html[data-theme="light"] .light-festival-cta{transition:none}
 }
+
+
+/* Keep destructive actions unmistakable in the ivory admin theme. */
+html[data-theme="light"] .information-request-actions .information-request-delete{color:#aa3b29;border-color:#db9c8b;background:#fff1ec}
+html[data-theme="light"] .information-request-actions .information-request-delete:hover:not(:disabled){color:#792718;border-color:#bc5c42;background:#ffe8df}

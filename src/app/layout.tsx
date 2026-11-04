@@ -3,9 +3,11 @@ import "./globals.css";
 import "./light-theme.css";
 import "./promo-carousel.css";
 import "./hero-artwork.css";
+import "./analytics-dashboard.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";
+import { PublicVisitTracker } from "@/components/public-visit-tracker";
 import { getPublishedSiteTheme } from "@/lib/site-theme";
 import { connection } from "next/server";
 export const metadata: Metadata = {
@@ -25,4 +27,4 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Sri Vinayaka Groups | Tumkur", images: ["/branding/sv-logo-og.png"] },
 };
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const theme = await getPublishedSiteTheme(); return <html lang="en" data-theme={theme}><body><CartProvider><Header/><div className="main-content">{children}</div><Footer/></CartProvider></body></html>; }
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const theme = await getPublishedSiteTheme(); return <html lang="en" data-theme={theme}><body><CartProvider><PublicVisitTracker/><Header/><div className="main-content">{children}</div><Footer/></CartProvider></body></html>; }

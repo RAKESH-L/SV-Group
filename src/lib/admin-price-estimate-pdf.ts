@@ -17,6 +17,7 @@ type EstimatePdfInput = {
   name: string;
   mobile: string;
   generatedAt: Date;
+  source?: "CUSTOMER_SUBMITTED" | "ADMIN_ENTERED";
   lines: AdminEstimateProduct[];
   totals: { distinctProducts: number; totalQuantity: number; originalSubtotalPaise: number; indicativeSubtotalPaise: number; savingsPaise: number; effectiveDiscountPercent: number };
 };
@@ -28,7 +29,7 @@ function rightText(page: PDFPage, value: string, x: number, y: number, columnWid
 
 export async function createAdminPriceEstimatePdf(data: EstimatePdfInput) {
   const pdf = await PDFDocument.create();
-  pdf.setTitle("SRI VINAYAKA GROUPS - ADMIN PRICE ESTIMATE");
+  pdf.setTitle(data.source === "CUSTOMER_SUBMITTED" ? "SRI VINAYAKA GROUPS - REQUESTED ITEMS PRICE ESTIMATE" : "SRI VINAYAKA GROUPS - ADMIN PRICE ESTIMATE");
   pdf.setAuthor(business.name);
   pdf.setSubject(`Admin-generated informational estimate ${data.reference}`);
   const regular = await pdf.embedFont(StandardFonts.Helvetica);
@@ -53,8 +54,8 @@ export async function createAdminPriceEstimatePdf(data: EstimatePdfInput) {
       const size = logo.scale(Math.min(158 / logo.width, 52 / logo.height));
       page.drawImage(logo, { x: left, y: pageHeight - 77, width: size.width, height: size.height });
     }
-    page.drawText("ADMIN PRICE ESTIMATE", { x: 220, y: pageHeight - 40, size: 13, font: bold, color: gold });
-    page.drawText("Current indicative catalogue values · administrator entered quantities", { x: 220, y: pageHeight - 58, size: 7.5, font: regular, color: white });
+    page.drawText(data.source === "CUSTOMER_SUBMITTED" ? "REQUESTED ITEMS PRICE ESTIMATE" : "ADMIN PRICE ESTIMATE", { x: 220, y: pageHeight - 40, size: 13, font: bold, color: gold });
+    page.drawText(data.source === "CUSTOMER_SUBMITTED" ? "Customer-selected quantities · indicative prices captured at submission" : "Current indicative catalogue values · administrator entered quantities", { x: 220, y: pageHeight - 58, size: 7.5, font: regular, color: white });
     page.drawText(`Enquiry ${printablePdfText(data.reference)}`, { x: right - 145, y: pageHeight - 39, size: 8, font: bold, color: white });
     page.drawText(`${new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(data.generatedAt)} IST`, { x: right - 145, y: pageHeight - 58, size: 7, font: regular, color: white });
     y = pageHeight - 109;
@@ -125,7 +126,7 @@ export async function createAdminPriceEstimatePdf(data: EstimatePdfInput) {
   });
 
   const summaryHeight = 116;
-  const disclaimer = "Admin-generated informational estimate. Quantities were entered by the administrator and are not necessarily customer-submitted quantities. This document is not an order, reservation, invoice or confirmation of sale. Catalogue prices are current indicative values at generation time and may change.";
+  const disclaimer = data.source === "CUSTOMER_SUBMITTED" ? "Informational price estimate showing customer-selected quantities and server-verified indicative catalogue prices recorded when this enquiry was submitted. This is not an order, reservation, invoice, sale, or confirmation of sale. No stock is held and prices are indicative." : "Admin-generated informational estimate. Quantities were entered by the administrator and are not necessarily customer-submitted quantities. This document is not an order, reservation, invoice or confirmation of sale. Catalogue prices are current indicative values at generation time and may change.";
   const disclaimerLines = wrapPdfText(disclaimer, regular, 7, right - left - 18);
   const disclaimerHeight = Math.max(43, disclaimerLines.length * 9 + 22);
   if (y - summaryHeight - disclaimerHeight - 15 < 52) newPage();
@@ -147,7 +148,7 @@ export async function createAdminPriceEstimatePdf(data: EstimatePdfInput) {
   });
   y -= summaryHeight + 12;
   page.drawRectangle({ x: left, y: y - disclaimerHeight, width: right - left, height: disclaimerHeight, color: rgb(0.99, 0.95, 0.84), borderColor: gold, borderWidth: 0.7 });
-  page.drawText("ADMINISTRATOR-ENTERED · INFORMATIONAL ONLY", { x: left + 9, y: y - 14, size: 6.7, font: bold, color: ink });
+  page.drawText(data.source === "CUSTOMER_SUBMITTED" ? "CUSTOMER-SELECTED · INFORMATIONAL ONLY" : "ADMINISTRATOR-ENTERED · INFORMATIONAL ONLY", { x: left + 9, y: y - 14, size: 6.7, font: bold, color: ink });
   disclaimerLines.forEach((line, index) => page.drawText(line, { x: left + 9, y: y - 26 - index * 9, size: 7, font: regular, color: ink }));
 
   drawFooter();

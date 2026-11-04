@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { getAdminId } from "@/lib/auth";
 import { createAdminInformationPdf } from "@/lib/admin-information-pdf";
 import { adminInformationPdfFilename } from "@/lib/admin-pdf-filename";
+import { decodeEnquiryMessage } from "@/lib/information-request-snapshot";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -35,7 +36,7 @@ export async function GET(_req: Request, { params }: Context) {
     reference: item.reference,
     name: item.name,
     mobile: item.mobile,
-    message: item.message,
+    message: decodeEnquiryMessage(item.message).message,
     productNames: item.productNames,
     products: topics,
     createdAt: item.createdAt,

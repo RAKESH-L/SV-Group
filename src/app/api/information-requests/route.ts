@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { informationRequestRateLimited } from "@/lib/information-request-rate-limit";
+import { decimalPriceToPaise } from "@/lib/admin-estimate";
+import { encodeEnquiryMessage, type SubmittedEstimateItem } from "@/lib/information-request-snapshot";
 import { createInformationEnquiryPdf, sendInformationEnquiryEmail, type InformationEnquiryPdfData } from "@/lib/information-enquiry";
 
 const schema = z.object({
@@ -10,7 +12,8 @@ const schema = z.object({
   name: z.string().trim().min(2, "Enter your name (at least 2 characters)." ).max(100),
   mobile: z.string().trim().regex(/^(?:\+91[ -]?)?[6-9]\d{9}$/, "Enter a valid Indian mobile number."),
   message: z.string().trim().max(1000).optional().default(""),
-  productIds: z.array(z.string().min(1).max(64)).max(50).default([]),
+  productIds: z.array(z.string().min(1).max(64)).max(50).default([]), // Compatibility with previously opened site tabs.
+  items: z.array(z.object({ productId: z.string().min(1).max(64), quantity: z.number().int().min(1).max(99) })).max(50).default([]),
   consent: z.literal(true, { error: "Please confirm this request is for general information only." }),
   website: z.string().max(200).optional().default(""),
 });
@@ -45,12 +48,38 @@ export async function POST(req: NextRequest) {
   catch { return NextResponse.json({ error: "We could not receive your information request right now. Please try again shortly." }, { status: 503 }); }
   if (prior) return NextResponse.json({ ok: true, reference: prior.reference }, { status: 200 });
 
-  const productIds = [...new Set(input.productIds)];
+  const hasQuantities = input.items.length > 0;
+  const productIds = hasQuantities ? input.items.map(item => item.productId) : input.productIds;
+  if (new Set(productIds).size !== productIds.length) return NextResponse.json({ error: "Each product may only be selected once." }, { status: 400 });
   let products;
-  try { products = productIds.length ? await db.product.findMany({ where: { id: { in: productIds }, active: true }, select: { id: true, name: true } }) : []; }
-  catch { return NextResponse.json({ error: "We could not verify the selected products right now. Please try again shortly." }, { status: 503 }); }
+  try {
+    products = productIds.length ? await db.product.findMany({
+      where: { id: { in: productIds }, active: true },
+      select: { id: true, name: true, originalPrice: true, discountedPrice: true, category: { select: { name: true } } },
+    }) : [];
+  } catch {
+    return NextResponse.json({ error: "We could not verify the selected products right now. Please try again shortly." }, { status: 503 });
+  }
   if (products.length !== productIds.length) return NextResponse.json({ error: "One or more selected products are no longer available. Refresh the calculator and try again." }, { status: 400 });
-  const productNames = products.map(product => product.name);
+  const byId = new Map(products.map(product => [product.id, product]));
+  const productNames = productIds.map(id => byId.get(id)!.name);
+  // Record server-verified, indicative prices rather than trusting values from the visitor's browser.
+  let submittedItems: SubmittedEstimateItem[] = [];
+  try {
+    submittedItems = input.items.map(item => {
+      const product = byId.get(item.productId)!;
+      return {
+        productId: product.id,
+        name: product.name,
+        categoryName: product.category.name,
+        quantity: item.quantity,
+        originalUnitPaise: decimalPriceToPaise(product.originalPrice),
+        indicativeUnitPaise: decimalPriceToPaise(product.discountedPrice),
+      };
+    });
+  } catch {
+    return NextResponse.json({ error: "Could not calculate the informational estimate. Please refresh and try again." }, { status: 503 });
+  }
 
   let created;
   try {
@@ -59,7 +88,7 @@ export async function POST(req: NextRequest) {
       idempotencyKey: input.idempotencyKey,
       name: input.name,
       mobile: input.mobile,
-      message: input.message || null,
+      message: encodeEnquiryMessage(input.message, submittedItems),
       productNames,
       consentAt: new Date(),
     } });
@@ -71,7 +100,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "We could not save your information request. Please try again shortly." }, { status: 503 });
   }
 
-  const notification: InformationEnquiryPdfData = { reference: created.reference, name: created.name, mobile: created.mobile, message: created.message, productNames: created.productNames, createdAt: created.createdAt };
+  const notification: InformationEnquiryPdfData = { reference: created.reference, name: created.name, mobile: created.mobile, message: input.message || null, productNames: created.productNames, createdAt: created.createdAt };
   await notify(notification);
   return NextResponse.json({ ok: true, reference: created.reference }, { status: 201 });
 }

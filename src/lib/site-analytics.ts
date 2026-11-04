@@ -176,18 +176,18 @@ export async function getSiteAnalyticsSummary() {
     note: "Visitor counts are anonymous browser estimates. Counts start when tracking is enabled. Request totals represent records currently stored; deleted or expired requests are not included.",
     today: {
       visitors: count?.visitorsToday ?? 0,
-      pageViews: Number(count?.pageViewsToday ?? 0n),
+      pageViews: Number(count?.pageViewsToday ?? BigInt(0)),
       informationRequests: informationRequestsToday,
       generalEnquiries: generalEnquiriesToday,
     },
     last30: {
       visitors: unique30[0]?.count ?? 0,
-      pageViews: Number(count?.pageViews30 ?? 0n),
+      pageViews: Number(count?.pageViews30 ?? BigInt(0)),
       informationRequests: informationRequests30,
       generalEnquiries: generalEnquiries30,
     },
     allTime: {
-      pageViews: Number(count?.pageViewsAll ?? 0n),
+      pageViews: Number(count?.pageViewsAll ?? BigInt(0)),
       informationRequests: informationRequestsAll,
       generalEnquiries: generalEnquiriesAll,
     },

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowDownRight, ArrowUpRight, Mail, MapPin, Phone, Sparkles } from "lucide-react";
 import { db } from "@/lib/db";
 import { HomeCategoryCatalogue, type HomeProductCategory } from "@/components/home-category-catalogue";
 import { business } from "@/lib/business";
 import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
+import { SvGroupsWordmark } from "@/components/sv-groups-wordmark";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +62,7 @@ export default async function Home() {
           <div className="home-location"><MapPin size={16} aria-hidden="true"/><span><small>BASED IN</small><strong>{business.address}</strong></span></div>
         </div>
       </div>
-      <div className="home-contact-art"><Image className="home-full-logo" src="/branding/sv-logo-full.webp" alt="" width={640} height={224} priority/></div>
+      <div className="home-contact-art" aria-hidden="true"><SvGroupsWordmark className="sv-wordmark-hero"/></div>
     </section>
 
     <HomeCategoryCatalogue categories={categories} unavailable={catalogueUnavailable}/>

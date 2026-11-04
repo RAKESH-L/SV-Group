@@ -5,6 +5,7 @@ import { HomeCategoryCatalogue, type HomeProductCategory } from "@/components/ho
 import { business } from "@/lib/business";
 import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
 import { SvGroupsWordmark } from "@/components/sv-groups-wordmark";
+import { LightFestivalHero } from "@/components/light-festival-hero";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,7 @@ export default async function Home() {
   }
 
   return <main>
+    <LightFestivalHero/>
     <section className="home-contact">
       <div className="home-contact-copy">
         <div className="eyebrow"><Sparkles size={14} aria-hidden="true"/> HERE FOR YOUR CELEBRATION</div>

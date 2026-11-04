@@ -1,3 +1,4 @@
+import "./developer.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Code2, Globe2, Laptop, Mail, MonitorSmartphone, Phone, Sparkles } from "lucide-react";

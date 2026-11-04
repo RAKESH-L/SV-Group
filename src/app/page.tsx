@@ -8,6 +8,7 @@ import { SvGroupsWordmark } from "@/components/sv-groups-wordmark";
 import { LightFestivalHero } from "@/components/light-festival-hero";
 import { PromoCarousel } from "@/components/promo-carousel";
 import { getPublishedPromoCards } from "@/lib/site-promo-cards";
+import { getPublishedLightHeroArtwork } from "@/lib/site-theme";
 
 export const dynamic = "force-dynamic";
 
@@ -53,11 +54,11 @@ export default async function Home() {
     catalogueUnavailable = true;
   }
 
-  const promoCards = await getPublishedPromoCards();
+  const [promoCards, lightHeroArtwork] = await Promise.all([getPublishedPromoCards(), getPublishedLightHeroArtwork()]);
 
   return <main>
     <PromoCarousel cards={promoCards}/>
-    <LightFestivalHero/>
+    <LightFestivalHero artwork={lightHeroArtwork}/>
     <section className="home-contact">
       <div className="home-contact-copy">
         <div className="eyebrow"><Sparkles size={14} aria-hidden="true"/> HERE FOR YOUR CELEBRATION</div>

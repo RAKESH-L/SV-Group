@@ -6,6 +6,8 @@ import { business } from "@/lib/business";
 import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
 import { SvGroupsWordmark } from "@/components/sv-groups-wordmark";
 import { LightFestivalHero } from "@/components/light-festival-hero";
+import { PromoCarousel } from "@/components/promo-carousel";
+import { getPublishedPromoCards } from "@/lib/site-promo-cards";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +53,10 @@ export default async function Home() {
     catalogueUnavailable = true;
   }
 
+  const promoCards = await getPublishedPromoCards();
+
   return <main>
+    <PromoCarousel cards={promoCards}/>
     <LightFestivalHero/>
     <section className="home-contact">
       <div className="home-contact-copy">

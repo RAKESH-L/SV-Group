@@ -70,7 +70,7 @@ export function LightFestivalHero() {
           <span className="light-festival-brand">SRI VINAYAKA GROUPS · TUMKUR</span>
           <h1 id="light-festival-heading">Make room<br/>for a little<br/><em>wonder.</em></h1>
           <p className="light-festival-subtitle">Brighter evenings. Familiar faces. Moments that stay. Find inspiration for a thoughtful, joyful festive season.</p>
-          <Link className="light-festival-cta" href="#home-categories">Explore the collection <ArrowUpRight size={22} aria-hidden="true"/></Link>
+          <Link className="light-festival-cta" href="#collection">Explore the collection <ArrowUpRight size={22} aria-hidden="true"/></Link>
           <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> Rooted in tradition. Celebrated with care.</p>
         </div>
         <FestivalIllustration/>

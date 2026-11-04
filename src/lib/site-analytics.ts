@@ -1,5 +1,6 @@
 import { createHmac } from "node:crypto";
 import { db } from "@/lib/db";
+import { getRecordedOrderTotals } from "@/lib/recorded-orders";
 
 /**
  * Privacy-conscious first-party site metrics.
@@ -38,6 +39,17 @@ export async function ensureSiteAnalyticsTables(): Promise<void> {
           "pageViews" BIGINT NOT NULL DEFAULT 0,
           PRIMARY KEY ("day", "path")
         )
+      `;
+      await db.$executeRaw`
+        CREATE TABLE IF NOT EXISTS "SiteTrafficDeveloperVisitorDays" (
+          "day" DATE NOT NULL,
+          "visitorHash" CHAR(64) NOT NULL,
+          PRIMARY KEY ("day", "visitorHash")
+        )
+      `;
+      await db.$executeRaw`
+        DELETE FROM "SiteTrafficDeveloperVisitorDays"
+        WHERE "day" < (now() AT TIME ZONE 'Asia/Kolkata')::date - 35
       `;
       // Cleanup is repeated on subsequent cold starts; read-only daily summary
       // tables deliberately remain available for historical comparisons.
@@ -100,6 +112,13 @@ export async function recordPageView(browserId: string, path: string): Promise<v
       ON CONFLICT ("day", "path") DO UPDATE SET
         "pageViews" = "SiteTrafficPages"."pageViews" + 1
     `;
+    if (page === "/developer") {
+      await transaction.$executeRaw`
+        INSERT INTO "SiteTrafficDeveloperVisitorDays" ("day", "visitorHash")
+        VALUES ((now() AT TIME ZONE 'Asia/Kolkata')::date, ${visitorHash})
+        ON CONFLICT ("day", "visitorHash") DO NOTHING
+      `;
+    }
   }, { maxWait: 5000, timeout: 10000 });
 }
 
@@ -107,6 +126,8 @@ type DailyRow = { day: string; visitors: number; pageViews: bigint; informationR
 type PageRow = { path: string; views: bigint };
 type CounterRow = { pageViewsAll: bigint; pageViews30: bigint; visitorsToday: number; pageViewsToday: bigint };
 type UniqueRow = { count: number };
+type DeveloperVisitorsRow = { visitorsToday: number; visitors30: number };
+type DeveloperPageViewsRow = { viewsToday: bigint; views30: bigint; viewsAll: bigint };
 
 export async function getSiteAnalyticsSummary() {
   await ensureSiteAnalyticsTables();
@@ -114,6 +135,7 @@ export async function getSiteAnalyticsSummary() {
     counters, unique30, dailyRows, popularPages,
     informationRequestsAll, informationRequests30, informationRequestsToday,
     generalEnquiriesAll, generalEnquiries30, generalEnquiriesToday,
+    developerVisitors, developerPageViews, orders,
   ] = await Promise.all([
     db.$queryRaw<CounterRow[]>`
       SELECT
@@ -168,12 +190,39 @@ export async function getSiteAnalyticsSummary() {
     db.generalEnquiry.count(),
     db.generalEnquiry.count({ where: { createdAt: { gte: indiaDayStart(29) } } }),
     db.generalEnquiry.count({ where: { createdAt: { gte: indiaDayStart(0) } } }),
+    db.$queryRaw<DeveloperVisitorsRow[]>`
+      SELECT
+        COUNT(DISTINCT "visitorHash") FILTER (
+          WHERE "day" = (now() AT TIME ZONE 'Asia/Kolkata')::date
+        )::int AS "visitorsToday",
+        COUNT(DISTINCT "visitorHash") FILTER (
+          WHERE "day" >= (now() AT TIME ZONE 'Asia/Kolkata')::date - 29
+        )::int AS "visitors30"
+      FROM "SiteTrafficDeveloperVisitorDays"
+    `,
+    db.$queryRaw<DeveloperPageViewsRow[]>`
+      SELECT
+        COALESCE(SUM("pageViews") FILTER (WHERE "day" = (now() AT TIME ZONE 'Asia/Kolkata')::date), 0)::bigint AS "viewsToday",
+        COALESCE(SUM("pageViews") FILTER (WHERE "day" >= (now() AT TIME ZONE 'Asia/Kolkata')::date - 29), 0)::bigint AS "views30",
+        COALESCE(SUM("pageViews"), 0)::bigint AS "viewsAll"
+      FROM "SiteTrafficPages"
+      WHERE "path" = '/developer'
+    `,
+    getRecordedOrderTotals(),
   ]);
 
   const count = counters[0];
   return {
     timeZone: "Asia/Kolkata",
-    note: "Visitor counts are anonymous browser estimates. Counts start when tracking is enabled. Request totals represent records currently stored; deleted or expired requests are not included.",
+    developerPage: {
+      visitorsToday: developerVisitors[0]?.visitorsToday ?? 0,
+      visitors30: developerVisitors[0]?.visitors30 ?? 0,
+      viewsToday: Number(developerPageViews[0]?.viewsToday ?? BigInt(0)),
+      views30: Number(developerPageViews[0]?.views30 ?? BigInt(0)),
+      viewsAll: Number(developerPageViews[0]?.viewsAll ?? BigInt(0)),
+    },
+    orders,
+    note: "Unique developer-page visitor tracking starts with this update; previously recorded developer-page views remain available. Visitor counts are anonymous browser estimates. Confirmed order amounts are entered manually by administrators, not collected from enquiries, estimates or online checkout. Request totals show records currently stored.",
     today: {
       visitors: count?.visitorsToday ?? 0,
       pageViews: Number(count?.pageViewsToday ?? BigInt(0)),

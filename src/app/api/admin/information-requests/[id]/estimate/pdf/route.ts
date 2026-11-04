@@ -26,7 +26,7 @@ function snapshotLines(enquiry: Enquiry): AdminEstimateProduct[] {
 async function pdfResponse(enquiry: Enquiry, lines: AdminEstimateProduct[]) {
   const pdf = await createAdminPriceEstimatePdf({
     reference: enquiry.reference, name: enquiry.name, mobile: enquiry.mobile,
-    generatedAt: new Date(), lines, totals: summarizeAdminEstimate(lines),
+    generatedAt: new Date(), source: decodeEnquiryMessage(enquiry.message).items.length ? "CUSTOMER_SUBMITTED" : "ADMIN_ENTERED", lines, totals: summarizeAdminEstimate(lines),
   });
   const filename = adminEstimatePdfFilename(enquiry.mobile, enquiry.reference);
   return new NextResponse(new Uint8Array(pdf), { headers: {

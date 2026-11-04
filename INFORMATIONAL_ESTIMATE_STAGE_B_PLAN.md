@@ -1,23 +1,25 @@
-# Stage B: Itemized informational estimate (disabled pending written clearance)
+# Itemized informational estimate: implementation notes and launch review
 
-**Status: Not implemented. Do not enable from a disclaimer or environment variable alone.**
+**Status:** An informational quantity-and-price snapshot workflow is implemented for the hobby/demo catalogue. This is **not** a checkout, online order, stock reservation, payment, dispatch or sale facility.
 
-This plan is separate from Stage A. Stage A stores and displays product topics only. There is no quantity, price-snapshot, estimate-line, order, reservation, payment, or fulfilment behavior in the deployed enquiry flow.
+## What the website now does
 
-## Required approval gate
+1. A visitor may select products and quantities in the local price calculator and send a clearly labelled non-binding information enquiry.
+2. The API accepts product IDs and integer quantities (1–99, up to 50 distinct products), rechecks active products, and snapshots server-verified indicative prices and category names.
+3. The snapshot is saved with the enquiry record as a versioned structured envelope in the existing `message` text field, alongside the optional user note. No database migration is required for this demo-compatible change.
+4. An authorized admin can view the automatically prefilled quantities and download a branded requested-items estimate PDF showing categories, quantities, original and indicative prices, discounts, savings and totals.
+5. Earlier records never containing quantities remain unchanged; the admin can still prepare a separately labelled illustrative estimate for them.
+6. Admin PDF routes require authentication. The existing rate limits, idempotency checks, email notification status and 180-day retention process remain intact.
 
-Before implementation, obtain written advice from qualified Indian counsel addressing the exact flow: transmitting customer contact details together with selected fireworks, quantities, and price calculations; retaining an informational PDF; and emailing it to the business. Record approval of the final UX wording and request payload. If the flow is not approved, keep Stage B out of production.
+## Restrictions and legal review before commercial use
 
-## Proposed technical shape after approval
+The Supreme Court of India's October 2018 fireworks directions ban e-commerce websites accepting online firecracker orders or making online sales; PESO reiterated this in April 2023. The informational enquiry workflow must **not** be used to accept or fulfill orders, confirm availability, reserve stock, collect payments, or arrange delivery. The distinction between an informational quantity enquiry and an impermissible online order should be reviewed by qualified Indian counsel before commercial use.
 
-1. Keep the public request explicitly informational and keep a hard-coded server feature gate off by default. Enabling requires a code-reviewed change after the written clearance, not merely setting a Vercel variable.
-2. Accept product IDs and integer quantities only. Re-fetch active products and categories on the server; never trust client-supplied names, prices, discounts, or totals.
-3. Calculate all amounts as integer paise, validate a documented quantity cap, and snapshot the product name, category name, quantity, original and indicative unit prices, line totals, and savings at submission time.
-4. Store snapshots in a new related table or JSON field using a forward-only migration. Existing enquiries remain topic-only; do not backfill guessed quantities or prices. Do not reset or rewrite existing rows.
-5. Generate the admin PDF from stored snapshots, label every total as indicative, and keep the non-transactional disclaimer visible. Do not add order acceptance, reservations, inventory holds, payment, delivery, or fulfilment states.
-6. Keep snapshots private, admin-authenticated, rate-limited, protected from duplicate submission, and covered by an approved retention policy. Exclude itemized values from public URLs and logs.
-7. Before release, test migration rollback planning, old topic-only PDFs, snapshot immutability after catalogue edits, authorization, redaction, and the disabled-by-default behavior in both Preview and Production.
+The presence of disclaimers by itself does not establish compliance. If the workflow is determined to be order-like under applicable law, disable the public submission of itemized quantities and keep only the browser-local calculator and admin demonstration.
 
-## Data availability in current records
+## Engineering follow-ups
 
-`InformationEnquiry` currently persists the enquiry reference, customer name and mobile, optional message, product name strings, consent timestamp, status, email metadata, and timestamps. It does not persist product IDs, categories, quantities, or price snapshots. Category and descriptive enrichment in the Stage A admin PDF is resolved from the current catalogue when possible and is labeled as current catalogue data, not historical data.
+- For a production system, move the versioned snapshot to a dedicated JSON column or related table with a forward-only migration rather than persisting it in the text `message` field.
+- Add automated request/response, authorization, PDF and snapshot-integrity integration tests.
+- Keep server-side price snapshots private, exclude personal details from public URLs, and continue deleting requests under the documented retention policy.
+- Never invent historical customer-selected quantities or prices when old records lack them.

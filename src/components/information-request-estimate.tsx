@@ -52,9 +52,9 @@ export function InformationRequestEstimate({ requestId, onClose }: { requestId: 
     if (busy || !selected.length) return;
     setBusy(true); setError(""); setNotice("");
     try {
-      const url = `/api/admin/information-requests/${encodeURIComponent(requestId)}/estimate/pdf`;
+      const endpoint = `/api/admin/information-requests/${encodeURIComponent(requestId)}/estimate/pdf`;
       const recorded = Boolean(data?.enquiry.hasSubmittedQuantities);
-      const response = await fetch(url, recorded ? { method: "GET", cache: "no-store" } : {
+      const response = await fetch(endpoint, recorded ? { method: "GET", cache: "no-store" } : {
         method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ lines: selected.map(line => ({ productId: line.productId, quantity: line.quantity })) }),
       });

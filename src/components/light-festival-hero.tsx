@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Leaf, Sparkles } from "lucide-react";
+import { CrackerFestivalIllustration } from "@/components/cracker-festival-illustration";
+import type { LightHeroArtwork } from "@/lib/site-theme";
 
 /** Illustration is CSS/SVG artwork, not an uploaded logo or an animation library. */
 function FestivalIllustration() {
@@ -61,7 +63,7 @@ function FestivalIllustration() {
   );
 }
 
-export function LightFestivalHero() {
+export function LightFestivalHero({ artwork = "crackers" }: { artwork?: LightHeroArtwork }) {
   return (
     <>
       <section className="light-festival-hero" aria-labelledby="light-festival-heading">
@@ -73,7 +75,7 @@ export function LightFestivalHero() {
           <Link className="light-festival-cta" href="#collection">Explore the collection <ArrowUpRight size={22} aria-hidden="true"/></Link>
           <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> Rooted in tradition. Celebrated with care.</p>
         </div>
-        <FestivalIllustration/>
+        {artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
       </section>
       <section className="light-festival-values" aria-label="Our approach">
         <span><Leaf size={18} aria-hidden="true"/> Celebrate thoughtfully</span>

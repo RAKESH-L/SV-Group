@@ -19,7 +19,8 @@ const PREFIX = "SV_INFORMATION_ESTIMATE_V1:";
 const MAX_ITEMS = 50;
 
 export function encodeEnquiryMessage(message: string, items: SubmittedEstimateItem[]) {
-  if (!items.length) return message || null;
+  // Always wrap even empty selections so a visitor cannot inject a fake
+  // snapshot by placing the reserved prefix in a free-text note.
   return PREFIX + JSON.stringify({ version: 1, message, items });
 }
 

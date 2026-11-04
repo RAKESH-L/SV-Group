@@ -25,8 +25,8 @@ export type PromoCard = z.infer<typeof promoCardSchema>;
 export const defaultPromoCards: PromoCard[] = [
   {
     eyebrow: "FESTIVAL SAVINGS",
-    title: "Discover the 10% offer",
-    description: "Ask our team about promotional savings and current indicative prices.",
+    title: "Ask about 10% savings",
+    description: "Ask our team about possible savings and current indicative catalogue prices.",
     linkText: "View catalogue",
     linkHref: "/catalogue",
   },

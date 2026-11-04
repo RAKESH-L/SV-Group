@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getAdminId } from "@/lib/auth";
+import { decodeEnquiryMessage } from "@/lib/information-request-snapshot";
 import { rateLimited } from "@/lib/rate-limit";
 import { createInformationEnquiryPdf, sendInformationEnquiryEmail } from "@/lib/information-enquiry";
 
@@ -13,8 +14,9 @@ export async function POST(_req: Request, { params }: Context) {
   if (!item) return NextResponse.json({ error: "Information request not found." }, { status: 404 });
   if (item.emailStatus === "SENT") return NextResponse.json({ error: "This notification was already accepted by the email provider." }, { status: 409 });
   try {
-    const pdf = await createInformationEnquiryPdf({ reference: item.reference, name: item.name, mobile: item.mobile, message: item.message, productNames: item.productNames, createdAt: item.createdAt });
-    const emailMessageId = await sendInformationEnquiryEmail({ reference: item.reference, name: item.name, mobile: item.mobile, message: item.message, productNames: item.productNames, createdAt: item.createdAt }, pdf);
+    const userMessage = decodeEnquiryMessage(item.message).message;
+    const pdf = await createInformationEnquiryPdf({ reference: item.reference, name: item.name, mobile: item.mobile, message: userMessage, productNames: item.productNames, createdAt: item.createdAt });
+    const emailMessageId = await sendInformationEnquiryEmail({ reference: item.reference, name: item.name, mobile: item.mobile, message: userMessage, productNames: item.productNames, createdAt: item.createdAt }, pdf);
     await db.informationEnquiry.update({ where: { id: item.id }, data: { emailStatus: "SENT", emailMessageId, emailErrorCode: null } });
     return NextResponse.json({ ok: true, emailStatus: "SENT" });
   } catch (error) {

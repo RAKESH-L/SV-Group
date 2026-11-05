@@ -209,7 +209,6 @@ export const KN: Record<string, string> = {
   "responsible information.": "ಜವಾಬ್ದಾರಿಯುತ ಮಾಹಿತಿ.",
   "Please review how this website presents product information and its legal compliance information.": "ಈ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಉತ್ಪನ್ನ ಮಾಹಿತಿ ಮತ್ತು ಕಾನೂನು ಪಾಲನೆ ಸೂಚನೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
   "YOUR INFORMATION": "ನಿಮ್ಮ ಮಾಹಿತಿ",
-  "Privacy": "ಗೌಪ್ಯತೆ",
   "notice.": "ಸೂಚನೆ.",
   "This notice explains how information requests and anonymous public website visit statistics are handled.": "ಮಾಹಿತಿ ವಿಚಾರಣೆಗಳು ಮತ್ತು ಅನಾಮಧೇಯ ಭೇಟಿ ಅಂಕಿಅಂಶಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸಲಾಗುತ್ತದೆ ಎಂಬುದು ಈ ಸೂಚನೆ ವಿವರಿಸುತ್ತದೆ.",
   "Information collected": "ಸಂಗ್ರಹಿಸುವ ಮಾಹಿತಿ",

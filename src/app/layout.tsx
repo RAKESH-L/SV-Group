@@ -5,6 +5,7 @@ import "./promo-carousel.css";
 import "./hero-artwork.css";
 import "./analytics-dashboard.css";
 import "./advanced-product-analytics.css";
+import "./inventory-dashboard.css";
 import "./analytics-orders.css";
 import "./poster-studio.css";
 import "./catalogue-search.css";

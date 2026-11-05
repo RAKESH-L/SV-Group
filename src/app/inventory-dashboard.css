@@ -1,0 +1,87 @@
+/* Admin inventory overview and availability management.
+   Uses existing dark/light theme tokens; mobile cards never need horizontal scrolling. */
+.inventory-admin-panel{max-width:1480px;margin:10px auto 42px;min-width:0}
+.inventory-header{display:flex;justify-content:space-between;align-items:center;gap:18px;margin:0 0 20px}
+.inventory-header h2{font:500 clamp(29px,3.8vw,48px)/1.18 'Playfair Display',Georgia,serif;letter-spacing:-.035em;color:var(--ink);margin:10px 0 8px}
+.inventory-header h2 em{color:var(--gold)}
+.inventory-header p{font-size:12px;color:var(--muted);line-height:1.7;margin:0;max-width:700px}
+.inventory-overline{display:inline-flex;align-items:center;gap:9px;color:var(--gold);font-size:10px;letter-spacing:.15em;font-weight:800}
+.inventory-overline svg{flex:none}
+.inventory-header>.button{display:inline-flex;align-items:center;gap:8px;flex:none}
+.inventory-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px;margin-bottom:21px}
+.inventory-metrics>div{min-width:0;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:15px 13px}
+.inventory-metrics span{display:flex;align-items:center;gap:7px;font-size:10px;line-height:1.4;color:var(--muted);min-height:28px;font-weight:700}
+.inventory-metrics span svg{color:var(--gold);flex:none}
+.inventory-metrics strong{font-size:clamp(28px,3.4vw,39px);color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums}
+.inventory-metrics small{font-size:9px;color:var(--muted);line-height:1.5}
+.inventory-alert,.inventory-success{font-size:12px;padding:13px 15px;border-radius:7px;line-height:1.65;margin:11px 0}
+.inventory-alert{color:#ffd0c2;background:rgba(181,63,51,.15);border:1px solid rgba(222,104,83,.44)}
+.inventory-success{color:#b7e9c3;background:rgba(57,138,79,.15);border:1px solid rgba(97,169,114,.4)}
+html[data-theme="light"] .inventory-alert{color:#993d2d;background:#fcece8;border-color:#e4baa9}
+html[data-theme="light"] .inventory-success{color:#235c3a;background:#e7f6e9;border-color:#a9d1b2}
+.inventory-loading{color:var(--muted);font-size:12px}
+.inventory-filters{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(155px,.7fr) minmax(155px,.7fr);gap:12px;margin-bottom:13px}
+.inventory-filters>label{min-width:0;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:10px;font-weight:700}
+.inventory-filters .inventory-search{display:flex;flex-direction:row;align-items:center;gap:9px;padding:7px 13px;background:var(--panel);border:1px solid var(--line);border-radius:7px;color:var(--gold)}
+.inventory-search input{width:100%;min-width:0;background:transparent;border:none;outline:0;color:var(--ink);font-size:12px}
+.inventory-search input::placeholder{color:var(--muted);font-weight:400}
+.inventory-filters select{min-width:0;width:100%;min-height:40px;background:var(--panel);border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:8px 10px;font-size:12px}
+.inventory-filters select option,.inventory-product-controls select option{background:var(--panel);color:var(--ink)}
+.inventory-search:focus-within,.inventory-filters select:focus-visible,.inventory-product-controls input:focus-visible,.inventory-product-controls select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.inventory-list-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;font-size:11px;color:var(--muted);margin:14px 0}
+.inventory-list-heading strong{color:var(--ink);font-size:12px}
+.inventory-products-list{display:grid;gap:12px}
+.inventory-product{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:15px;min-width:0;display:grid;gap:12px}
+.inventory-product-info{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;min-width:0}
+.inventory-product-info>div{min-width:180px;flex:1}
+.inventory-product-info>div strong{display:block;color:var(--ink);font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.inventory-product-info>div small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.inventory-product-info>small{color:var(--muted);font-size:10px}
+.inventory-status-chip{display:inline-flex;align-items:center;gap:5px;flex:none;width:max-content;max-width:100%;border:1px solid;border-radius:99px;padding:5px 10px;white-space:nowrap;font-size:10px;font-weight:750;line-height:1.3}
+.inventory-status-chip.in{color:#a5dfaa;border-color:rgba(87,174,104,.42);background:rgba(57,138,79,.12)}
+.inventory-status-chip.low{color:#f1c16c;border-color:rgba(239,179,69,.43);background:rgba(209,137,28,.12)}
+.inventory-status-chip.out{color:#ffad9c;border-color:rgba(231,97,72,.43);background:rgba(181,55,40,.12)}
+.inventory-status-chip.soon{color:#9fd2e9;border-color:rgba(88,154,190,.43);background:rgba(58,116,156,.12)}
+.inventory-status-chip.other,.inventory-status-chip.hidden{color:var(--muted);border-color:var(--line);background:rgba(167,163,156,.08)}
+html[data-theme="light"] .inventory-status-chip.in{color:#22623e;background:#e8f5e9}
+html[data-theme="light"] .inventory-status-chip.low{color:#926020;background:#fff3d8}
+html[data-theme="light"] .inventory-status-chip.out{color:#a23b2a;background:#ffede6}
+html[data-theme="light"] .inventory-status-chip.soon{color:#236482;background:#e6f3fa}
+.inventory-product-controls{display:grid;grid-template-columns:minmax(100px,.8fr) minmax(105px,.8fr) minmax(125px,1fr) minmax(155px,1fr) auto;gap:12px;align-items:end}
+.inventory-product-controls>label:not(.inventory-visibility){display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--muted);font-size:10px;font-weight:700}
+.inventory-product-controls input[type="number"],.inventory-product-controls select{width:100%;min-width:0;min-height:39px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font-size:12px}
+.inventory-product-controls input:disabled,.inventory-product-controls select:disabled{opacity:.57;cursor:not-allowed}
+.inventory-visibility{display:flex;align-items:center;gap:9px;min-height:39px;color:var(--ink);font-size:11px;cursor:pointer}
+.inventory-visibility input{height:18px;width:18px;accent-color:var(--gold);flex:none}
+.inventory-save{display:inline-flex;align-items:center;gap:6px;min-height:39px}
+.inventory-product-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;border-top:1px solid var(--line);padding-top:9px}
+.inventory-product-footer small{font-size:10px;color:var(--muted);line-height:1.5}
+.inventory-product-footer a{color:var(--gold);font-size:10px;font-weight:700}
+.inventory-product-footer a:hover{text-decoration:underline}
+.inventory-empty{display:flex;align-items:center;flex-direction:column;text-align:center;gap:9px;border:1px dashed var(--line);border-radius:10px;padding:38px 20px;color:var(--muted)}
+.inventory-empty svg{color:var(--gold)}
+.inventory-empty h3{margin:0;color:var(--ink);font-size:18px}
+.inventory-empty p{font-size:11px;margin:0}
+.inventory-disclaimer{margin:16px 0 0;padding:13px 0;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.75}
+@media(max-width:1320px){.inventory-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.inventory-product-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.inventory-save{justify-self:start}}
+@media(max-width:840px){.inventory-header{align-items:flex-start}.inventory-filters{grid-template-columns:minmax(0,1fr) minmax(130px,.65fr)}.inventory-filters>label:last-child{grid-column:1/-1}.inventory-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.inventory-header{flex-direction:column;align-items:stretch}.inventory-header .button{align-self:flex-start}.inventory-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.inventory-metrics>div{padding:11px}.inventory-filters{grid-template-columns:1fr}.inventory-filters>label:last-child{grid-column:auto}.inventory-product{padding:12px}.inventory-product-controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.inventory-product-controls>label:nth-child(3){grid-column:1 / -1}.inventory-save{width:100%}.inventory-list-heading{align-items:flex-start;flex-direction:column}.inventory-header h2{font-size:33px}}
+@media(max-width:340px){.inventory-metrics{grid-template-columns:1fr}.inventory-product-controls{grid-template-columns:1fr}.inventory-product-controls>label:nth-child(3){grid-column:auto}}
+/* Public catalogue badges use the same calculated availability labels. */
+.public-availability-badge{display:inline-flex;align-items:center;gap:5px;border:1px solid currentColor;border-radius:100px;padding:4px 8px;font-size:10px;line-height:1.4;font-weight:750;white-space:nowrap;max-width:100%}
+.public-availability-badge::before{content:"";display:block;width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.public-availability-badge.in{color:#9cdaae;background:rgba(43,121,71,.12)}
+.public-availability-badge.low{color:#f2c979;background:rgba(171,113,29,.14)}
+.public-availability-badge.out{color:#f0a89b;background:rgba(171,50,39,.14)}
+.public-availability-badge.soon{color:#a7d7e9;background:rgba(55,126,159,.14)}
+.public-availability-badge.other{color:var(--muted);background:rgba(150,140,124,.12)}
+.public-availability-badge.overlay{position:absolute;z-index:2;bottom:11px;left:11px;box-shadow:0 3px 14px rgba(0,0,0,.18);background:#1a2621;color:#f6c66d;border-color:rgba(248,216,157,.4);font-size:9px}
+.public-availability-badge.overlay.out{background:#5b241b;color:#fff0e7;border-color:#eea89f}
+.public-availability-badge.overlay.low{background:#64431e;color:#ffdda1;border-color:#f5c36e}
+.public-availability-badge.overlay.soon{background:#1e485f;color:#d7f0ff;border-color:#9acee4}
+html[data-theme="light"] .public-availability-badge.in{color:#296844;background:#ecf6e9}
+html[data-theme="light"] .public-availability-badge.low{color:#8c611f;background:#fff1d3}
+html[data-theme="light"] .public-availability-badge.out{color:#a0352c;background:#fff0e9}
+html[data-theme="light"] .public-availability-badge.soon{color:#28718a;background:#e9f5fa}
+html[data-theme="light"] .public-availability-badge.overlay{color:#fff3db}
+@media(max-width:460px){.public-availability-badge.overlay{font-size:8px;padding:3px 6px;left:6px;bottom:6px}}

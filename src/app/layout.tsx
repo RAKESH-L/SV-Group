@@ -6,6 +6,7 @@ import "./hero-artwork.css";
 import "./analytics-dashboard.css";
 import "./analytics-orders.css";
 import "./poster-studio.css";
+import "./catalogue-search.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";

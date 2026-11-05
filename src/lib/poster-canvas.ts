@@ -213,10 +213,10 @@ function portrait(ctx: Canvas, config: PosterConfig, product: PosterProduct | nu
   const visualY = Math.max(descEnd + 10, H * (tall ? .42 : medium ? .425 : .43));
   const visualH = tall ? 460 : medium ? 336 : 256;
   drawPosterArt(ctx, config, product, image, visualY, visualH, c.ink, c.gold, light);
-  const offerY = H - (tall ? 510 : medium ? 385 : 310);
+  const offerY = H - (tall ? 510 : medium ? 385 : 345);
   drawOffer(ctx, config, 84, offerY, 912, tall ? 115 : 85, c.ink, c.gold, light);
   const qrSize = tall ? 245 : medium ? 191 : 160;
-  const qrY = H - (tall ? 335 : medium ? 259 : 207);
+  const qrY = H - (tall ? 370 : medium ? 280 : 250);
   if (config.showQr) drawWebsiteQr(ctx, 102, qrY, qrSize);
   const detailsX = config.showQr ? (tall ? 410 : medium ? 360 : 315) : 105;
   const detailWidth = 970 - detailsX;

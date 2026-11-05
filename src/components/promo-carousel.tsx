@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/components/language-provider";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Sparkles, Star, Flame } from "lucide-react";
 import type { PromoCard } from "@/lib/site-promo-cards";
 
 export function PromoCarousel({ cards }: { cards: PromoCard[] }) {
+  const { t } = useLanguage();
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -40,7 +42,7 @@ export function PromoCarousel({ cards }: { cards: PromoCard[] }) {
         onBlurCapture={event => {
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false);
         }}>
-        <p className="promo-carousel-overline"><Sparkles size={12} aria-hidden="true"/> FESTIVE HIGHLIGHTS <span aria-hidden="true">✦</span> DISCOVER WHAT&apos;S NEW</p>
+        <p className="promo-carousel-overline"><Sparkles size={12} aria-hidden="true"/> {t("FESTIVE HIGHLIGHTS")} <span aria-hidden="true">✦</span> {t("DISCOVER WHAT\u0027S NEW")}</p>
         <div className="promo-carousel-stage" aria-roledescription="carousel" aria-label="Three promotional cards">
           {cards.map((card, index) => {
             const distance = (index - active + count) % count;
@@ -55,12 +57,12 @@ export function PromoCarousel({ cards }: { cards: PromoCard[] }) {
                 aria-label={`Announcement ${index + 1} of ${count}`}>
                 <span className="promo-3d-ornament" aria-hidden="true">{icon}</span>
                 <div className="promo-3d-copy">
-                  <span className="promo-3d-eyebrow">{card.eyebrow}</span>
-                  <strong className="promo-3d-title">{card.title}</strong>
-                  <span className="promo-3d-description">{card.description}</span>
+                  <span className="promo-3d-eyebrow">{t(card.eyebrow)}</span>
+                  <strong className="promo-3d-title">{t(card.title)}</strong>
+                  <span className="promo-3d-description">{t(card.description)}</span>
                 </div>
                 {position === "active" && <Link className="promo-3d-link" href={card.linkHref} aria-label={`${card.linkText}: ${card.title}`}>
-                  <span>{card.linkText}</span><ArrowUpRight size={15} aria-hidden="true"/>
+                  <span>{t(card.linkText)}</span><ArrowUpRight size={15} aria-hidden="true"/>
                 </Link>}
                 <span className="promo-3d-glimmer" aria-hidden="true">✧</span>
               </article>

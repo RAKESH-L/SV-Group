@@ -299,5 +299,8 @@ export const KN: Record<string, string> = {
   "Contact details": "ಸಂಪರ್ಕ ವಿವರಗಳು",
   "Currently unavailable": "ಪ್ರಸ್ತುತ ಲಭ್ಯವಿಲ್ಲ",
   "Added to calculator ✓": "ಲೆಕ್ಕಾಚಾರಕ್ಕೆ ಸೇರಿಸಲಾಗಿದೆ ✓",
-  "Add to price calculator ↗": "ಬೆಲೆ ಲೆಕ್ಕಾಚಾರಕ್ಕೆ ಸೇರಿಸಿ ↗"
+  "Add to price calculator ↗": "ಬೆಲೆ ಲೆಕ್ಕಾಚಾರಕ್ಕೆ ಸೇರಿಸಿ ↗",
+  "Low stock": "ಕಡಿಮೆ ದಾಸ್ತಾನು",
+  "Out of stock": "ದಾಸ್ತಾನು ಇಲ್ಲ",
+  "Coming soon": "ಶೀಘ್ರದಲ್ಲೇ ಲಭ್ಯ",
 };

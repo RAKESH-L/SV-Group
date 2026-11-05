@@ -151,8 +151,8 @@ export async function getAdvancedProductAnalytics() {
     periodDays: 30,
     timeZone: "Asia/Kolkata",
     totals: {
-      productViewsToday: Number(viewTotals[0]?.today ?? 0n),
-      productViews30: Number(viewTotals[0]?.total ?? 0n),
+      productViewsToday: Number(viewTotals[0]?.today ?? BigInt(0)),
+      productViews30: Number(viewTotals[0]?.total ?? BigInt(0)),
       submittedQuantity30: submittedQuantity,
       enquiries30: infoRequests30,
       requestsWithQuantities30: requestsWithQuantities,

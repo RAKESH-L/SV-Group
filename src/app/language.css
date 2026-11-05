@@ -19,3 +19,10 @@ html[data-language="kn"] body{font-family:'Noto Sans Kannada','Tunga','Nirmala U
 @media(max-width:760px){.sv-language-desktop{display:none}.sv-language-switcher svg{display:block}.sv-language-switcher button{font-size:11px;padding:8px}.mobile-navigation{display:block}}
 @media(max-width:410px){.sv-language-switcher svg{display:none}.sv-language-switcher button{padding:7px 6px;font-size:10px}.sv-mobile-actions{gap:6px}}
 @media(max-width:300px){.sv-language-switcher{padding:1px}.sv-language-switcher button{padding:6px 4px;font-size:9px}}
+
+/* Allow translated labels room to breathe on tablet widths. */
+@media(max-width:1080px){
+  .site-header .desktop-navigation,.sv-language-desktop{display:none!important}
+  .site-header .mobile-navigation{display:block}
+  .site-header .mobile-navigation-menu{display:grid;align-items:stretch;gap:0}
+}

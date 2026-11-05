@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 import { db } from "@/lib/db";
 import { getRecordedOrderTotals } from "@/lib/recorded-orders";
-import { recordProductDetailView } from "@/lib/advanced-product-analytics";
+import { recordProductDetailView } from "@/lib/product-view-recording";
 
 /**
  * Privacy-conscious first-party site metrics.

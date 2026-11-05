@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AlertTriangle, Boxes, CheckCircle2, EyeOff, PackageCheck, RefreshCw, Search, Save, Truck, XCircle } from "lucide-react";
 import {
   availabilityKind, availabilityOption, fromStockQuantity,
-  AVAILABILITY_OPTIONS, type AvailabilityOption, type AvailabilityKind,
+  AVAILABILITY_OPTIONS, type AvailabilityOption,
 } from "@/lib/inventory-status";
 import type { InventoryRow } from "@/lib/inventory-store";
 import { useRouter } from "next/navigation";
@@ -27,13 +27,6 @@ function getPreview(draft: Draft) {
   if (qty === null || !Number.isInteger(qty) || !Number.isInteger(threshold) || qty < 0 || threshold < 0) return draft.status;
   return fromStockQuantity(qty, threshold, draft.status);
 }
-function kindName(kind: AvailabilityKind) {
-  return kind === "in" ? "In stock"
-    : kind === "low" ? "Low stock"
-    : kind === "out" ? "Out of stock"
-    : kind === "soon" ? "Coming soon" : "Other status";
-}
-
 export function InventoryDashboard({ onSaved }: { onSaved?: () => void }) {
   const router = useRouter();
   const [products, setProducts] = useState<InventoryRow[]>([]);

@@ -1,27 +1,26 @@
-/* Approved Ganesh symbol: transparent SVG silhouette, theme-aware colour.
-   Used wherever SvGroupsWordmark is rendered. No embedded bitmap or box. */
-.sv-wordmark .sv-ganesh-emblem{
+/* Transparent, scalable brand emblems selected in Admin → Appearance.
+   Ganesh stays the default for existing installations. */
+.sv-wordmark .sv-selected-emblem{
   display:inline-block;
   width:2.06em;
   height:2.58em;
   flex:none;
   color:#e7bb66;
   background-color:currentColor;
-  -webkit-mask-image:url("/branding/ganesh-approved.svg");
-  mask-image:url("/branding/ganesh-approved.svg");
-  -webkit-mask-size:contain;
-  mask-size:contain;
-  -webkit-mask-repeat:no-repeat;
-  mask-repeat:no-repeat;
-  -webkit-mask-position:center;
-  mask-position:center;
+  -webkit-mask:url("/branding/ganesh-approved.svg") center / contain no-repeat;
+  mask:url("/branding/ganesh-approved.svg") center / contain no-repeat;
   filter:drop-shadow(0 0 4px rgba(231,187,102,.1));
 }
-html[data-theme="light"] .sv-wordmark .sv-ganesh-emblem{color:#b9883f}
-html[data-theme="light"] .footer .sv-wordmark .sv-ganesh-emblem{color:#e0b771}
+html[data-logo="diamond"] .sv-wordmark .sv-selected-emblem{
+  width:2.55em;
+  height:2.55em;
+  -webkit-mask-image:url("/branding/diamond-original.svg");
+  mask-image:url("/branding/diamond-original.svg");
+}
+html[data-theme="light"] .sv-wordmark .sv-selected-emblem{color:#b9883f}
+html[data-theme="light"] .footer .sv-wordmark .sv-selected-emblem{color:#e0b771}
 @media(max-width:650px){
-  .sv-wordmark-header .sv-ganesh-emblem{width:1.85em;height:2.3em}
+  .sv-wordmark-header .sv-selected-emblem{width:1.85em;height:2.3em}
+  html[data-logo="diamond"] .sv-wordmark-header .sv-selected-emblem{width:2.3em;height:2.3em}
 }
-@media(prefers-contrast:more){
-  .sv-wordmark .sv-ganesh-emblem{filter:none}
-}
+@media(prefers-contrast:more){.sv-wordmark .sv-selected-emblem{filter:none}}

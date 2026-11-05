@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, Moon, Palette, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { LightHeroArtwork, SiteTheme } from "@/lib/site-theme";
+import type { LightHeroArtwork, SiteTheme, SiteLogo } from "@/lib/site-theme";
 import { LightArtworkChoices } from "@/components/light-artwork-choices";
 
 export function SiteThemeSettings() {
@@ -12,6 +12,8 @@ export function SiteThemeSettings() {
   const [choice, setChoice] = useState<SiteTheme>("dark");
   const [artwork, setArtwork] = useState<LightHeroArtwork>("crackers");
   const [publishedArtwork, setPublishedArtwork] = useState<LightHeroArtwork>("crackers");
+  const [logo, setLogo] = useState<SiteLogo>("ganesh");
+  const [publishedLogo, setPublishedLogo] = useState<SiteLogo>("ganesh");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -22,10 +24,10 @@ export function SiteThemeSettings() {
     fetch("/api/admin/site-theme", { cache: "no-store" })
       .then(async response => {
         if (!response.ok) throw new Error(response.status === 401 ? "Please sign in again." : "Could not load published theme.");
-        return response.json() as Promise<{ theme: SiteTheme; lightHeroArtwork?: LightHeroArtwork }>;
+        return response.json() as Promise<{ theme: SiteTheme; lightHeroArtwork?: LightHeroArtwork; logo?: SiteLogo }>;
       })
       .then(result => {
-        if (mounted) { setPublished(result.theme); setChoice(result.theme); setArtwork(result.lightHeroArtwork === "diya" ? "diya" : "crackers"); setPublishedArtwork(result.lightHeroArtwork === "diya" ? "diya" : "crackers"); }
+        if (mounted) { setPublished(result.theme); setChoice(result.theme); setArtwork(result.lightHeroArtwork === "diya" ? "diya" : "crackers"); setPublishedArtwork(result.lightHeroArtwork === "diya" ? "diya" : "crackers"); setLogo(result.logo === "diamond" ? "diamond" : "ganesh"); setPublishedLogo(result.logo === "diamond" ? "diamond" : "ganesh"); }
       })
       .catch(cause => { if (mounted) setError(cause instanceof Error ? cause.message : "Could not load published theme."); })
       .finally(() => { if (mounted) setLoading(false); });
@@ -38,14 +40,16 @@ export function SiteThemeSettings() {
       const response = await fetch("/api/admin/site-theme", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme: choice, lightHeroArtwork: artwork }),
+        body: JSON.stringify({ theme: choice, lightHeroArtwork: artwork, logo }),
       });
       const result = await response.json() as { error?: string; theme?: SiteTheme };
       if (!response.ok) throw new Error(result.error || "Could not publish selected theme.");
       setPublished(choice);
       setPublishedArtwork(artwork);
+      setPublishedLogo(logo);
       document.documentElement.dataset.theme = choice;
-      setMessage(`Appearance published: ${choice === "light" ? "Festive Light" : "Classic Dark"} and ${artwork === "crackers" ? "Festive Firecracker Box" : "Traditional Diyas"} artwork. Refresh the homepage to see your design.`);
+      document.documentElement.dataset.logo = logo;
+      setMessage(`Appearance published: ${choice === "light" ? "Festive Light" : "Classic Dark"}, ${artwork === "crackers" ? "Festive Firecracker Box" : "Traditional Diyas"} artwork, and ${logo === "ganesh" ? "Ganesh" : "Original Diamond"} logo. Refresh the homepage to see your design.`);
       router.refresh();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not publish theme.");
@@ -56,7 +60,7 @@ export function SiteThemeSettings() {
     <section className="admin-panel theme-admin-panel">
       <div className="theme-admin-intro">
         <div className="theme-admin-heading"><Palette size={25} aria-hidden="true"/><div><h2>Website Appearance</h2><p>Choose the one theme all visitors see at the same production URL. Only signed-in admins can publish a change.</p></div></div>
-        <p className="theme-published-status" role="status">Current published theme: <strong>{published === "dark" ? "Classic Dark" : "Festive Light"}</strong></p>
+        <p className="theme-published-status" role="status">Current published theme: <strong>{published === "dark" ? "Classic Dark" : "Festive Light"}</strong> · Logo: <strong>{publishedLogo === "ganesh" ? "Ganesh" : "Original Diamond"}</strong></p>
       </div>
       {loading ? <p role="status">Loading your theme settings…</p> : (
         <>
@@ -73,13 +77,24 @@ export function SiteThemeSettings() {
             </button>
           </div>
           <LightArtworkChoices artwork={artwork} publishedArtwork={publishedArtwork} onChange={setArtwork}/>
+          <div className="site-logo-admin-section">
+            <div className="site-logo-admin-intro"><h3>Website logo</h3><p>Select which emblem appears beside SV GROUPS in the header, homepage, and footer. The browser icon will match. Both are transparent SVGs and work with either theme.</p></div>
+            <div className="site-logo-options" role="group" aria-label="Select the published website logo">
+              {(["ganesh", "diamond"] as const).map(option => <button key={option} type="button" className={`site-logo-option ${logo === option ? "selected" : ""}`} aria-pressed={logo === option} onClick={() => setLogo(option)}>
+                <span className="site-logo-option-visual" aria-hidden="true"><span className={`site-logo-preview-mark ${option}`} /><span className="site-logo-preview-name">SV <b>GROUPS</b></span></span>
+                <span className="site-logo-option-label"><strong>{option === "ganesh" ? "Ganesh Logo" : "Original Diamond Logo"}</strong>{logo === option && <Check size={17} aria-hidden="true"/>}</span>
+                <small>{option === "ganesh" ? "Approved Ganesh design · vector SVG" : "Original sparkle and diamond-shaped design · vector SVG"}</small>
+                {publishedLogo === option && <span className="site-logo-published-label">Currently published</span>}
+              </button>)}
+            </div>
+          </div>
           <div className="theme-admin-actions">
-            <button type="button" className="button button-gold" disabled={saving || (published === choice && publishedArtwork === artwork)} onClick={publish}>
-              {saving ? "Publishing…" : published === choice && publishedArtwork === artwork ? "Appearance is published" : "Publish theme & illustration"}
+            <button type="button" className="button button-gold" disabled={saving || (published === choice && publishedArtwork === artwork && publishedLogo === logo)} onClick={publish}>
+              {saving ? "Publishing…" : published === choice && publishedArtwork === artwork && publishedLogo === logo ? "Appearance is published" : "Publish appearance & logo"}
             </button>
             <a href="/" target="_blank" rel="noreferrer" className="button button-outline">Preview public homepage</a>
           </div>
-          <p className="theme-admin-note">Theme and Light Theme illustration are saved together on the server. The original diyas remain available anytime. Visitors may need to refresh to see changes; animations respect reduced-motion preferences.</p>
+          <p className="theme-admin-note">Theme, Light Theme illustration, and logo are saved together on the server. Either logo can be selected with either theme. Visitors may need to refresh to see changes; animations respect reduced-motion preferences.</p>
         </>
       )}
       {message && <p className="form-status" role="status">{message}</p>}

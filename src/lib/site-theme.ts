@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 
 export type SiteTheme = "dark" | "light";
 export type LightHeroArtwork = "crackers" | "diya";
+export type SiteLogo = "ganesh" | "diamond";
+export const DEFAULT_SITE_LOGO: SiteLogo = "ganesh";
 export const DEFAULT_LIGHT_HERO_ARTWORK: LightHeroArtwork = "crackers";
 const DEFAULT_THEME: SiteTheme = "dark";
 
@@ -37,12 +39,25 @@ export async function getPublishedLightHeroArtwork(): Promise<LightHeroArtwork> 
   }
 }
 
+/** Existing published logo is Ganesh unless an admin chooses Diamond. */
+export async function getPublishedSiteLogo(): Promise<SiteLogo> {
+  try {
+    const rows = await db.$queryRaw<Array<{ logo: string }>>`
+      SELECT "logo" FROM "SiteThemeSettings" WHERE "id" = 1 LIMIT 1
+    `;
+    return rows[0]?.logo === "diamond" ? "diamond" : DEFAULT_SITE_LOGO;
+  } catch {
+    // Existing databases do not yet have the optional logo column.
+    return DEFAULT_SITE_LOGO;
+  }
+}
+
 /**
  * Only the authenticated admin API calls this function. Creating the small
  * preference table on the first publish avoids a deployment-time migration
  * dependency and preserves all existing catalogue and enquiry tables.
  */
-export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: LightHeroArtwork = DEFAULT_LIGHT_HERO_ARTWORK): Promise<void> {
+export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: LightHeroArtwork = DEFAULT_LIGHT_HERO_ARTWORK, logo: SiteLogo = DEFAULT_SITE_LOGO): Promise<void> {
   await db.$executeRaw`
     CREATE TABLE IF NOT EXISTS "SiteThemeSettings" (
       "id" INTEGER PRIMARY KEY,
@@ -57,11 +72,17 @@ export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: Light
     CHECK ("lightHeroArtwork" IN ('crackers', 'diya'))
   `;
   await db.$executeRaw`
-    INSERT INTO "SiteThemeSettings" ("id", "theme", "lightHeroArtwork", "updatedAt")
-    VALUES (1, ${theme}, ${lightHeroArtwork}, NOW())
+    ALTER TABLE "SiteThemeSettings"
+    ADD COLUMN IF NOT EXISTS "logo" TEXT NOT NULL DEFAULT 'ganesh'
+    CHECK ("logo" IN ('ganesh', 'diamond'))
+  `;
+  await db.$executeRaw`
+    INSERT INTO "SiteThemeSettings" ("id", "theme", "lightHeroArtwork", "logo", "updatedAt")
+    VALUES (1, ${theme}, ${lightHeroArtwork}, ${logo}, NOW())
     ON CONFLICT ("id") DO UPDATE
     SET "theme" = EXCLUDED."theme",
         "lightHeroArtwork" = EXCLUDED."lightHeroArtwork",
+        "logo" = EXCLUDED."logo",
         "updatedAt" = NOW()
   `;
 }

@@ -296,5 +296,8 @@ export const KN: Record<string, string> = {
   "Your local calculator selection is not cleared when you submit.": "ಸಲ್ಲಿಸಿದ ನಂತರ ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿನ ಆಯ್ಕೆಗಳು ಅಳಿಸಲಾಗುವುದಿಲ್ಲ.",
   "Close information request form": "ಮಾಹಿತಿ ವಿಚಾರಣೆ ಫಾರ್ಮ್ ಮುಚ್ಚಿರಿ",
   "Price calculator": "ಬೆಲೆ ಲೆಕ್ಕಾಚಾರ",
-  "Contact details": "ಸಂಪರ್ಕ ವಿವರಗಳು"
+  "Contact details": "ಸಂಪರ್ಕ ವಿವರಗಳು",
+  "Currently unavailable": "ಪ್ರಸ್ತುತ ಲಭ್ಯವಿಲ್ಲ",
+  "Added to calculator ✓": "ಲೆಕ್ಕಾಚಾರಕ್ಕೆ ಸೇರಿಸಲಾಗಿದೆ ✓",
+  "Add to price calculator ↗": "ಬೆಲೆ ಲೆಕ್ಕಾಚಾರಕ್ಕೆ ಸೇರಿಸಿ ↗"
 };

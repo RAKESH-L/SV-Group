@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
+import { useLanguage } from "@/components/language-provider";
 import type { CartLine } from "@/lib/cart-calculations";
 import { createPersonalEstimatePdf } from "@/lib/personal-estimate-pdf";
 
 export function PersonalEstimateDownload({ lines }: { lines: CartLine[] }) {
+  const { t } = useLanguage();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   async function download() {
@@ -17,5 +19,5 @@ export function PersonalEstimateDownload({ lines }: { lines: CartLine[] }) {
     } catch (cause) { setError(cause instanceof Error ? cause.message : "We could not create the estimate PDF. Please try again."); }
     finally { setBusy(false); }
   }
-  return <div className="estimate-download"><button type="button" className="button button-outline estimate-download-button" onClick={download} disabled={busy}>{busy ? "Preparing estimate PDF…" : "Download Detailed Price Estimate PDF"}</button>{error&&<p className="form-status error" role="alert">{error}</p>}<small>This personal estimate is generated in your browser. It is not sent to Sri Vinayaka Groups.</small></div>;
+  return <div className="estimate-download"><button type="button" className="button button-outline estimate-download-button" onClick={download} disabled={busy}>{t(busy ? "Preparing estimate PDF…" : "Download Detailed Price Estimate PDF")}</button>{error&&<p className="form-status error" role="alert">{error}</p>}<small>{t("This personal estimate is generated in your browser. It is not sent to Sri Vinayaka Groups.")}</small></div>;
 }

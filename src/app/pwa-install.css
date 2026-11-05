@@ -1,0 +1,32 @@
+/* PWA install page: lightweight and consistent with both SV Groups themes. */
+.pwa-install-page{max-width:1140px;margin:0 auto;padding:clamp(35px,6vw,85px) clamp(20px,4vw,48px) 80px;min-height:70vh}
+.pwa-install-topline{display:flex;gap:9px;align-items:center;color:var(--gold);font-size:10px;font-weight:800;letter-spacing:.18em}
+.pwa-install-page h1{font:500 clamp(36px,6vw,68px)/1.1 Georgia,serif;letter-spacing:-.03em;color:var(--ink);max-width:820px;margin:24px 0 17px}
+.pwa-install-lede{font-size:clamp(13px,1.8vw,17px);line-height:1.8;color:var(--muted);margin:0 0 32px}
+.pwa-install-panel{display:grid;gap:18px}
+.pwa-install-card{border:1px solid var(--line);border-radius:17px;background:var(--panel);padding:clamp(20px,3vw,36px);display:grid;gap:20px;box-shadow:0 18px 50px rgba(0,0,0,.06)}
+.pwa-install-heading{display:flex;align-items:center;gap:20px}
+.pwa-install-circle{flex:none;width:67px;height:67px;border:1px solid var(--gold);border-radius:17px;display:grid;place-items:center;color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,transparent)}
+.pwa-install-overline{font-size:10px;letter-spacing:.14em;font-weight:750;color:var(--gold)}
+.pwa-install-heading h2{font:500 clamp(24px,3.2vw,37px)/1.15 Georgia,serif;color:var(--ink);margin:7px 0}
+.pwa-install-heading p{font-size:12px;line-height:1.8;color:var(--muted);margin:0;max-width:690px}
+.pwa-install-main-button{width:fit-content;min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:7px;padding:14px 22px;background:var(--gold);color:#241a0b;font-size:13px;font-weight:850;cursor:pointer}
+.pwa-install-main-button:hover{filter:brightness(1.07)}
+.pwa-install-main-button:focus-visible,.pwa-install-back:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.pwa-installed{display:flex;align-items:center;gap:10px;color:var(--gold);border:1px solid var(--line);border-radius:9px;padding:14px 16px;font-size:13px;font-weight:650}
+.pwa-install-instructions{display:grid;gap:12px}
+.pwa-install-instructions p{display:flex;align-items:flex-start;gap:9px;color:var(--ink);font-size:13px;line-height:1.75;margin:0}
+.pwa-install-instructions svg{flex:none;color:var(--gold);margin-top:3px}
+.pwa-install-instructions .pwa-install-instruction-title{font-weight:750}
+.pwa-install-instructions small{color:var(--muted);font-size:11px;line-height:1.8}
+.pwa-install-error{color:#efab88;font-size:12px;margin:0}
+.pwa-install-benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.pwa-install-benefits>div{border:1px solid var(--line);border-radius:12px;padding:22px 20px;background:var(--panel);min-width:0}
+.pwa-install-benefits>div>span{width:37px;height:37px;border-radius:10px;background:color-mix(in srgb,var(--gold) 10%,transparent);color:var(--gold);display:grid;place-items:center;margin-bottom:14px}
+.pwa-install-benefits strong{display:block;font-size:14px;color:var(--ink);line-height:1.4}
+.pwa-install-benefits p{color:var(--muted);font-size:11px;line-height:1.85;margin:7px 0 0}
+.pwa-install-back{display:inline-flex;align-items:center;gap:8px;margin-top:27px;color:var(--gold);font-size:12px;font-weight:750}
+.pwa-install-back:hover{text-decoration:underline}
+@media(max-width:780px){.pwa-install-benefits{grid-template-columns:1fr}.pwa-install-benefits>div{padding:18px}.pwa-install-heading{align-items:flex-start}}
+@media(max-width:440px){.pwa-install-heading{flex-direction:column;gap:15px}.pwa-install-main-button{width:100%}.pwa-install-page{padding-top:42px}}
+@media(prefers-reduced-motion:reduce){.pwa-install-main-button:hover{filter:none}}

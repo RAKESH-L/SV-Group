@@ -1,0 +1,21 @@
+/* EN / ಕನ್ನಡ toggle — independent of admin website appearance. */
+.sv-language-desktop{flex:none;display:flex;align-items:center;margin-left:clamp(7px,1.5vw,20px)}
+.sv-language-switcher{display:flex;gap:2px;align-items:center;min-width:0;padding:3px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--gold)}
+.sv-language-switcher svg{flex:none;margin:0 4px 0 7px}
+.sv-language-switcher button{font-size:11px;line-height:1.5;font-weight:700;color:var(--muted);border:1px solid transparent;background:transparent;border-radius:7px;cursor:pointer;padding:7px 9px;white-space:nowrap}
+.sv-language-switcher button.selected{background:var(--gold);color:#21170d}
+.sv-language-switcher button:hover:not(.selected){color:var(--ink);background:rgba(231,187,102,.1)}
+.sv-language-switcher button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sv-mobile-actions{display:flex;align-items:center;gap:8px}
+html[data-theme="light"] .sv-language-switcher{background:#fffefa;border-color:#d4dbd1;color:#ad5e3c}
+html[data-theme="light"] .sv-language-switcher button.selected{background:#205040;color:white}
+html[data-theme="light"] .sv-language-switcher button:hover:not(.selected){background:#e8eee6;color:#1f483a}
+html[data-theme="light"] .mobile-menu-toggle{color:#295e48}
+html[data-language="kn"] .desktop-navigation{gap:clamp(10px,1.55vw,23px);font-size:clamp(10px,.95vw,12px)}
+html[data-language="kn"] .desktop-navigation .nav-cta{padding:8px 12px}
+html[data-language="kn"] body{font-family:'Noto Sans Kannada','Tunga','Nirmala UI','DM Sans',sans-serif}
+@media(max-width:1180px){.sv-language-desktop{margin-left:8px}.sv-language-switcher svg{display:none}.sv-language-switcher button{padding:7px}}
+@media(max-width:950px){html[data-language="kn"] .desktop-navigation .nav-cta{display:none}}
+@media(max-width:760px){.sv-language-desktop{display:none}.sv-language-switcher svg{display:block}.sv-language-switcher button{font-size:11px;padding:8px}.mobile-navigation{display:block}}
+@media(max-width:410px){.sv-language-switcher svg{display:none}.sv-language-switcher button{padding:7px 6px;font-size:10px}.sv-mobile-actions{gap:6px}}
+@media(max-width:300px){.sv-language-switcher{padding:1px}.sv-language-switcher button{padding:6px 4px;font-size:9px}}

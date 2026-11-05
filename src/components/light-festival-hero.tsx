@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { T } from "@/components/language-provider";
 import { ArrowUpRight, Leaf, Sparkles } from "lucide-react";
 import { CrackerFestivalIllustration } from "@/components/cracker-festival-illustration";
 import type { LightHeroArtwork } from "@/lib/site-theme";
@@ -58,7 +59,7 @@ function FestivalIllustration() {
           <g fill="#f8cf91"><circle cx="290" cy="484" r="3"/><circle cx="332" cy="500" r="3"/><circle cx="380" cy="509" r="3"/><circle cx="430" cy="500" r="3"/><circle cx="475" cy="485" r="3"/></g>
         </g>
       </svg>
-      <div className="light-art-caption"><span>01 / THE FESTIVAL EDIT</span><span>Light brings us together.</span></div>
+      <div className="light-art-caption"><span><T text="01 / THE FESTIVAL EDIT"/></span><span><T text="Light brings us together."/></span></div>
     </div>
   );
 }
@@ -68,20 +69,20 @@ export function LightFestivalHero({ artwork = "crackers" }: { artwork?: LightHer
     <>
       <section className="light-festival-hero" aria-labelledby="light-festival-heading">
         <div className="light-festival-copy">
-          <p className="light-festival-kicker"><span className="light-kicker-dot"/> THE SEASON OF LIGHT</p>
-          <span className="light-festival-brand">SRI VINAYAKA GROUPS · TUMKUR</span>
-          <h1 id="light-festival-heading">Make room<br/>for a little<br/><em>wonder.</em></h1>
-          <p className="light-festival-subtitle">Brighter evenings. Familiar faces. Moments that stay. Find inspiration for a thoughtful, joyful festive season.</p>
-          <Link className="light-festival-cta" href="#collection">Explore the collection <ArrowUpRight size={22} aria-hidden="true"/></Link>
-          <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> Rooted in tradition. Celebrated with care.</p>
+          <p className="light-festival-kicker"><span className="light-kicker-dot"/> <T text="THE SEASON OF LIGHT"/></p>
+          <span className="light-festival-brand"><T text="SRI VINAYAKA GROUPS · TUMKUR"/></span>
+          <h1 id="light-festival-heading"><T text="Make room"/><br/><T text="for a little"/><br/><em><T text="wonder."/></em></h1>
+          <p className="light-festival-subtitle"><T text="Brighter evenings. Familiar faces. Moments that stay. Find inspiration for a thoughtful, joyful festive season."/></p>
+          <Link className="light-festival-cta" href="#collection"><T text="Explore the collection"/> <ArrowUpRight size={22} aria-hidden="true"/></Link>
+          <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> <T text="Rooted in tradition. Celebrated with care."/></p>
         </div>
         {artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
       </section>
       <section className="light-festival-values" aria-label="Our approach">
-        <span><Leaf size={18} aria-hidden="true"/> Celebrate thoughtfully</span>
-        <span><Sparkles size={18} aria-hidden="true"/> Keep traditions alive</span>
-        <span><Sparkles size={18} aria-hidden="true"/> Put safety first</span>
-        <span><Leaf size={18} aria-hidden="true"/> Make memories together</span>
+        <span><Leaf size={18} aria-hidden="true"/> <T text="Celebrate thoughtfully"/></span>
+        <span><Sparkles size={18} aria-hidden="true"/> <T text="Keep traditions alive"/></span>
+        <span><Sparkles size={18} aria-hidden="true"/> <T text="Put safety first"/></span>
+        <span><Leaf size={18} aria-hidden="true"/> <T text="Make memories together"/></span>
       </section>
     </>
   );

@@ -12,6 +12,7 @@ const links = [
   { href: "/categories", label: "Categories" },
   { href: "/cart", label: "Price Calculator" },
   { href: "/contact", label: "Contact" },
+  { href: "/install", label: "Install App" },
 ] as const;
 
 function LanguageSwitcher({ compact = false }: { compact?: boolean }) {

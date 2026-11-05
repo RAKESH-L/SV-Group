@@ -1,0 +1,27 @@
+/* Approved Ganesh symbol: transparent SVG silhouette, theme-aware colour.
+   Used wherever SvGroupsWordmark is rendered. No embedded bitmap or box. */
+.sv-wordmark .sv-ganesh-emblem{
+  display:inline-block;
+  width:2.06em;
+  height:2.58em;
+  flex:none;
+  color:#e7bb66;
+  background-color:currentColor;
+  -webkit-mask-image:url("/branding/ganesh-approved.svg");
+  mask-image:url("/branding/ganesh-approved.svg");
+  -webkit-mask-size:contain;
+  mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
+  filter:drop-shadow(0 0 4px rgba(231,187,102,.1));
+}
+html[data-theme="light"] .sv-wordmark .sv-ganesh-emblem{color:#b9883f}
+html[data-theme="light"] .footer .sv-wordmark .sv-ganesh-emblem{color:#e0b771}
+@media(max-width:650px){
+  .sv-wordmark-header .sv-ganesh-emblem{width:1.85em;height:2.3em}
+}
+@media(prefers-contrast:more){
+  .sv-wordmark .sv-ganesh-emblem{filter:none}
+}

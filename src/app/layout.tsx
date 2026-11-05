@@ -11,6 +11,7 @@ import "./analytics-orders.css";
 import "./poster-studio.css";
 import "./catalogue-search.css";
 import "./language.css";
+import "./ganesh-branding.css";
 import { Header } from "@/components/header";
 import { LanguageProvider } from "@/components/language-provider";
 import { Footer } from "@/components/footer";
@@ -23,8 +24,7 @@ export const metadata: Metadata = {
   description: "Explore the Sri Vinayaka Groups festive catalogue. Get in touch with our team in Tumkur, Karnataka.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sv-groups-catalogue.vercel.app"),
   icons: {
-    icon: [{ url: "/branding/sv-groups-icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+    icon: [{ url: "/branding/ganesh-approved.svg", type: "image/svg+xml" }],
   },
   openGraph: {
     title: "Sri Vinayaka Groups | Tumkur",

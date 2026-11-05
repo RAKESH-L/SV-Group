@@ -1,3 +1,7 @@
+/* The bell and Sign out button share the admin header without crowding tabs. */
+.admin-notification-top-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px;min-width:0}
+.admin-notification-top-actions>.button{flex:none}
+@media(max-width:540px){.admin-notification-top-actions{justify-content:flex-start;width:100%}}
 /* Admin-only notification centre. Responsive, accessible and compatible with
    both published website themes. */
 .admin-notification-bell{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;flex:none;border:1px solid var(--line);border-radius:7px;padding:9px 13px;background:var(--panel);color:var(--ink);font-size:11px;font-weight:750;cursor:pointer;white-space:nowrap;transition:border-color .2s,background .2s}

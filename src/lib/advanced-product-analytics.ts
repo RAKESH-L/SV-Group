@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { decodeEnquiryMessage } from "@/lib/information-request-snapshot";
 import { ensureSiteAnalyticsTables } from "@/lib/site-analytics";
+import { ensureProductAnalyticsTable } from "@/lib/product-view-recording";
 
 /**
  * Aggregated first-party catalogue engagement.
@@ -14,28 +15,6 @@ import { ensureSiteAnalyticsTables } from "@/lib/site-analytics";
  * Product view breakdowns only start collecting after this feature is deployed;
  * the original page tracker grouped every product detail under /catalogue.
  */
-let initialized: Promise<void> | null = null;
-async function ensureProductAnalyticsTable(): Promise<void> {
-  if (!initialized) {
-    initialized = (async () => {
-      await db.$executeRaw`
-        CREATE TABLE IF NOT EXISTS "SiteProductViewsDaily" (
-          "day" DATE NOT NULL,
-          "productId" TEXT NOT NULL,
-          "categoryId" TEXT NOT NULL,
-          "views" BIGINT NOT NULL DEFAULT 0,
-          PRIMARY KEY ("day", "productId")
-        )
-      `;
-      await db.$executeRaw`
-        CREATE INDEX IF NOT EXISTS "SiteProductViewsDaily_category_day_idx"
-          ON "SiteProductViewsDaily" ("categoryId", "day")
-      `;
-    })();
-  }
-  try { await initialized; } catch (error) { initialized = null; throw error; }
-}
-
 const INDIA_OFFSET_MS = (5 * 60 + 30) * 60_000;
 function indiaDayStart(daysAgo: number): Date {
   const midnight = Math.floor((Date.now() + INDIA_OFFSET_MS) / 86_400_000) * 86_400_000;
@@ -44,25 +23,6 @@ function indiaDayStart(daysAgo: number): Date {
 
 function dayKey(timestamp: Date): string {
   return new Date(timestamp.getTime() + INDIA_OFFSET_MS).toISOString().slice(0, 10);
-}
-
-export async function recordProductDetailView(path: string): Promise<void> {
-  // Do not count catalogue landing or category-filter visits as product views.
-  const match = /^\/catalogue\/([a-z0-9][a-z0-9-]{0,99})\/?$/.exec(path);
-  if (!match) return;
-  await ensureProductAnalyticsTable();
-  const slug = match[1];
-  // INSERT SELECT rejects invalid, deleted or hidden products without a round
-  // trip. The category ID is captured at viewing time even if later changed.
-  await db.$executeRaw`
-    INSERT INTO "SiteProductViewsDaily" ("day", "productId", "categoryId", "views")
-    SELECT (now() AT TIME ZONE 'Asia/Kolkata')::date, p."id", p."categoryId", 1
-    FROM "Product" p
-    WHERE p."slug" = ${slug} AND p."active" = true
-    ON CONFLICT ("day", "productId") DO UPDATE SET
-      "views" = "SiteProductViewsDaily"."views" + 1,
-      "categoryId" = EXCLUDED."categoryId"
-  `;
 }
 
 type ProductRow = {

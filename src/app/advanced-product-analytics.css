@@ -1,0 +1,55 @@
+/* Additional private product interest insights. Respects current dark/light admin themes. */
+.advanced-products{margin-top:28px;min-width:0}
+.advanced-products-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 0 17px}
+.advanced-products-heading>div{min-width:0}
+.advanced-products-heading h3{display:flex;align-items:center;gap:9px;font-size:clamp(17px,2vw,23px);line-height:1.4;color:var(--analytics-text);margin:0 0 7px;font-weight:800}
+.advanced-products-heading h3 svg{flex:none;color:var(--analytics-accent)}
+.advanced-products-heading p{font-size:11px;line-height:1.8;color:var(--analytics-muted);margin:0;max-width:680px}
+.advanced-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.advanced-metric{display:flex;flex-direction:column;min-width:0;min-height:145px;background:var(--analytics-panel);border:1px solid var(--analytics-edge);border-radius:10px;padding:17px}
+.advanced-metric-title{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;color:var(--analytics-muted);font-size:11px;line-height:1.5;min-height:40px}
+.advanced-metric-icon{flex:none;width:30px;height:30px;display:grid;place-items:center;background:var(--analytics-soft);color:var(--analytics-accent);border-radius:7px}
+.advanced-metric>strong{font-size:clamp(27px,3.2vw,42px);line-height:1.2;font-weight:750;letter-spacing:-.03em;color:var(--analytics-text);margin:6px 0}
+.advanced-metric>small{font-size:10px;color:var(--analytics-muted);line-height:1.6}
+.advanced-rank-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:14px;margin-top:15px}
+.advanced-rank-card,.advanced-trends-card{min-width:0;background:var(--analytics-panel);border:1px solid var(--analytics-edge);border-radius:10px;padding:19px}
+.advanced-card-heading h4{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--analytics-text);margin:0 0 5px;font-weight:800}
+.advanced-card-heading h4 svg{color:var(--analytics-accent)}
+.advanced-card-heading p{margin:0;color:var(--analytics-muted);font-size:10px;line-height:1.65}
+.advanced-rank-list{list-style:none;display:grid;gap:18px;padding:0;margin:23px 0 3px}
+.advanced-rank-list li{display:flex;align-items:flex-start;gap:10px;min-width:0}
+.advanced-rank-position{flex:none;font-size:12px;line-height:1.7;font-weight:800;color:var(--analytics-accent);opacity:.8}
+.advanced-rank-body{flex:1;min-width:0}
+.advanced-rank-topline{display:flex;justify-content:space-between;gap:10px;min-width:0}
+.advanced-rank-name{font-size:11px;font-weight:700;line-height:1.55;color:var(--analytics-text);min-width:0;overflow-wrap:anywhere}
+.advanced-rank-name a{display:inline-flex;align-items:center;gap:5px}
+.advanced-rank-name a:hover{text-decoration:underline;text-decoration-color:var(--analytics-accent)}
+.advanced-rank-name a:focus-visible{outline:2px solid var(--analytics-accent);outline-offset:2px}
+.advanced-rank-name small{display:block;color:var(--analytics-muted);font-size:9px;font-weight:500;margin-top:2px;line-height:1.5}
+.advanced-rank-topline strong{flex:none;font-size:13px;color:var(--analytics-accent);font-variant-numeric:tabular-nums}
+.advanced-rank-track{width:100%;height:6px;border-radius:99px;background:var(--analytics-track);overflow:hidden;margin-top:7px}
+.advanced-rank-track span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#a36e38,var(--analytics-accent))}
+.advanced-rank-empty{color:var(--analytics-muted);font-size:11px;line-height:1.7;margin:23px 0 0}
+.advanced-trends-card{margin-top:15px}
+.advanced-chart-choices{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:17px 0 15px}
+.advanced-chart-choices button{font-size:10px;color:var(--analytics-muted);background:transparent;border:1px solid var(--analytics-edge);border-radius:6px;padding:8px 11px;cursor:pointer}
+.advanced-chart-choices button.selected{color:var(--analytics-accent);border-color:var(--analytics-accent);background:var(--analytics-soft);font-weight:800}
+.advanced-chart-choices button:focus-visible{outline:2px solid var(--analytics-accent);outline-offset:2px}
+.advanced-chart-scroller{overflow-x:auto;max-width:100%;padding:0 0 3px}
+.advanced-chart-grid{min-width:465px;height:237px;display:grid;grid-template-columns:repeat(14,minmax(29px,1fr));gap:7px;align-items:end;padding:7px 0 6px}
+.advanced-chart-day{display:flex;height:100%;min-width:0;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px}
+.advanced-chart-value{font-size:9px;line-height:1.2;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--analytics-muted)}
+.advanced-chart-rail{display:flex;align-items:flex-end;justify-content:center;width:100%;height:172px;min-height:0;border-bottom:1px solid var(--analytics-edge);background:linear-gradient(0deg,var(--analytics-soft),transparent 45%)}
+.advanced-chart-rail>span{display:block;width:min(100%,23px);border-radius:6px 6px 0 0;background:linear-gradient(0deg,#a96938,var(--analytics-accent));transition:height .3s ease}
+.advanced-chart-rail>span.empty{background:var(--analytics-edge)}
+.advanced-chart-date{font-size:9px;white-space:nowrap;color:var(--analytics-muted)}
+.advanced-trend-note{margin:10px 0 0;color:var(--analytics-muted);font-size:10px;line-height:1.75}
+.advanced-notes{display:flex;align-items:flex-start;gap:12px;background:var(--analytics-soft);border:1px solid var(--analytics-edge);border-radius:9px;margin-top:14px;padding:16px 18px;color:var(--analytics-muted)}
+.advanced-notes>svg{flex:none;color:var(--analytics-accent);margin-top:2px}
+.advanced-notes strong{color:var(--analytics-text);font-size:11px}
+.advanced-notes p{margin:7px 0 0;color:var(--analytics-muted);font-size:10px;line-height:1.75}
+@media(max-width:1160px){.advanced-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.advanced-rank-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.advanced-rank-grid>:last-child{grid-column:1 / -1}}
+@media(max-width:800px){.advanced-products-heading{align-items:stretch;flex-direction:column}.advanced-products-heading>button{align-self:flex-start}.advanced-rank-grid{grid-template-columns:1fr}.advanced-rank-grid>:last-child{grid-column:auto}}
+@media(max-width:560px){.advanced-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.advanced-metric{padding:12px;min-height:140px}.advanced-metric-title{font-size:10px}.advanced-metric>strong{font-size:clamp(24px,6vw,33px)}.advanced-metric>small{font-size:9px}.advanced-rank-card,.advanced-trends-card{padding:14px}.advanced-chart-choices{gap:5px}.advanced-chart-choices button{font-size:9px;padding:7px 8px}.advanced-notes{padding:13px}.advanced-products-heading h3{font-size:18px}}
+@media(max-width:340px){.advanced-metrics{grid-template-columns:1fr}.advanced-metric{min-height:unset}}
+@media(prefers-reduced-motion:reduce){.advanced-chart-rail>span{transition:none}}

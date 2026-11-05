@@ -11,7 +11,14 @@ import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
 export const metadata: Metadata = { title: "Catalogue | SV Groups" };
 export const dynamic = "force-dynamic";
 
-export default async function CataloguePage() {
+export default async function CataloguePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string | string[]; q?: string | string[] }>;
+}) {
+  const params = await searchParams;
+  const requestedCategory = typeof params.category === "string" ? params.category : "all";
+  const requestedQuery = typeof params.q === "string" ? params.q : "";
   let products: ProductView[] = [], categories: { name: string; slug: string }[] = [];
   try {
     const [p, c] = await Promise.all([
@@ -26,7 +33,7 @@ export default async function CataloguePage() {
     <div className="eyebrow">THE SV GROUPS SELECTION</div>
     <h1 className="page-title">A little <em>something</em><br/>for every celebration.</h1>
     <p className="page-lede">Explore the collection and compare indicative prices. Find just the right thing for your festive moments.</p>
-    <CatalogueClient products={products} categories={categories}/>
+    <CatalogueClient products={products} categories={categories} initialCategory={requestedCategory} initialQuery={requestedQuery}/>
     <div className="catalogue-notice">This is an informational catalogue with an at-home price calculator. It does not support orders or reservations.</div>
     <LegalComplianceNotice variant="compact"/>
     <div className="catalogue-contact"><div><span className="eyebrow">HERE TO HELP</span><strong>Questions about the collection?</strong><span>Call {business.phone} in {business.locality}</span></div><Link href="/contact">Get in touch <ArrowUpRight size={15}/></Link></div>

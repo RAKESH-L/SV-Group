@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Activity, ArrowUpRight, BarChart3, Code2, Eye, FileText, IndianRupee, Info, MessageSquareText, RefreshCw, Users } from "lucide-react";
 import { AdminRecordedOrders, formatRecordedOrderValue } from "@/components/admin-recorded-orders";
+import { AdvancedProductAnalytics } from "@/components/advanced-product-analytics";
 import { useRouter } from "next/navigation";
 
 type Snapshot = { visitors: number; pageViews: number; informationRequests: number; generalEnquiries: number };
@@ -162,6 +163,8 @@ export function AdminAnalytics() {
           </div> : <p className="analytics-empty">No public page visits have been recorded yet.</p>}
         </section>
       </div>
+
+      <AdvancedProductAnalytics/>
 
       <AdminRecordedOrders onChange={refresh}/>
 

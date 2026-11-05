@@ -13,8 +13,10 @@ import "./catalogue-search.css";
 import "./language.css";
 import "./ganesh-branding.css";
 import "./site-logo-options.css";
+import "./pwa-install.css";
 import { Header } from "@/components/header";
 import { LanguageProvider } from "@/components/language-provider";
+import { PwaProvider } from "@/components/pwa-provider";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";
 import { PublicVisitTracker } from "@/components/public-visit-tracker";
@@ -26,8 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
   title: "Sri Vinayaka Groups | Tumkur",
   description: "Explore the Sri Vinayaka Groups festive catalogue. Get in touch with our team in Tumkur, Karnataka.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sv-groups-catalogue.vercel.app"),
+  manifest: "/manifest.webmanifest",
+  applicationName: "SV Groups",
+  appleWebApp: { capable: true, title: "SV Groups", statusBarStyle: "default" },
   icons: {
     icon: [{ url: logo === "diamond" ? "/branding/diamond-original.svg" : "/branding/ganesh-approved.svg", type: "image/svg+xml" }],
+    apple: [{ url: `/api/pwa/icon/180?logo=${logo}`, sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "Sri Vinayaka Groups | Tumkur",
@@ -39,4 +45,4 @@ export async function generateMetadata(): Promise<Metadata> {
   twitter: { card: "summary_large_image", title: "Sri Vinayaka Groups | Tumkur", images: ["/branding/sv-logo-og.png"] },
   };
 }
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const [theme, logo] = await Promise.all([getPublishedSiteTheme(), getPublishedSiteLogo()]); return <html lang="en" data-theme={theme} data-logo={logo}><body><LanguageProvider><CartProvider><PublicVisitTracker/><Header/><div className="main-content">{children}</div><Footer/></CartProvider></LanguageProvider></body></html>; }
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const [theme, logo] = await Promise.all([getPublishedSiteTheme(), getPublishedSiteLogo()]); return <html lang="en" data-theme={theme} data-logo={logo}><body><PwaProvider><LanguageProvider><CartProvider><PublicVisitTracker/><Header/><div className="main-content">{children}</div><Footer/></CartProvider></LanguageProvider></PwaProvider></body></html>; }

@@ -12,6 +12,7 @@ import "./poster-studio.css";
 import "./catalogue-search.css";
 import "./language.css";
 import "./ganesh-branding.css";
+import "./site-logo-options.css";
 import { Header } from "@/components/header";
 import { LanguageProvider } from "@/components/language-provider";
 import { Footer } from "@/components/footer";

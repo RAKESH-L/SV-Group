@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLanguage } from "@/components/language-provider";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight, RotateCcw, Search } from "lucide-react";
 import { ProductCard, type ProductView } from "@/components/product-card";
@@ -9,6 +10,7 @@ import { DEFAULT_FILTERS, filterProducts } from "@/lib/catalogue-filters";
 export type CategoryProducts = { id: string; name: string; slug: string; products: ProductView[] };
 
 export function CategoriesBrowser({ categories }: { categories: CategoryProducts[] }) {
+  const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState("all");
   const filtered = useMemo(() => categories
@@ -25,39 +27,39 @@ export function CategoriesBrowser({ categories }: { categories: CategoryProducts
       <label className="search-main-field" htmlFor="categories-product-search">
         <Search size={18} aria-hidden="true"/>
         <input id="categories-product-search" type="search" maxLength={100} value={query} autoComplete="off"
-          onChange={event => setQuery(event.target.value)} placeholder="Search items within categories…"/>
+          onChange={event => setQuery(event.target.value)} placeholder={t("Search items within categories…")}/>
       </label>
       <label className="home-search-category">
-        <span>Category</span>
+        <span>{t("Category")}</span>
         <select value={selected} onChange={event => setSelected(event.target.value)}>
-          <option value="all">All categories</option>
+          <option value="all">{t("All categories")}</option>
           {categories.map(group => <option value={group.slug} key={group.id}>{group.name}</option>)}
         </select>
       </label>
     </div>
     <div className="search-results-toolbar" aria-live="polite" role="status">
-      <span><strong>{count}</strong> of {total} products in {filtered.length} {filtered.length === 1 ? "category" : "categories"}</span>
-      {(query || selected !== "all") && <button type="button" className="search-reset" onClick={reset}><RotateCcw size={13} aria-hidden="true"/> Clear filters</button>}
+      <span><strong>{count}</strong> / {total} {t("products")} · {filtered.length} {t(filtered.length === 1 ? "category" : "categories")}</span>
+      {(query || selected !== "all") && <button type="button" className="search-reset" onClick={reset}><RotateCcw size={13} aria-hidden="true"/> {t("Clear filters")}</button>}
     </div>
     {filtered.length > 0 ? <>
       <nav className="category-jump-nav" aria-label="Browse matching product categories">
-        <a className="category-jump-all" href="#all-categories">All matching categories <ArrowDown size={13} aria-hidden="true"/></a>
+        <a className="category-jump-all" href="#all-categories">{t("All matching categories")} <ArrowDown size={13} aria-hidden="true"/></a>
         {filtered.map(group => <a key={group.id} href={`#category-${group.slug}`}>{group.name}</a>)}
       </nav>
       <div id="all-categories" className="category-sections">
         {filtered.map(group => <section key={group.id} id={`category-${group.slug}`} className="category-section" aria-labelledby={`heading-${group.slug}`}>
           <div className="category-section-heading">
-            <div><div className="eyebrow">{String(group.products.length).padStart(2, "0")} {group.products.length === 1 ? "ITEM" : "ITEMS"}</div><h2 id={`heading-${group.slug}`}>{group.name}</h2></div>
-            <Link href={`/catalogue?category=${encodeURIComponent(group.slug)}`} aria-label={`View ${group.name} in the full catalogue`}>Browse catalogue <ArrowUpRight size={15} aria-hidden="true"/></Link>
+            <div><div className="eyebrow">{String(group.products.length).padStart(2, "0")} {t(group.products.length === 1 ? "ITEM" : "ITEMS")}</div><h2 id={`heading-${group.slug}`}>{group.name}</h2></div>
+            <Link href={`/catalogue?category=${encodeURIComponent(group.slug)}`} aria-label={`View ${group.name} in the full catalogue`}>{t("Browse catalogue")} <ArrowUpRight size={15} aria-hidden="true"/></Link>
           </div>
           <div className="product-grid">{group.products.map(product => <ProductCard key={product.id} product={product}/>)}</div>
         </section>)}
       </div>
     </> : <div className="search-no-results" role="status">
       <Search size={28} aria-hidden="true"/>
-      <h2>No matching products found</h2>
-      <p>Try another product name or select a different category.</p>
-      <button type="button" className="button button-outline" onClick={reset}>Browse all categories</button>
+      <h2>{t("No matching products found")}</h2>
+      <p>{t("Try another product name or select a different category.")}</p>
+      <button type="button" className="button button-outline" onClick={reset}>{t("Browse all categories")}</button>
     </div>}
   </div>;
 }

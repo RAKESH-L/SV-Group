@@ -1,6 +1,7 @@
 import { createHmac } from "node:crypto";
 import { db } from "@/lib/db";
 import { getRecordedOrderTotals } from "@/lib/recorded-orders";
+import { recordProductDetailView } from "@/lib/advanced-product-analytics";
 
 /**
  * Privacy-conscious first-party site metrics.
@@ -120,6 +121,13 @@ export async function recordPageView(browserId: string, path: string): Promise<v
       `;
     }
   }, { maxWait: 5000, timeout: 10000 });
+
+  // This additional aggregate is best-effort and must not affect existing
+  // visitor/page metrics or any customer-facing page when the optional table
+  // cannot be created or updated.
+  if (path.startsWith("/catalogue/")) {
+    await recordProductDetailView(path).catch(() => undefined);
+  }
 }
 
 type DailyRow = { day: string; visitors: number; pageViews: bigint; informationRequests: number; generalEnquiries: number };

@@ -12,7 +12,7 @@ function box(ctx: Canvas, x: number, y: number, w: number, h: number, radius: nu
   if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
 }
 
-function circle(ctx: Canvas, x: number, y: number, r: number, color: string) {
+function circle(ctx: Canvas, x: number, y: number, r: number, color: string | CanvasGradient) {
   ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill();
 }
 

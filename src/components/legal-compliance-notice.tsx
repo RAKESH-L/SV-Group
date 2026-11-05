@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { T } from "@/components/language-provider";
 import { ArrowUpRight, Gavel, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { business } from "@/lib/business";
 
@@ -6,8 +7,8 @@ export function LegalComplianceNotice({ variant = "full" }: { variant?: "full" |
   if (variant === "compact") {
     return <aside className="legal-notice-compact" aria-label="Legal compliance information">
       <span className="legal-compact-icon"><ShieldCheck size={19} aria-hidden="true"/></span>
-      <p><strong>Legal compliance notice</strong><span>Browse product information only. This website does not accept firecracker orders or online sales.</span></p>
-      <Link href="/legal-compliance">Read the notice <ArrowUpRight size={15} aria-hidden="true"/></Link>
+      <p><strong><T text="Legal compliance notice"/></strong><span><T text="Browse product information only. This website does not accept firecracker orders or online sales."/></span></p>
+      <Link href="/legal-compliance"><T text="Read the notice"/> <ArrowUpRight size={15} aria-hidden="true"/></Link>
     </aside>;
   }
 
@@ -17,27 +18,27 @@ export function LegalComplianceNotice({ variant = "full" }: { variant?: "full" |
     <div className="legal-notice-content">
       <div className="legal-notice-heading-row">
         <div className="legal-notice-icon" aria-hidden="true"><Gavel size={25}/><ShieldCheck size={17}/></div>
-        <div><span className="legal-notice-kicker">PUBLIC INFORMATION · SRI VINAYAKA GROUPS</span><h2 id="legal-compliance-heading">LEGAL COMPLIANCE NOTICE</h2></div>
+        <div><span className="legal-notice-kicker"><T text="PUBLIC INFORMATION · SRI VINAYAKA GROUPS"/></span><h2 id="legal-compliance-heading"><T text="LEGAL COMPLIANCE NOTICE"/></h2></div>
       </div>
 
       <div className="legal-notice-copy">
-        <p>In accordance with the directions issued by the Hon’ble Supreme Court of India on 23 October 2018, e-commerce websites shall not accept online orders or effect online sales of firecrackers.</p>
-        <p>At <strong>Sri Vinayaka Groups</strong>, we value our customers and are committed to respecting applicable laws, regulations and safety requirements.</p>
-        <p>This website is intended for browsing our catalogue, viewing product categories and understanding indicative product information. No online purchases, order confirmations, payments or delivery bookings for firecrackers are accepted through this website.</p>
-        <p>For general product information and enquiries regarding applicable local requirements, customers may contact our team using the details below.</p>
-        <p>Any sale, storage, transport or other regulated activity must comply with applicable licences, the Explosives Rules, Supreme Court directions and relevant government requirements.</p>
+        <p><T text="In accordance with the directions issued by the Hon’ble Supreme Court of India on 23 October 2018, e-commerce websites shall not accept online orders or effect online sales of firecrackers."/></p>
+        <p><T text="At Sri Vinayaka Groups, we value our customers and are committed to respecting applicable laws, regulations and safety requirements."/></p>
+        <p><T text="This website is intended for browsing our catalogue, viewing product categories and understanding indicative product information. No online purchases, order confirmations, payments or delivery bookings for firecrackers are accepted through this website."/></p>
+        <p><T text="For general product information and enquiries regarding applicable local requirements, customers may contact our team using the details below."/></p>
+        <p><T text="Any sale, storage, transport or other regulated activity must comply with applicable licences, the Explosives Rules, Supreme Court directions and relevant government requirements."/></p>
       </div>
 
       <div className="legal-notice-lower">
         <address className="legal-business-card">
           <strong>{business.name}</strong>
-          <a href={business.phoneHref}><Phone size={15} aria-hidden="true"/> <span>Phone: {business.phone}</span></a>
-          <a href={business.emailHref}><Mail size={15} aria-hidden="true"/> <span>Email: {business.email}</span></a>
-          <span><MapPin size={15} aria-hidden="true"/> <span>Location: {business.address}</span></span>
+          <a href={business.phoneHref}><Phone size={15} aria-hidden="true"/> <span><T text="Phone:"/> {business.phone}</span></a>
+          <a href={business.emailHref}><Mail size={15} aria-hidden="true"/> <span><T text="Email:"/> {business.email}</span></a>
+          <span><MapPin size={15} aria-hidden="true"/> <span><T text="Location:"/> {business.address}</span></span>
         </address>
       </div>
 
-      <div className="legal-notice-signoff"><p>Thank you for visiting Sri Vinayaka Groups. We appreciate your understanding and cooperation.</p><span><strong>{business.name}</strong><span>Legal notice for final business/legal review before commercial launch.</span></span></div>
+      <div className="legal-notice-signoff"><p><T text="Thank you for visiting Sri Vinayaka Groups. We appreciate your understanding and cooperation."/></p><span><strong>{business.name}</strong><span><T text="Legal notice for final business/legal review before commercial launch."/></span></span></div>
     </div>
   </section>;
 }

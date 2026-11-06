@@ -91,7 +91,7 @@ export const defaultPromoCards: PromoCard[] = [
  * destination column exists. All reads are non-mutating and fail to safe
  * defaults when database settings are unavailable.
  */
-export const getPublishedPromoCards = unstable_cache(async (): Promise<PromoCard[]> {
+export const getPublishedPromoCards = unstable_cache(async (): Promise<PromoCard[]> => {
   try {
     const rows = await db.$queryRaw<Array<{ cards: unknown }>>`
       SELECT "cards" FROM "SitePromoCarousel" WHERE "id" = 1 LIMIT 1

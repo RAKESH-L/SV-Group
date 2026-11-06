@@ -1,41 +1,80 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminId } from "@/lib/auth";
-import { getPublishedPromoCards, promoCardsSchema, publishPromoCards } from "@/lib/site-promo-cards";
+import {
+  getPublishedPromoCards,
+  getPublishedCustomPromoDestinations,
+  promoCardsSchema,
+  customPromoDestinationsSchema,
+  publishPromoCards,
+  validatePromoSettings,
+} from "@/lib/site-promo-cards";
 
-const requestSchema = z.object({ cards: promoCardsSchema }).strict();
+const requestSchema = z.object({
+  cards: promoCardsSchema,
+  // Preserve custom paths for clients that opened the editor before an update.
+  customDestinations: customPromoDestinationsSchema.optional(),
+}).strict();
 
-export async function GET() {
-  if (!(await getAdminId())) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-  return NextResponse.json({ cards: await getPublishedPromoCards() }, {
-    headers: { "Cache-Control": "private, no-store, max-age=0", Vary: "Cookie" },
+function privateJson(value: unknown, status = 200) {
+  return NextResponse.json(value, {
+    status,
+    headers: {
+      "Cache-Control": "private, no-store, max-age=0",
+      Vary: "Cookie",
+      "X-Content-Type-Options": "nosniff",
+    },
   });
 }
 
+export async function GET() {
+  if (!(await getAdminId())) return privateJson({ error: "Unauthorized." }, 401);
+  const [cards, customDestinations] = await Promise.all([
+    getPublishedPromoCards(),
+    getPublishedCustomPromoDestinations(),
+  ]);
+  return privateJson({ cards, customDestinations });
+}
+
 export async function PATCH(request: Request) {
-  if (!(await getAdminId())) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  if (!(await getAdminId())) return privateJson({ error: "Unauthorized." }, 401);
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(request.url).origin) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    return privateJson({ error: "Invalid request origin." }, 403);
   }
-  const contentLength = Number(request.headers.get("content-length") || 0);
-  if (contentLength > 8_000) {
-    return NextResponse.json({ error: "Promotional card content is too large." }, { status: 413 });
+  const fetchSite = request.headers.get("sec-fetch-site");
+  if (fetchSite && fetchSite !== "same-origin" && fetchSite !== "none") {
+    return privateJson({ error: "Cross-site updates are not allowed." }, 403);
+  }
+  if (Number(request.headers.get("content-length") || 0) > 16_000) {
+    return privateJson({ error: "Banner settings are too large." }, 413);
   }
   const parsed = requestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({
-      error: "Each card needs a short label, headline, description, button text and valid destination. Check all three cards.",
-    }, { status: 400 });
+    return privateJson({
+      error: "Check the card texts and button links. Custom destination names need 2–48 characters, and links must be safe public site paths such as /install.",
+    }, 400);
   }
+
+  const customDestinations = parsed.data.customDestinations ?? await getPublishedCustomPromoDestinations();
   try {
-    await publishPromoCards(parsed.data.cards);
-    return NextResponse.json({ saved: true, cards: parsed.data.cards }, {
-      headers: { "Cache-Control": "private, no-store, max-age=0", Vary: "Cookie" },
+    validatePromoSettings(parsed.data.cards, customDestinations);
+  } catch {
+    return privateJson({
+      error: "A card still uses a deleted or unregistered destination. Choose another destination before publishing.",
+    }, 400);
+  }
+
+  try {
+    await publishPromoCards(parsed.data.cards, customDestinations);
+    return privateJson({
+      saved: true,
+      cards: parsed.data.cards,
+      customDestinations,
     });
   } catch {
-    return NextResponse.json({
-      error: "Could not publish banner cards to the database. Your existing published banners were not changed.",
-    }, { status: 503 });
+    return privateJson({
+      error: "Could not publish banner settings. The previous published banners were preserved. Check database permissions and retry.",
+    }, 503);
   }
 }

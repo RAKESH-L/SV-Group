@@ -27,6 +27,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       { name: "Catalogue", short_name: "Catalogue", url: "/catalogue" },
       { name: "Categories", short_name: "Categories", url: "/categories" },
       { name: "Price Calculator", short_name: "Calculator", url: "/cart" },
+      { name: "Favorites", short_name: "Favorites", url: "/wishlist" },
     ],
   };
 }

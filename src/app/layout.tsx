@@ -15,9 +15,11 @@ import "./ganesh-branding.css";
 import "./site-logo-options.css";
 import "./pwa-install.css";
 import "./hero-mini-offer.css";
+import "./engagement-features.css";
 import { Header } from "@/components/header";
 import { LanguageProvider } from "@/components/language-provider";
 import { PwaProvider } from "@/components/pwa-provider";
+import { WishlistProvider } from "@/components/wishlist-provider";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";
 import { PublicVisitTracker } from "@/components/public-visit-tracker";
@@ -46,4 +48,4 @@ export async function generateMetadata(): Promise<Metadata> {
   twitter: { card: "summary_large_image", title: "Sri Vinayaka Groups | Tumkur", images: ["/branding/sv-logo-og.png"] },
   };
 }
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const [theme, logo] = await Promise.all([getPublishedSiteTheme(), getPublishedSiteLogo()]); return <html lang="en" data-theme={theme} data-logo={logo}><body><PwaProvider><LanguageProvider><CartProvider><PublicVisitTracker/><Header/><div className="main-content">{children}</div><Footer/></CartProvider></LanguageProvider></PwaProvider></body></html>; }
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const [theme, logo] = await Promise.all([getPublishedSiteTheme(), getPublishedSiteLogo()]); return <html lang="en" data-theme={theme} data-logo={logo}><body><PwaProvider><LanguageProvider><WishlistProvider><CartProvider><PublicVisitTracker/><Header/><div className="main-content">{children}</div><Footer/></CartProvider></WishlistProvider></LanguageProvider></PwaProvider></body></html>; }

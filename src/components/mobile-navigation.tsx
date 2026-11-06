@@ -5,12 +5,14 @@ import { ArrowUpRight, Languages, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useLanguage } from "@/components/language-provider";
+import { WishlistNavButton } from "@/components/favorite-button";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/catalogue", label: "Catalogue" },
   { href: "/categories", label: "Categories" },
   { href: "/cart", label: "Price Calculator" },
+  { href: "/wishlist", label: "Favorites" },
   { href: "/contact", label: "Contact" },
   { href: "/install", label: "Install App" },
 ] as const;
@@ -33,7 +35,7 @@ export function MobileNavigation() {
 
   return <>
     <nav className="desktop-navigation" aria-label={t("Main navigation")}>
-      {links.map(link => <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined}>{t(link.label)}</Link>)}
+      {links.map(link => link.href === "/wishlist" ? <WishlistNavButton key={link.href}/> : <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined}>{t(link.label)}</Link>)}
       <Link className="nav-cta" href="/contact">{t("Talk to our team")} <span><ArrowUpRight size={14}/></span></Link>
     </nav>
     <div className="sv-language-desktop"><LanguageSwitcher/></div>

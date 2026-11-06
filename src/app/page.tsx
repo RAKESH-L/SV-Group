@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight, Mail, MapPin, Phone, Sparkles } from "lucide-react";
-import { db } from "@/lib/db";
-import { HomeCategoryCatalogue, type HomeProductCategory } from "@/components/home-category-catalogue";
+import { getPublicCatalogueSnapshot, groupActiveProducts } from "@/lib/public-catalogue-data";
+import { HomeCategoryCatalogue } from "@/components/home-category-catalogue";
 import { business } from "@/lib/business";
 import { T } from "@/components/language-provider";
 import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
@@ -16,48 +16,17 @@ import { HeroMiniOffer } from "@/components/hero-mini-offer";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  let categories: HomeProductCategory[] = [];
-  let catalogueUnavailable = false;
-  try {
-    const rows = await db.category.findMany({
-      where: { products: { some: { active: true } } },
-      orderBy: [{ name: "asc" }, { id: "asc" }],
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        products: {
-          where: { active: true },
-          orderBy: [{ name: "asc" }, { id: "asc" }],
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            description: true,
-            imageUrl: true,
-            originalPrice: true,
-            discountedPrice: true,
-            availability: true,
-            category: { select: { name: true, slug: true } },
-          },
-        },
-      },
-    });
-
-    categories = rows.map(category => ({
-      ...category,
-      products: category.products.map(product => ({
-        ...product,
-        originalPrice: Number(product.originalPrice),
-        discountedPrice: Number(product.discountedPrice),
-      })),
-    }));
-  } catch {
-    // Keep the public home page available if the catalogue database is temporarily unavailable.
-    catalogueUnavailable = true;
-  }
-
-  const [promoCards, lightHeroArtwork, miniHeroOffer] = await Promise.all([getPublishedPromoCards(), getPublishedLightHeroArtwork(), getPublishedMiniHeroOffer()]);
+  // Read public products and the small homepage settings concurrently.
+  // A single short-lived catalogue snapshot is shared with the other browsing
+  // pages, while admin edits immediately expire it.
+  const [catalogue, promoCards, lightHeroArtwork, miniHeroOffer] = await Promise.all([
+    getPublicCatalogueSnapshot().catch(() => null),
+    getPublishedPromoCards(),
+    getPublishedLightHeroArtwork(),
+    getPublishedMiniHeroOffer(),
+  ]);
+  const categories = catalogue ? groupActiveProducts(catalogue) : [];
+  const catalogueUnavailable = catalogue === null;
 
   return <main>
     <PromoCarousel cards={promoCards}/>

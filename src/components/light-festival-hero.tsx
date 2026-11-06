@@ -73,6 +73,7 @@ function ApprovedDeepavaliIllustration({ url }: { url: string }) {
       {/* The public route removes only the pale poster substrate and old frame.
           It never modifies artwork RGB values. Old CSS/SVG heroes remain. */}
       <DeepavaliHeroImage originalUrl={url} priority/>
+      <p className="deepavali-blended-quote">Light up your celebrations with<br/>joy, togetherness and a burst of happiness.</p>
     </div>
   );
 }

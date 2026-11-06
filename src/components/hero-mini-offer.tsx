@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Gift, Smartphone } from "lucide-react";
 import { T } from "@/components/language-provider";
 import type { MiniHeroOffer } from "@/lib/site-hero-mini-offer";
+import { HeroMiniSkyShots } from "@/components/hero-mini-sky-shots";
 
 /** The same server-published promotion works on both site themes.
  * No client-side requests, extra JS or layout-shifting banner injections.
@@ -11,6 +12,7 @@ export function HeroMiniOffer({
 }: { offer: MiniHeroOffer; className?: string }) {
   if (!offer.enabled) return null;
   return <aside className={`hero-mini-offer hero-mini-offer-${offer.tone} ${className}`.trim()} aria-label="SV Groups app and festive announcement">
+    <HeroMiniSkyShots/>
     <span className="hero-mini-offer-symbol" aria-hidden="true">
       {offer.linkHref === "/install" ? <Smartphone size={19}/> : <Gift size={19}/>}
     </span>

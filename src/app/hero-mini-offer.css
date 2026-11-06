@@ -93,6 +93,120 @@ html[data-theme="light"] .dark-hero-mini-offer{display:none}
 }
 @media(prefers-reduced-motion:reduce){.hero-mini-offer-cta{transition:none}.hero-mini-offer-cta:hover{transform:none}}
 
+/* Three miniature sky shots: a fresh, lightweight interpretation of the
+ * reference fireworks. Kept in a clipped illustration layer behind the copy
+ * and CTA so the compact offer stays just as readable and clickable.
+ * All animation is CSS-only (no client-side JS or large uploaded SVG).
+ */
+.hero-mini-offer{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+}
+.hero-mini-offer > :not(.hero-mini-sky-shots){
+  position:relative;
+  z-index:1;
+}
+.hero-mini-sky-shots{
+  position:absolute;
+  z-index:0;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  user-select:none;
+  overflow:hidden;
+  opacity:.72;
+}
+.hero-mini-sky-haze{
+  color:#b8a173;
+  opacity:.55;
+}
+.hero-mini-sky-gold{
+  color:#c29045;
+  --mini-sky-offset:0s;
+}
+.hero-mini-sky-green{
+  color:#598f73;
+  --mini-sky-offset:-2.35s;
+}
+.hero-mini-sky-rose{
+  color:#cf856c;
+  --mini-sky-offset:-4.7s;
+}
+.hero-mini-sky-burst{
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:heroMiniSkyBurst 7.05s ease-out var(--mini-sky-offset) infinite;
+}
+.hero-mini-sky-rocket{
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:heroMiniSkyRise 7.05s cubic-bezier(.3,.05,.35,1) var(--mini-sky-offset) infinite;
+}
+.hero-mini-sky-rays{
+  filter:drop-shadow(0 0 1.5px currentColor);
+}
+.hero-mini-sky-inner{
+  opacity:.72;
+}
+.hero-mini-sky-glow{
+  filter:drop-shadow(0 0 3px currentColor);
+}
+.hero-mini-sky-twinkles{
+  color:#cda65f;
+  opacity:.46;
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:heroMiniSkyTwinkle 4.2s ease-in-out infinite alternate;
+}
+@keyframes heroMiniSkyRise{
+  0%,4%{opacity:0;transform:translateY(10px) scale(.72)}
+  8%{opacity:.18;transform:translateY(8px) scale(.85)}
+  17%{opacity:.95;transform:translateY(-26px) scale(1)}
+  30%{opacity:.95;transform:translateY(-73px) scale(.85)}
+  32%{opacity:0;transform:translateY(-77px) scale(.7)}
+  33%,100%{opacity:0;transform:translateY(-77px) scale(.7)}
+}
+@keyframes heroMiniSkyBurst{
+  0%,29%{opacity:0;transform:scale(.13) rotate(-10deg)}
+  33%{opacity:.3;transform:scale(.38) rotate(-5deg)}
+  40%{opacity:.83;transform:scale(.8) rotate(0deg)}
+  46%{opacity:1;transform:scale(1.08) rotate(6deg)}
+  58%{opacity:.42;transform:scale(1.24) rotate(13deg)}
+  69%,100%{opacity:0;transform:scale(1.35) rotate(16deg)}
+}
+@keyframes heroMiniSkyTwinkle{
+  0%{opacity:.14;transform:scale(.94)}
+  100%{opacity:.51;transform:scale(1.04)}
+}
+
+/* The same artwork follows existing Forest, Terracotta and Gold choices. */
+.hero-mini-offer-terracotta .hero-mini-sky-gold{color:#c78d54}
+.hero-mini-offer-terracotta .hero-mini-sky-green{color:#948c6d}
+.hero-mini-offer-terracotta .hero-mini-sky-rose{color:#c66e58}
+.hero-mini-offer-gold .hero-mini-sky-gold{color:#b58b35}
+.hero-mini-offer-gold .hero-mini-sky-green{color:#9c9756}
+.hero-mini-offer-gold .hero-mini-sky-rose{color:#c69556}
+.dark-hero-mini-offer .hero-mini-sky-shots{opacity:.62}
+.dark-hero-mini-offer .hero-mini-sky-gold{color:#f1c77d}
+.dark-hero-mini-offer .hero-mini-sky-green{color:#a5d2ab}
+.dark-hero-mini-offer .hero-mini-sky-rose{color:#efaa93}
+.dark-hero-mini-offer .hero-mini-sky-twinkles{color:#f5d38a}
+
+/* No layout change on compact mobile cards. Avoid busy decoration behind
+ * short text on narrow screens. The same SVG also appears in the admin preview. */
+@media(max-width:480px){
+  .hero-mini-sky-shots{opacity:.42}
+  .dark-hero-mini-offer .hero-mini-sky-shots{opacity:.38}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-mini-sky-rocket{animation:none;opacity:0}
+  .hero-mini-sky-burst{animation:none;opacity:.23;transform:scale(.84)}
+  .hero-mini-sky-twinkles{animation:none;opacity:.25;transform:none}
+}
+
 /* Admin → Banners has an independent mini hero offer publishing control. */
 .admin-mini-offer-editor{margin:27px 0;padding:20px;border:1px solid var(--line);background:var(--panel);border-radius:12px;min-width:0}
 .admin-mini-offer-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin:0 0 18px}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminId } from "@/lib/auth";
 import { getSiteAnalyticsSummary } from "@/lib/site-analytics";
+import { getPwaAnalyticsSummary } from "@/lib/site-pwa-analytics";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,8 +13,8 @@ export async function GET() {
     });
   }
   try {
-    const analytics = await getSiteAnalyticsSummary();
-    return NextResponse.json(analytics, {
+    const [analytics, pwa] = await Promise.all([getSiteAnalyticsSummary(), getPwaAnalyticsSummary()]);
+    return NextResponse.json({ ...analytics, pwa }, {
       headers: { "Cache-Control": "private, no-store, max-age=0", Vary: "Cookie" },
     });
   } catch {

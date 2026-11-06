@@ -251,3 +251,86 @@ html[data-theme="light"] .light-festival-deepavali img{
 @media(max-width:650px){
   .light-artwork-grid{grid-template-columns:1fr}
 }
+
+
+/* === Seamless Deepavali hero (approved, background removed) ===
+   The original CSS/SVG illustrations are untouched. The processed PNG has
+   real transparency and no rectangular poster border. Only alpha is changed,
+   never hue/brightness/saturation of the foreground RGB artwork. */
+html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{
+  width:100%;
+  max-width:630px;
+  margin-inline:auto;
+  padding:0;
+  border:0;
+  border-radius:0;
+  overflow:visible;
+  isolation:auto;
+  box-shadow:none;
+  background:transparent;
+}
+html[data-theme="light"] .light-festival-illustration.light-festival-deepavali::before,
+html[data-theme="light"] .light-festival-illustration.light-festival-deepavali::after{
+  content:none!important;
+  display:none!important;
+}
+html[data-theme="light"] .light-festival-deepavali img{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:auto;
+  max-height:none;
+  aspect-ratio:1008 / 1271;
+  object-fit:contain;
+  object-position:center;
+  border:0;
+  border-radius:0;
+  box-shadow:none!important;
+  background:transparent;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+  transform:none!important;
+  transition:none!important;
+}
+html[data-theme="light"] .light-artwork-preview-deepavali{
+  background:transparent;
+  border:0;
+  padding:5px;
+}
+html[data-theme="light"] .light-artwork-preview-deepavali img{
+  display:block;
+  height:182px;
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+}
+@media(min-width:980px){
+  html[data-theme="light"] .light-festival-hero:has(.light-festival-deepavali){
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:clamp(28px,4vw,88px);
+    align-items:center;
+  }
+}
+@media(max-width:979px){
+  html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{
+    width:min(100%,560px);
+    max-width:560px;
+    border-radius:0;
+    box-shadow:none;
+  }
+}
+@media(max-width:650px){
+  html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{
+    width:min(100%,490px);
+    max-width:490px;
+    padding:0;
+    border-radius:0;
+    box-shadow:none;
+  }
+}

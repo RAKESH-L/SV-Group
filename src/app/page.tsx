@@ -9,7 +9,7 @@ import { SvGroupsWordmark } from "@/components/sv-groups-wordmark";
 import { LightFestivalHero } from "@/components/light-festival-hero";
 import { PromoCarousel } from "@/components/promo-carousel";
 import { getCachedPublishedPromoCards, getCachedPublishedMiniHeroOffer } from "@/lib/public-promo-cache";
-import { getPublishedLightHeroArtwork } from "@/lib/site-theme";
+import { getPublishedLightHeroArtwork, getPublishedHeroImageUrl } from "@/lib/site-theme";
 
 import { HeroMiniOffer } from "@/components/hero-mini-offer";
 
@@ -19,18 +19,19 @@ export default async function Home() {
   // Read public products and the small homepage settings concurrently.
   // A single short-lived catalogue snapshot is shared with the other browsing
   // pages, while admin edits immediately expire it.
-  const [catalogue, promoCards, lightHeroArtwork, miniHeroOffer] = await Promise.all([
+  const [catalogue, promoCards, lightHeroArtwork, miniHeroOffer, heroImageUrl] = await Promise.all([
     getPublicCatalogueSnapshot().catch(() => null),
     getCachedPublishedPromoCards(),
     getPublishedLightHeroArtwork(),
     getCachedPublishedMiniHeroOffer(),
+    getPublishedHeroImageUrl(),
   ]);
   const categories = catalogue ? groupActiveProducts(catalogue) : [];
   const catalogueUnavailable = catalogue === null;
 
   return <main>
     <PromoCarousel cards={promoCards}/>
-    <LightFestivalHero artwork={lightHeroArtwork} offer={miniHeroOffer}/>
+    <LightFestivalHero artwork={lightHeroArtwork} offer={miniHeroOffer} heroImageUrl={heroImageUrl}/>
     <section className="home-contact">
       <div className="home-contact-copy">
         <div className="eyebrow"><Sparkles size={14} aria-hidden="true"/> <T text="HERE FOR YOUR CELEBRATION"/></div>

@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getAdminId } from "@/lib/auth";
+import { invalidatePublicCatalogue } from "@/lib/public-catalogue-data";
 import { productSchema } from "@/lib/validation";
 
 const slugify = (value: string) => `${value.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${crypto.randomUUID().slice(0, 6)}`;
@@ -22,6 +23,7 @@ export async function POST(req: NextRequest) {
         imageUrl: parsed.data.imageUrl || null,
       },
     });
+    invalidatePublicCatalogue();
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

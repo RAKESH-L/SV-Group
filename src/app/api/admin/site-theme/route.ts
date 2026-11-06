@@ -17,11 +17,13 @@ function allowedHeroUrl(url: string): boolean {
     const source = new URL(url);
     const supabase = new URL(origin);
     const bucket = process.env.SUPABASE_STORAGE_BUCKET || "product-images";
+    const prefix = `/storage/v1/object/public/${bucket}/hero-artwork/`;
+    const filename = source.pathname.startsWith(prefix) ? source.pathname.slice(prefix.length) : "";
     return source.protocol === "https:"
       && source.origin === supabase.origin
       && source.search === ""
       && source.hash === ""
-      && new RegExp("^/storage/v1/object/public/" + bucket.replace(/[.*+?^$\{\}()|[\]\\]/g, "\\const schema = z.object({ theme: z.enum(["dark", "light"]), lightHeroArtwork: z.enum(["crackers", "diya"]).default("crackers"), logo: z.enum(["ganesh", "diamond"]).optional() });") + "/hero-artwork/[0-9a-f-]{36}\\.png$", "i").test(source.pathname);
+      && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.png$/i.test(filename);
   } catch { return false; }
 }
 

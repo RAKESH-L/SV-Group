@@ -1,6 +1,7 @@
 "use client";
 import { Check, Flame, PartyPopper, Flower2 } from "lucide-react";
 import type { LightHeroArtwork } from "@/lib/site-theme";
+import { DeepavaliHeroImage } from "@/components/deepavali-hero-image";
 export function LightArtworkChoices({ artwork, publishedArtwork, heroImageUrl, onChange }: {
   artwork: LightHeroArtwork;
   publishedArtwork: LightHeroArtwork;
@@ -24,11 +25,11 @@ export function LightArtworkChoices({ artwork, publishedArtwork, heroImageUrl, o
       </button>
       <button type="button" className={`light-artwork-option ${artwork === "deepavali" ? "selected" : ""}`} aria-pressed={artwork === "deepavali"} onClick={() => onChange("deepavali")}>
         <span className="light-artwork-preview light-artwork-preview-deepavali">
-          {heroImageUrl ? <img src={heroImageUrl} alt="Approved Happy Deepavali hero preview" loading="lazy"/> :
+          {heroImageUrl ? <DeepavaliHeroImage originalUrl={heroImageUrl} preview/> :
             <><Flower2 size={42} strokeWidth={1.5}/><span>Happy Deepavali</span><b>APPROVED ARTWORK</b></>}
         </span>
         <span className="light-artwork-option-title"><strong>Happy Deepavali — Approved</strong>{artwork === "deepavali" && <Check size={17} aria-hidden="true"/>}</span>
-        <small>Gold Ganesha emblem, ornamented mandala, diyas and celebration quote. The approved original PNG is displayed without brightening or recolouring. {heroImageUrl ? "Ready to select instantly." : "Waiting for the saved artwork to be located."}</small>
+        <small>Gold Ganesha emblem, ornamented mandala, diyas and celebration quote. The background-free presentation blends with the Light Theme; the saved original stays intact. {heroImageUrl ? "Ready to select instantly." : "Waiting for the saved artwork to be located."}</small>
       </button>
     </div>
   </section>;

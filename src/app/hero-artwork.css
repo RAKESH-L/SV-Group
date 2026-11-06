@@ -251,3 +251,122 @@ html[data-theme="light"] .light-festival-deepavali img{
 @media(max-width:650px){
   .light-artwork-grid{grid-template-columns:1fr}
 }
+
+
+/* === Seamless Deepavali hero (approved, background removed) ===
+   The original CSS/SVG illustrations are untouched. The processed PNG has
+   real transparency and no rectangular poster border. Only alpha is changed,
+   never hue/brightness/saturation of the foreground RGB artwork. */
+html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  max-width:630px;
+  margin-inline:auto;
+  padding:0;
+  border:0;
+  border-radius:0;
+  overflow:visible;
+  isolation:auto;
+  box-shadow:none;
+  background:transparent;
+}
+html[data-theme="light"] .light-festival-illustration.light-festival-deepavali::before,
+html[data-theme="light"] .light-festival-illustration.light-festival-deepavali::after{
+  content:none!important;
+  display:none!important;
+}
+html[data-theme="light"] .light-festival-deepavali img{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:auto;
+  max-height:none;
+  aspect-ratio:1008 / 1073;
+  object-fit:contain;
+  object-position:center;
+  border:0;
+  border-radius:0;
+  box-shadow:none!important;
+  background:transparent;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  opacity:1!important;
+  transform:none!important;
+  transition:none!important;
+}
+html[data-theme="light"] .light-artwork-preview-deepavali{
+  background:transparent;
+  border:0;
+  padding:5px;
+}
+html[data-theme="light"] .light-artwork-preview-deepavali img{
+  display:block;
+  height:182px;
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+}
+@media(min-width:980px){
+  html[data-theme="light"] .light-festival-hero:has(.light-festival-deepavali){
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:clamp(28px,4vw,88px);
+    align-items:center;
+  }
+}
+@media(max-width:979px){
+  html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{
+    width:min(100%,560px);
+    max-width:560px;
+    border-radius:0;
+    box-shadow:none;
+  }
+}
+@media(max-width:650px){
+  html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{
+    width:min(100%,490px);
+    max-width:490px;
+    padding:0;
+    border-radius:0;
+    box-shadow:none;
+  }
+}
+
+/* The caption is an actual theme-native element, not a rectangular
+   section of the PNG. Its green/gold palette matches existing UI accents. */
+html[data-theme="light"] .deepavali-blended-quote{
+  display:block;
+  width:min(100%,550px);
+  margin:-2px auto 0;
+  padding:18px clamp(18px,3vw,31px);
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  color:#1c4b3d;
+  text-align:center;
+  font:italic 500 clamp(13px,1.3vw,19px)/1.55 Georgia,'Times New Roman',serif;
+  letter-spacing:.02em;
+  text-wrap:balance;
+}
+html[data-theme="light"] .deepavali-blended-quote::after{
+  content:"";
+  display:block;
+  width:min(44%,175px);
+  height:2px;
+  margin:14px auto 0;
+  background:#b78236;
+}
+@media(max-width:650px){
+  html[data-theme="light"] .deepavali-blended-quote{
+    width:100%;
+    padding:13px 5px 5px;
+    font-size:clamp(12px,3.2vw,16px);
+  }
+}

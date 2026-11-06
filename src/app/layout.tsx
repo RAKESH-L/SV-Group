@@ -23,10 +23,10 @@ import { WishlistProvider } from "@/components/wishlist-provider";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";
 import { PublicVisitTracker } from "@/components/public-visit-tracker";
-import { getPublishedSiteTheme, getPublishedSiteLogo } from "@/lib/site-theme";
+import { getPublishedSitePreferences } from "@/lib/site-theme";
 import { connection } from "next/server";
 export async function generateMetadata(): Promise<Metadata> {
-  const logo = await getPublishedSiteLogo();
+  const { logo } = await getPublishedSitePreferences();
   return {
   title: "Sri Vinayaka Groups | Tumkur",
   description: "Explore the Sri Vinayaka Groups festive catalogue. Get in touch with our team in Tumkur, Karnataka.",
@@ -48,4 +48,4 @@ export async function generateMetadata(): Promise<Metadata> {
   twitter: { card: "summary_large_image", title: "Sri Vinayaka Groups | Tumkur", images: ["/branding/sv-logo-og.png"] },
   };
 }
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const [theme, logo] = await Promise.all([getPublishedSiteTheme(), getPublishedSiteLogo()]); return <html lang="en" data-theme={theme} data-logo={logo}><body><PwaProvider><LanguageProvider><WishlistProvider><CartProvider><PublicVisitTracker/><Header/><div className="main-content">{children}</div><Footer/></CartProvider></WishlistProvider></LanguageProvider></PwaProvider></body></html>; }
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { await connection(); const { theme, logo } = await getPublishedSitePreferences(); return <html lang="en" data-theme={theme} data-logo={logo}><body><PwaProvider><LanguageProvider><WishlistProvider><CartProvider><PublicVisitTracker/><Header/><div className="main-content">{children}</div><Footer/></CartProvider></WishlistProvider></LanguageProvider></PwaProvider></body></html>; }

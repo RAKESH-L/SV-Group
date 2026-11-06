@@ -28,7 +28,7 @@ export function DeepavaliHeroImage({
     className={className}
     alt={preview ? "Happy Deepavali hero illustration preview without the original rectangular background" : "Happy Deepavali — gold Ganesha, festive mandala, decorative diyas and a joyful celebration quote"}
     width={1008}
-    height={1271}
+    height={1073}
     decoding="async"
     loading={priority ? "eager" : "lazy"}
     fetchPriority={priority ? "high" : "auto"}

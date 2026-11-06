@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 
 export type SiteTheme = "dark" | "light";
@@ -7,56 +9,58 @@ export const DEFAULT_SITE_LOGO: SiteLogo = "ganesh";
 export const DEFAULT_LIGHT_HERO_ARTWORK: LightHeroArtwork = "crackers";
 const DEFAULT_THEME: SiteTheme = "dark";
 
+export type PublishedSitePreferences = {
+  theme: SiteTheme; lightHeroArtwork: LightHeroArtwork; logo: SiteLogo;
+};
+
+const defaults: PublishedSitePreferences = {
+  theme: DEFAULT_THEME,
+  lightHeroArtwork: DEFAULT_LIGHT_HERO_ARTWORK,
+  logo: DEFAULT_SITE_LOGO,
+};
+
 /**
- * Single published theme for the whole site. A missing preference (including
- * projects that have never published a choice) preserves the original dark theme.
+ * One tiny settings query instead of separate logo/theme/artwork calls on
+ * every page. to_jsonb gracefully handles older database schema versions
+ * without the optional logo or artwork columns.
+ *
+ * Data stays cached for at most 60 seconds, and admin publishing expires it
+ * immediately across requests. The React cache shares the read within one
+ * request (layout, metadata, homepage) with no change to UI.
  */
+const cachedPreferences = unstable_cache(async (): Promise<PublishedSitePreferences> => {
+  try {
+    const rows = await db.$queryRaw<Array<{ settings: unknown }>>`
+      SELECT to_jsonb(settings) AS "settings"
+      FROM "SiteThemeSettings" AS settings
+      WHERE "id" = 1 LIMIT 1
+    `;
+    const data = rows[0]?.settings;
+    if (!data || typeof data !== "object") return defaults;
+    const record = data as Record<string, unknown>;
+    return {
+      theme: record.theme === "light" ? "light" : DEFAULT_THEME,
+      logo: record.logo === "diamond" ? "diamond" : DEFAULT_SITE_LOGO,
+      lightHeroArtwork: record.lightHeroArtwork === "diya" ? "diya" : DEFAULT_LIGHT_HERO_ARTWORK,
+    };
+  } catch {
+    return defaults;
+  }
+}, ["sv-site-preferences-v1"], { tags: ["sv-site-preferences"], revalidate: 60 });
+
+export const getPublishedSitePreferences = cache(cachedPreferences);
+
 export async function getPublishedSiteTheme(): Promise<SiteTheme> {
-  try {
-    const rows = await db.$queryRaw<Array<{ theme: string }>>`
-      SELECT "theme" FROM "SiteThemeSettings" WHERE "id" = 1 LIMIT 1
-    `;
-    return rows[0]?.theme === "light" ? "light" : DEFAULT_THEME;
-  } catch {
-    // A fresh database may not have its optional preferences table yet.
-    // Public pages remain available with the original dark styling.
-    return DEFAULT_THEME;
-  }
+  return (await getPublishedSitePreferences()).theme;
 }
-
-/**
- * The light theme can publish either illustration without touching the global
- * Dark/Light choice. Existing sites without the new column default to crackers.
- */
 export async function getPublishedLightHeroArtwork(): Promise<LightHeroArtwork> {
-  try {
-    const rows = await db.$queryRaw<Array<{ lightHeroArtwork: string }>>`
-      SELECT "lightHeroArtwork" FROM "SiteThemeSettings" WHERE "id" = 1 LIMIT 1
-    `;
-    return rows[0]?.lightHeroArtwork === "diya" ? "diya" : DEFAULT_LIGHT_HERO_ARTWORK;
-  } catch {
-    return DEFAULT_LIGHT_HERO_ARTWORK;
-  }
+  return (await getPublishedSitePreferences()).lightHeroArtwork;
 }
-
-/** Existing published logo is Ganesh unless an admin chooses Diamond. */
 export async function getPublishedSiteLogo(): Promise<SiteLogo> {
-  try {
-    const rows = await db.$queryRaw<Array<{ logo: string }>>`
-      SELECT "logo" FROM "SiteThemeSettings" WHERE "id" = 1 LIMIT 1
-    `;
-    return rows[0]?.logo === "diamond" ? "diamond" : DEFAULT_SITE_LOGO;
-  } catch {
-    // Existing databases do not yet have the optional logo column.
-    return DEFAULT_SITE_LOGO;
-  }
+  return (await getPublishedSitePreferences()).logo;
 }
 
-/**
- * Only the authenticated admin API calls this function. Creating the small
- * preference table on the first publish avoids a deployment-time migration
- * dependency and preserves all existing catalogue and enquiry tables.
- */
+/** Admin-only publishing keeps the existing table and current theme/logo. */
 export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: LightHeroArtwork = DEFAULT_LIGHT_HERO_ARTWORK, logo: SiteLogo = DEFAULT_SITE_LOGO): Promise<void> {
   await db.$executeRaw`
     CREATE TABLE IF NOT EXISTS "SiteThemeSettings" (
@@ -85,4 +89,6 @@ export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: Light
         "logo" = EXCLUDED."logo",
         "updatedAt" = NOW()
   `;
+  try { revalidateTag("sv-site-preferences", { expire: 0 }); }
+  catch (error) { console.error("Could not invalidate published site settings", error); }
 }

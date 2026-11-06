@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { db } from "@/lib/db";
+import { getPublicCatalogueSnapshot } from "@/lib/public-catalogue-data";
 import { CatalogueClient } from "@/components/catalogue-client";
-import type { ProductView } from "@/components/product-card";
-import type { Prisma } from "@prisma/client";
 import { business } from "@/lib/business";
 import { T } from "@/components/language-provider";
 import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
@@ -17,18 +15,14 @@ export default async function CataloguePage({
 }: {
   searchParams: Promise<{ category?: string | string[]; q?: string | string[] }>;
 }) {
-  const params = await searchParams;
+  const [params, snapshot] = await Promise.all([
+    searchParams,
+    getPublicCatalogueSnapshot().catch(() => null),
+  ]);
   const requestedCategory = typeof params.category === "string" ? params.category : "all";
   const requestedQuery = typeof params.q === "string" ? params.q : "";
-  let products: ProductView[] = [], categories: { name: string; slug: string }[] = [];
-  try {
-    const [p, c] = await Promise.all([
-      db.product.findMany({ where: { active: true }, include: { category: true }, orderBy: { name: "asc" } }),
-      db.category.findMany({ orderBy: { name: "asc" }, select: { name: true, slug: true } }),
-    ]);
-    products = p.map((x: Prisma.ProductGetPayload<{ include: { category: true } }>) => ({ ...x, originalPrice: Number(x.originalPrice), discountedPrice: Number(x.discountedPrice) }));
-    categories = c;
-  } catch { /* DB may not be configured in development */ }
+  const products = snapshot?.products || [];
+  const categories = snapshot?.categories.map(({ name, slug }) => ({ name, slug })) || [];
 
   return <main className="page-shell">
     <div className="eyebrow"><T text="THE SV GROUPS SELECTION"/></div>

@@ -5,5 +5,8 @@
       "path": "/api/cron/purge-information-requests",
       "schedule": "30 4 * * *"
     }
+  ],
+  "regions": [
+    "sin1"
   ]
 }

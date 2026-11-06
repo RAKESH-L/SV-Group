@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { Prisma } from "@prisma/client";
 import { CategoriesBrowser, type CategoryProducts } from "@/components/categories-browser";
-import { db } from "@/lib/db";
+import { getPublicCatalogueSnapshot, groupActiveProducts } from "@/lib/public-catalogue-data";
 import { T } from "@/components/language-provider";
 import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
 
@@ -15,39 +14,9 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function CategoriesPage() {
-  let categories: CategoryProducts[] = [];
-  let databaseAvailable = true;
-
-  try {
-    const rows = await db.category.findMany({
-      orderBy: [{ name: "asc" }, { id: "asc" }],
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        products: {
-          where: { active: true },
-          orderBy: [{ name: "asc" }, { id: "asc" }],
-          include: { category: { select: { name: true, slug: true } } },
-        },
-      },
-    });
-
-    categories = rows
-      .filter(category => category.products.length > 0)
-      .map(category => ({
-        id: category.id,
-        name: category.name,
-        slug: category.slug,
-        products: category.products.map((product: Prisma.ProductGetPayload<{ include: { category: { select: { name: true; slug: true } } } }>) => ({
-          ...product,
-          originalPrice: Number(product.originalPrice),
-          discountedPrice: Number(product.discountedPrice),
-        })),
-      }));
-  } catch {
-    databaseAvailable = false;
-  }
+  const snapshot = await getPublicCatalogueSnapshot().catch(() => null);
+  const categories: CategoryProducts[] = snapshot ? groupActiveProducts(snapshot) : [];
+  const databaseAvailable = snapshot !== null;
 
   return <main className="page-shell categories-page">
     <div className="eyebrow"><T text="THE SV GROUPS COLLECTION"/></div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { getAnonymousVisitorId } from "@/lib/client-analytics-identity";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -19,6 +20,41 @@ const PwaContext = createContext<PwaState>({
   error: "", install: async () => "unavailable",
 });
 
+const INSTALL_RECORDED_KEY = "sv_pwa_install_event_recorded_v1";
+let reportingInstall = false;
+
+function reportObservedInstall(source: "appinstalled" | "standalone") {
+  // Browser analytics only. No calls from admin pages or privacy opt-outs.
+  if (location.pathname === "/admin" || location.pathname.startsWith("/admin/")) return;
+  if (reportingInstall) return;
+  const visitorId = getAnonymousVisitorId();
+  if (!visitorId) return;
+  try {
+    if (window.localStorage.getItem(INSTALL_RECORDED_KEY) === "yes") return;
+  } catch { return; }
+
+  reportingInstall = true;
+  void fetch("/api/analytics/pwa-install", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
+    cache: "no-store",
+    keepalive: true,
+    body: JSON.stringify({ visitorId, source }),
+  }).then(async response => {
+    if (!response.ok) return;
+    const body = await response.json() as { counted?: boolean };
+    // "counted: false" means this anonymous browser was already recorded
+    // recently. Still remember the success so refreshes do not add traffic.
+    if (typeof body.counted === "boolean") {
+      try { window.localStorage.setItem(INSTALL_RECORDED_KEY, "yes"); }
+      catch { /* No local storage: server 35-day dedup still applies. */ }
+    }
+  }).catch(() => {
+    // Analytics must never interrupt the install or browsing experience.
+  }).finally(() => { reportingInstall = false; });
+}
+
 export function usePwaInstall() { return useContext(PwaContext); }
 
 export function PwaProvider({ children }: { children: ReactNode }) {
@@ -35,6 +71,7 @@ export function PwaProvider({ children }: { children: ReactNode }) {
     const standalone = window.matchMedia("(display-mode: standalone)").matches ||
       (navigator as Navigator & { standalone?: boolean }).standalone === true;
     setInstalled(standalone);
+    if (standalone) reportObservedInstall("standalone");
 
     function handleBeforeInstall(event: Event) {
       event.preventDefault();
@@ -43,6 +80,7 @@ export function PwaProvider({ children }: { children: ReactNode }) {
     function handleInstalled() {
       setInstalled(true);
       setPromptEvent(null);
+      reportObservedInstall("appinstalled");
     }
     window.addEventListener("beforeinstallprompt", handleBeforeInstall);
     window.addEventListener("appinstalled", handleInstalled);

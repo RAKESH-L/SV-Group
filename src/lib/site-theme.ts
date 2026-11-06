@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 
@@ -19,6 +20,7 @@ const DEFAULT_THEME: SiteTheme = "dark";
  */
 const APPROVED_DEEPAVALI_SHA256 = "4cfe51cc1cdeb00e35d1ecbea88b17ec66a9303e17328998e1d4d79f2c232c10";
 const APPROVED_DEEPAVALI_BYTES = 1_950_775;
+const APPROVED_DEEPAVALI_PIXELS_SHA256 = "bccd49058393323accb0cf1177c3a6cc301ce7569915701903ca609057766633";
 const HERO_SELECTION_VERSION = 2;
 
 export type PublishedSitePreferences = {
@@ -80,12 +82,25 @@ async function findAlreadyUploadedApprovedHero(): Promise<string | null> {
   for (const candidate of data) {
     if (!/^[0-9a-f-]{36}\.png$/i.test(candidate.name)) continue;
     const reportedBytes = Number(candidate.metadata?.size);
-    if (reportedBytes > 0 && reportedBytes !== APPROVED_DEEPAVALI_BYTES) continue;
+    // Reject oversized files, but allow PNGs re-saved with different metadata
+    // if their exact unmodified pixels still match the approved artwork.
+    if (reportedBytes > 4 * 1024 * 1024) continue;
     const path = `hero-artwork/${candidate.name}`;
     const { data: file, error: downloadError } = await storage.download(path);
-    if (downloadError || !file || file.size !== APPROVED_DEEPAVALI_BYTES) continue;
-    const digest = createHash("sha256").update(Buffer.from(await file.arrayBuffer())).digest("hex");
-    if (digest === APPROVED_DEEPAVALI_SHA256) {
+    if (downloadError || !file || file.size > 4 * 1024 * 1024) continue;
+    const bytes = Buffer.from(await file.arrayBuffer());
+    const fileDigest = createHash("sha256").update(bytes).digest("hex");
+    let exact = file.size === APPROVED_DEEPAVALI_BYTES && fileDigest === APPROVED_DEEPAVALI_SHA256;
+    if (!exact) {
+      try {
+        const metadata = await sharp(bytes, { limitInputPixels: 3_000_000 }).metadata();
+        if (metadata.format === "png" && metadata.width === 1122 && metadata.height === 1402) {
+          const raw = await sharp(bytes, { limitInputPixels: 3_000_000 }).ensureAlpha().raw().toBuffer();
+          exact = createHash("sha256").update(raw).digest("hex") === APPROVED_DEEPAVALI_PIXELS_SHA256;
+        }
+      } catch { /* Not the approved image; leave this storage object untouched. */ }
+    }
+    if (exact) {
       const url = storage.getPublicUrl(path).data.publicUrl;
       return allowedHeroUrl(url) ? url : null;
     }

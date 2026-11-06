@@ -250,6 +250,4 @@ html[data-theme="light"] .light-festival-deepavali img{
 @media(max-width:900px){.light-artwork-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){
   .light-artwork-grid{grid-template-columns:1fr}
-  html[data-theme="light"] .light-festival-deepavali img{max-height:none}
-  html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{max-width:490px;border-radius:16px}
 }

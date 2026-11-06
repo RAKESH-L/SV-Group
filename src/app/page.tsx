@@ -8,9 +8,9 @@ import { LegalComplianceNotice } from "@/components/legal-compliance-notice";
 import { SvGroupsWordmark } from "@/components/sv-groups-wordmark";
 import { LightFestivalHero } from "@/components/light-festival-hero";
 import { PromoCarousel } from "@/components/promo-carousel";
-import { getPublishedPromoCards } from "@/lib/site-promo-cards";
+import { getCachedPublishedPromoCards, getCachedPublishedMiniHeroOffer } from "@/lib/public-promo-cache";
 import { getPublishedLightHeroArtwork } from "@/lib/site-theme";
-import { getPublishedMiniHeroOffer } from "@/lib/site-hero-mini-offer";
+
 import { HeroMiniOffer } from "@/components/hero-mini-offer";
 
 export const dynamic = "force-dynamic";
@@ -21,9 +21,9 @@ export default async function Home() {
   // pages, while admin edits immediately expire it.
   const [catalogue, promoCards, lightHeroArtwork, miniHeroOffer] = await Promise.all([
     getPublicCatalogueSnapshot().catch(() => null),
-    getPublishedPromoCards(),
+    getCachedPublishedPromoCards(),
     getPublishedLightHeroArtwork(),
-    getPublishedMiniHeroOffer(),
+    getCachedPublishedMiniHeroOffer(),
   ]);
   const categories = catalogue ? groupActiveProducts(catalogue) : [];
   const catalogueUnavailable = catalogue === null;

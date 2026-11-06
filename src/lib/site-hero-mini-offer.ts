@@ -1,3 +1,4 @@
+import { revalidateTag, unstable_cache } from "next/cache";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { promoDestinationPathSchema } from "@/lib/site-promo-cards";
@@ -33,7 +34,7 @@ export const defaultMiniHeroOffer: MiniHeroOffer = {
  * Reads do not create or alter tables, and the public homepage never fails
  * because of promotion configuration.
  */
-export async function getPublishedMiniHeroOffer(): Promise<MiniHeroOffer> {
+export const getPublishedMiniHeroOffer = unstable_cache(async (): Promise<MiniHeroOffer> {
   try {
     const rows = await db.$queryRaw<Array<{ settings: unknown }>>`
       SELECT "settings" FROM "SiteHeroMiniOffer" WHERE "id" = 1 LIMIT 1
@@ -43,7 +44,7 @@ export async function getPublishedMiniHeroOffer(): Promise<MiniHeroOffer> {
   } catch {
     return defaultMiniHeroOffer;
   }
-}
+}, ["sv-mini-hero-offer-v1"], { tags: ["sv-mini-hero-offer"], revalidate: 60 });
 
 /** A save writes one complete validated config; no migrations or new services. */
 export async function publishMiniHeroOffer(value: MiniHeroOffer): Promise<void> {
@@ -62,4 +63,6 @@ export async function publishMiniHeroOffer(value: MiniHeroOffer): Promise<void> 
     SET "settings" = EXCLUDED."settings",
         "updatedAt" = NOW()
   `;
+  try { revalidateTag("sv-mini-hero-offer", { expire: 0 }); }
+  catch (error) { console.error("Could not invalidate public banner settings", error); }
 }

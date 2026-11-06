@@ -66,7 +66,27 @@ function FestivalIllustration() {
   );
 }
 
-export function LightFestivalHero({ artwork = "crackers", offer }: { artwork?: LightHeroArtwork; offer: MiniHeroOffer }) {
+function ApprovedDeepavaliIllustration({ url }: { url: string }) {
+  return (
+    <div className="light-festival-illustration light-festival-deepavali">
+      {/* Use the original uploaded PNG without colour filters, gradients,
+          overlays or image transformations. The illustration itself includes
+          its greeting, approved Ganesh emblem and message. */}
+      <img
+        src={url}
+        alt="Happy Deepavali — ornamental floral mandala, approved gold Ganesha emblem, glowing diyas and a celebration greeting"
+        width={1122}
+        height={1402}
+        decoding="async"
+        fetchPriority="high"
+      />
+    </div>
+  );
+}
+
+export function LightFestivalHero({ artwork = "crackers", offer, heroImageUrl }: {
+  artwork?: LightHeroArtwork; offer: MiniHeroOffer; heroImageUrl?: string | null;
+}) {
   return (
     <>
       <section className="light-festival-hero" aria-labelledby="light-festival-heading">
@@ -79,7 +99,7 @@ export function LightFestivalHero({ artwork = "crackers", offer }: { artwork?: L
           <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> <T text="Rooted in tradition. Celebrated with care."/></p>
         </div>
         <HeroMiniOffer offer={offer} className="light-hero-mini-offer"/>
-        {artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
+        {artwork === "deepavali" && heroImageUrl ? <ApprovedDeepavaliIllustration url={heroImageUrl}/> : artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
       </section>
       <section className="light-festival-values" aria-label="Our approach">
         <span><Leaf size={18} aria-hidden="true"/> <T text="Celebrate thoughtfully"/></span>

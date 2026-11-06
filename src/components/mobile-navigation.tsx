@@ -13,7 +13,6 @@ const links = [
   { href: "/categories", label: "Categories" },
   { href: "/cart", label: "Price Calculator" },
   { href: "/wishlist", label: "Favorites" },
-  { href: "/notifications", label: "Notifications" },
   { href: "/contact", label: "Contact" },
   { href: "/install", label: "Install App" },
 ] as const;
@@ -36,8 +35,7 @@ export function MobileNavigation() {
 
   return <>
     <nav className="desktop-navigation" aria-label={t("Main navigation")}>
-      {links.map(link => <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined}>{t(link.label)}</Link>)}
-      <WishlistNavButton/>
+      {links.map(link => link.href === "/wishlist" ? <WishlistNavButton key={link.href}/> : <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined}>{t(link.label)}</Link>)}
       <Link className="nav-cta" href="/contact">{t("Talk to our team")} <span><ArrowUpRight size={14}/></span></Link>
     </nav>
     <div className="sv-language-desktop"><LanguageSwitcher/></div>

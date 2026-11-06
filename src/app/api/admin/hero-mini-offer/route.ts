@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminId } from "@/lib/auth";
 import { getPublishedMiniHeroOffer, miniHeroOfferSchema, publishMiniHeroOffer } from "@/lib/site-hero-mini-offer";
@@ -29,6 +30,8 @@ export async function PATCH(request: NextRequest) {
   if (!parsed.success) return json({ error: "Check your banner message, button label, and destination. Only safe on-site links are allowed." }, 400);
   try {
     await publishMiniHeroOffer(parsed.data);
+    try { revalidateTag("sv-mini-hero-offer", { expire: 0 }); }
+    catch (error) { console.error("Could not invalidate public mini offer cache", error); }
     return json({ offer: parsed.data, saved: true });
   } catch {
     return json({ error: "Banner could not be published. Previous settings remain unchanged. Check database access." }, 503);

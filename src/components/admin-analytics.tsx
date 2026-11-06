@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Activity, ArrowUpRight, BarChart3, Code2, Eye, FileText, IndianRupee, Info, MessageSquareText, RefreshCw, Users } from "lucide-react";
+import { Activity, ArrowUpRight, BarChart3, Code2, Download, Eye, FileText, IndianRupee, Info, MessageSquareText, RefreshCw, Smartphone, Users } from "lucide-react";
 import { AdminRecordedOrders, formatRecordedOrderValue } from "@/components/admin-recorded-orders";
 import { AdvancedProductAnalytics } from "@/components/advanced-product-analytics";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,11 @@ type Analytics = {
   timeZone: string;
   note: string;
   developerPage: { visitorsToday: number; visitors30: number; viewsToday: number; views30: number; viewsAll: number };
+  pwa: {
+    page: { visitorsToday: number; visitors30: number; viewsToday: number; views30: number; viewsAll: number };
+    installs: { today: number; last30: number; allTime: number; browserEventsAll: number; standaloneLaunchesAll: number };
+    note: string;
+  };
   orders: { count: number; totalPaise: number; last30Count: number; last30Paise: number; todayCount: number; todayPaise: number };
   today: Snapshot;
   last30: Snapshot;
@@ -112,6 +117,21 @@ export function AdminAnalytics() {
         <Metric label="Developer page views — 30 days" value={data.developerPage.views30} icon={<Eye size={20}/>} note="Includes repeat views"/>
         <Metric label="Developer page views — total" value={data.developerPage.viewsAll} icon={<Eye size={20}/>} note="Since original visit tracking began"/>
       </div>
+      <div className="analytics-section-label"><span>INSTALL APP PAGE</span><span>First-party browser visits · IST</span></div>
+      <div className="analytics-metrics">
+        <Metric label="Install page visitors today" value={data.pwa.page.visitorsToday} icon={<Smartphone size={20}/>} note="Approximate unique browsers today"/>
+        <Metric label="Install page visitors · 30 days" value={data.pwa.page.visitors30} icon={<Users size={20}/>} note="Approximate distinct browsers"/>
+        <Metric label="Install page views · 30 days" value={data.pwa.page.views30} icon={<Eye size={20}/>} note="Includes repeat page visits"/>
+        <Metric label="Install page views · all time" value={data.pwa.page.viewsAll} icon={<Eye size={20}/>} note="Since dedicated /install tracking began"/>
+      </div>
+      <div className="analytics-section-label"><span>SV GROUPS APP INSTALLATIONS</span><span>Detected browser events and installed-app launches</span></div>
+      <div className="analytics-metrics">
+        <Metric label="Detected installs today" value={data.pwa.installs.today} icon={<Download size={20}/>} note="Recorded install or first app launch"/>
+        <Metric label="Detected installs · 30 days" value={data.pwa.installs.last30} icon={<Smartphone size={20}/>} note="Recent tracked installations"/>
+        <Metric label="Detected installs · all time" value={data.pwa.installs.allTime} icon={<Download size={20}/>} note="Since installation tracking began"/>
+        <Metric label="First detected app launches" value={data.pwa.installs.standaloneLaunchesAll} icon={<Smartphone size={20}/>} note={`${number.format(data.pwa.installs.browserEventsAll)} reported by install event`}/>
+      </div>
+      <p className="analytics-pwa-note"><Info size={16} aria-hidden="true"/><span>{data.pwa.note} <a href="/install" target="_blank" rel="noopener noreferrer">View Install App page <ArrowUpRight size={13} aria-hidden="true"/></a></span></p>
       <div className="analytics-section-label"><span>CONFIRMED ORDER VALUE</span><span>Private manual entries only</span></div>
       <div className="analytics-order-highlights">
         <div className="analytics-order-highlight analytics-order-highlight-total">

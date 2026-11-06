@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { db } from "@/lib/db";
 import { getAdminId } from "@/lib/auth";
+import { invalidatePublicCatalogue } from "@/lib/public-catalogue-data";
 import { productSchema } from "@/lib/validation";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -20,6 +21,7 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
       where: { id: (await params).id },
       data: { ...parsed.data, imageUrl: parsed.data.imageUrl || null },
     });
+    invalidatePublicCatalogue();
     return NextResponse.json(product);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -40,6 +42,7 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
     const product = await db.product.findUnique({ where: { id }, select: { imageUrl: true } });
     if (!product) return NextResponse.json({ error: "Product not found." }, { status: 404 });
     await db.product.delete({ where: { id } });
+    invalidatePublicCatalogue();
 
     if (product.imageUrl) {
       const storageUrl = process.env.SUPABASE_URL;

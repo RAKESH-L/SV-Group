@@ -107,7 +107,7 @@ html[data-theme="light"] .dark-hero-mini-offer{display:none}
 .admin-mini-offer-fields input,.admin-mini-offer-fields select,.admin-mini-offer-fields textarea{
   min-height:40px;box-sizing:border-box;width:100%;min-width:0;padding:10px 12px;
   background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:7px;
-  font:400 12px/1.6 inherit;
+  font-size:12px;font-weight:400;line-height:1.6;font-family:inherit;
 }
 .admin-mini-offer-fields input:focus-visible,.admin-mini-offer-fields select:focus-visible,.admin-mini-offer-fields textarea:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
 .admin-mini-offer-fields textarea{resize:vertical;min-height:72px}

@@ -48,6 +48,18 @@ export async function ensureSiteAnalyticsTables(): Promise<void> {
           PRIMARY KEY ("day", "visitorHash")
         )
       `;
+      // Unique browsers visiting /install (only rolling 35 days of hashes).
+      await db.$executeRaw`
+        CREATE TABLE IF NOT EXISTS "SiteTrafficInstallVisitorDays" (
+          "day" DATE NOT NULL,
+          "visitorHash" CHAR(64) NOT NULL,
+          PRIMARY KEY ("day", "visitorHash")
+        )
+      `;
+      await db.$executeRaw`
+        DELETE FROM "SiteTrafficInstallVisitorDays"
+        WHERE "day" < (now() AT TIME ZONE 'Asia/Kolkata')::date - 35
+      `;
       await db.$executeRaw`
         DELETE FROM "SiteTrafficDeveloperVisitorDays"
         WHERE "day" < (now() AT TIME ZONE 'Asia/Kolkata')::date - 35
@@ -72,6 +84,7 @@ export const PAGE_LABELS: Record<string, string> = {
   "/cart": "Price calculator",
   "/contact": "Contact",
   "/developer": "Developer",
+  "/install": "Install App",
   "/privacy": "Privacy",
   "/legal-compliance": "Legal information",
   "/other": "Other pages",
@@ -116,6 +129,13 @@ export async function recordPageView(browserId: string, path: string): Promise<v
     if (page === "/developer") {
       await transaction.$executeRaw`
         INSERT INTO "SiteTrafficDeveloperVisitorDays" ("day", "visitorHash")
+        VALUES ((now() AT TIME ZONE 'Asia/Kolkata')::date, ${visitorHash})
+        ON CONFLICT ("day", "visitorHash") DO NOTHING
+      `;
+    }
+    if (page === "/install") {
+      await transaction.$executeRaw`
+        INSERT INTO "SiteTrafficInstallVisitorDays" ("day", "visitorHash")
         VALUES ((now() AT TIME ZONE 'Asia/Kolkata')::date, ${visitorHash})
         ON CONFLICT ("day", "visitorHash") DO NOTHING
       `;

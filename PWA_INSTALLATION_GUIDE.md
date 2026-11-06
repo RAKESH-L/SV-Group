@@ -32,3 +32,11 @@ The latest SV Groups release also includes five optional engagement features. Co
 5. **Push Notifications:** open `/notifications` and explicitly subscribe on a compatible browser; in **Admin → Push**, verify opt-in subscriber counts and test a small, consented broadcast. Test browser permission, unsubscribe and a real installed-PWA device. Do not assume delivery was successful without device validation.
 
 All user selections are local-browser features, not online orders. Browser push requires permission and compatible browsers. The release is considered live only when Vercel shows **READY** for the intended production commit and the production alias points to it.
+
+## Performance release verification (November 2026)
+
+The production optimization (PR #19) preserves all existing public layouts, themes, logos, admin features and customer-facing information.
+
+After the latest `main` commit deploys successfully, verify the live routes `/`, `/catalogue`, `/categories`, `/wishlist`, `/cart`, and `/install` alongside the admin interface. Ensure the published theme, logo, three rotating banners and small hero offer retain their prior appearance. Verify product and inventory edits update public listings after saving, including their indicative prices. Recheck that the PWA updates smoothly, and use Vercel runtime metrics to compare page-load performance before and after the release.
+
+Latest release deployment is initiated from `main` by the repository's existing Vercel Git integration. A successful GitHub push does not by itself prove that Vercel has finished building or promoted the release; confirm Vercel reports **Success/Ready** on the new commit before treating it as live.

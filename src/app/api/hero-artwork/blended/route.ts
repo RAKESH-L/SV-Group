@@ -19,7 +19,9 @@ export const dynamic = "force-dynamic";
  * that makes genuinely transparent future approved assets pixel-exact.
  */
 const WIDTH = 1008;
-const HEIGHT = 1271;
+// Stop before the embedded green quote strip; the website renders the
+// exact quote as accessible typography instead of a printed image rectangle.
+const HEIGHT = 1073;
 const MAX_BYTES = 4 * 1024 * 1024;
 
 function responseHeaders(type: string) {
@@ -44,10 +46,7 @@ function removeCanvas(raw: Buffer, width: number, height: number) {
       const neutral = clamp01(1 - (r - g - 24) / 52);
       const remove = pale * clamp01((neutral - 0.1) / 0.75);
 
-      // The dark green quote banner and its gold/cream lettering are
-      // purposefully opaque and must not be color-keyed.
-      const isQuote = y > 1078 && y < 1270 && x > 5 && x < width - 5;
-      const keyedAlpha = isQuote ? 255 : Math.round(255 * (1 - remove));
+      const keyedAlpha = Math.round(255 * (1 - remove));
 
       // Feather only the outer 9 px to avoid a hard cut at the old frame.
       const edge = clamp01(Math.min(x / 9, (width - 1 - x) / 9, y / 9, (height - 1 - y) / 9));

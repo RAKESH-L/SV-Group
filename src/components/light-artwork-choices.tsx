@@ -25,10 +25,10 @@ export function LightArtworkChoices({ artwork, publishedArtwork, heroImageUrl, o
       <button type="button" className={`light-artwork-option ${artwork === "deepavali" ? "selected" : ""}`} aria-pressed={artwork === "deepavali"} onClick={() => onChange("deepavali")}>
         <span className="light-artwork-preview light-artwork-preview-deepavali">
           {heroImageUrl ? <img src={heroImageUrl} alt="Approved Happy Deepavali hero preview" loading="lazy"/> :
-            <><Flower2 size={42} strokeWidth={1.5}/><span>Happy Deepavali</span><b>UPLOAD APPROVED PNG</b></>}
+            <><Flower2 size={42} strokeWidth={1.5}/><span>Happy Deepavali</span><b>APPROVED ARTWORK</b></>}
         </span>
         <span className="light-artwork-option-title"><strong>Happy Deepavali — Approved</strong>{artwork === "deepavali" && <Check size={17} aria-hidden="true"/>}</span>
-        <small>Gold Ganesha emblem, ornamented mandala, diyas and celebration quote. The original PNG is displayed without brightening or recolouring. {heroImageUrl ? "Ready to publish." : "Upload your approved PNG below before publishing."}</small>
+        <small>Gold Ganesha emblem, ornamented mandala, diyas and celebration quote. The approved original PNG is displayed without brightening or recolouring. {heroImageUrl ? "Ready to select instantly." : "Waiting for the saved artwork to be located."}</small>
       </button>
     </div>
   </section>;

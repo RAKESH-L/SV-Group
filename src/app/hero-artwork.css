@@ -166,3 +166,52 @@ html[data-theme="light"] .light-artwork-option-title svg{color:#b45637}
   }
   .light-artwork-option{transition:none}
 }
+
+/* Approved Happy Deepavali poster: preserve every original PNG pixel/colour.
+   Never add gradients, filters, blend modes or highlights on the image. */
+html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;max-width:565px;margin-inline:auto;
+  border-radius:22px;overflow:hidden;
+  border:1px solid rgba(151,107,58,.24);
+  background:transparent;
+  box-shadow:0 22px 48px rgba(24,63,51,.10);
+}
+html[data-theme="light"] .light-festival-deepavali::before{display:none!important}
+html[data-theme="light"] .light-festival-deepavali img{
+  display:block;width:100%;height:auto;max-height:760px;
+  object-fit:contain;object-position:center;
+  filter:none!important;opacity:1;mix-blend-mode:normal;
+  transform:none;transition:none;
+}
+.light-artwork-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.light-artwork-preview-deepavali{
+  border:1px solid #c3a478;background:#f8f2e6;color:#a86e30;
+}
+.light-artwork-preview-deepavali img{
+  width:100%;height:170px;object-fit:contain;object-position:center;
+  filter:none!important;mix-blend-mode:normal;
+}
+.light-artwork-preview-deepavali>span{color:#aa6134;font:500 20px Georgia,serif;letter-spacing:0}
+.light-artwork-preview-deepavali>b{color:#966034;font-size:10px;letter-spacing:.1em}
+.approved-hero-upload{
+  margin:18px 0 6px;padding:18px;border:1px solid var(--line);
+  border-radius:10px;background:var(--panel);display:grid;gap:12px;
+}
+.approved-hero-upload h3{margin:0 0 6px;color:var(--ink);font:600 20px 'Playfair Display',Georgia,serif}
+.approved-hero-upload p{margin:0;color:var(--muted);font-size:12px;line-height:1.7;max-width:780px}
+.approved-hero-upload-control{display:grid;gap:8px;max-width:480px;font-size:12px;font-weight:700;color:var(--ink)}
+.approved-hero-upload-control input{width:100%;padding:12px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px}
+.approved-hero-progress{color:var(--gold);font-size:12px}
+.approved-hero-preview{margin:0;display:grid;gap:10px;justify-items:start}
+.approved-hero-preview img{
+  display:block;max-width:270px;width:100%;height:auto;
+  border-radius:12px;border:1px solid var(--line);filter:none!important;
+}
+.approved-hero-preview figcaption{font-size:11px;line-height:1.7;color:var(--muted)}
+@media(max-width:900px){.light-artwork-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+  .light-artwork-grid{grid-template-columns:1fr}
+  html[data-theme="light"] .light-festival-deepavali img{max-height:none}
+  html[data-theme="light"] .light-festival-illustration.light-festival-deepavali{max-width:490px;border-radius:16px}
+}

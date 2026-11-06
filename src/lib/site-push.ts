@@ -141,7 +141,7 @@ function vapidJwt(endpoint: string, keys: KeyRow) {
   const header = b64(JSON.stringify({ alg: "ES256", typ: "JWT" }));
   const payload = b64(JSON.stringify({ aud, exp: now + 11 * 3600, sub: `mailto:${SITE_EMAIL}` }));
   const data = `${header}.${payload}`;
-  const jwk = JSON.parse(keys.privateJwk) as JsonWebKey;
+  const jwk = JSON.parse(keys.privateJwk) as import("node:crypto").JsonWebKey;
   const privateKey = createPrivateKey({ key: jwk, format: "jwk" });
   const signature = createSign("SHA256").update(data).end().sign({
     key: privateKey, dsaEncoding: "ieee-p1363",

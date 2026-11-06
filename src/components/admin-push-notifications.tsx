@@ -39,7 +39,7 @@ export function AdminPushNotifications() {
     return () => { active = false; };
   }, []);
 
-  async function sendBatch(value: BroadcastRequest) {
+  async function sendBatch(value: BroadcastRequest, newCampaign = false) {
     if (busy) return;
     setBusy(true); setError(""); setNotice("");
     try {
@@ -49,9 +49,10 @@ export function AdminPushNotifications() {
       });
       const data = await response.json() as BroadcastResult;
       if (!response.ok) throw new Error(data.error || "Notification batch could not be completed.");
+      const base = newCampaign ? { sent: 0, failed: 0, skipped: 0 } : totals;
       const next = {
-        sent: totals.sent + data.sent, failed: totals.failed + data.failed,
-        skipped: totals.skipped + data.skipped,
+        sent: base.sent + data.sent, failed: base.failed + data.failed,
+        skipped: base.skipped + data.skipped,
       };
       setTotals(next);
       setPending(data.nextCursor ? { ...value, cursor: data.nextCursor } : null);
@@ -70,7 +71,7 @@ export function AdminPushNotifications() {
     if (!summary?.subscribers || busy || pending) return;
     if (!window.confirm(`Send this announcement to ${summary.subscribers} opted-in browser(s)? The first batch can reach up to 50 devices.`)) return;
     setTotals({ sent: 0, failed: 0, skipped: 0 });
-    void sendBatch({ campaignId: crypto.randomUUID(), title: title.trim(), message: message.trim(), path: path.trim() });
+    void sendBatch({ campaignId: crypto.randomUUID(), title: title.trim(), message: message.trim(), path: path.trim() }, true);
   }
   return <section className="sv-admin-push">
     <h2><Bell size={21} style={{display:"inline",verticalAlign:"middle"}}/> Customer Push Notifications</h2>

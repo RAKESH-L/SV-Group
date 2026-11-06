@@ -73,7 +73,6 @@ export async function POST(request: NextRequest) {
   const { data } = storage.getPublicUrl(filePath);
   return response({
     url: data.publicUrl,
-    width: 1122,
     originalBytes: source.length,
     message: "Original PNG safely uploaded without brightness, colour or compression changes. Publish in Appearance to display it.",
   });

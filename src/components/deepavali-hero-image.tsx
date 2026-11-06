@@ -12,17 +12,20 @@ export function DeepavaliHeroImage({
   className,
   priority = false,
   preview = false,
+  withQuote = false,
 }: {
   originalUrl: string;
   className?: string;
   priority?: boolean;
   preview?: boolean;
+  withQuote?: boolean;
 }) {
   const [fallback, setFallback] = useState(false);
   useEffect(() => setFallback(false), [originalUrl]);
   const basename = originalUrl.split("/").pop()?.split("?")[0] || "approved";
   const processedUrl = `/api/hero-artwork/blended?revision=${encodeURIComponent(basename)}`;
-  return <img
+  return <>
+    <img
     src={fallback ? originalUrl : processedUrl}
     onError={() => { if (!fallback) setFallback(true); }}
     className={className}
@@ -32,5 +35,7 @@ export function DeepavaliHeroImage({
     decoding="async"
     loading={priority ? "eager" : "lazy"}
     fetchPriority={priority ? "high" : "auto"}
-  />;
+    />
+    {withQuote && !fallback && <p className="deepavali-blended-quote">Light up your celebrations with<br/>joy, togetherness and a burst of happiness.</p>}
+  </>;
 }

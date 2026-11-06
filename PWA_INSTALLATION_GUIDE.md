@@ -20,3 +20,15 @@ After Vercel reports deployment **Ready** for the current `main` commit, verify:
 6. On an actual supported mobile browser, verify installing, launching and showing the offline fallback.
 
 The PWA does not enable payments or offline product browsing. Prices, availability and enquiries need a network connection. Icons reflect the server-published logo. The site remains usable without installing.
+
+## Engagement features — post-deployment verification
+
+The latest SV Groups release also includes five optional engagement features. Confirm these on the active production deployment:
+
+1. **Favorites:** select a heart on an active product and open `/wishlist`; the choice should persist in the same browser.
+2. **Save My Selection:** add products to `/cart`, save a named selection and restore it; restored values must use current catalogue prices.
+3. **Share Estimate / Selection:** share or copy a selection link from the price calculator; opening it should offer to load the product IDs and quantities, without transmitting personal details.
+4. **WhatsApp information enquiry:** check the product detail, wishlist and calculator enquiry links open prefilled *informational* questions only; no booking or payment.
+5. **Push Notifications:** open `/notifications` and explicitly subscribe on a compatible browser; in **Admin → Push**, verify opt-in subscriber counts and test a small, consented broadcast. Test browser permission, unsubscribe and a real installed-PWA device. Do not assume delivery was successful without device validation.
+
+All user selections are local-browser features, not online orders. Browser push requires permission and compatible browsers. The release is considered live only when Vercel shows **READY** for the intended production commit and the production alias points to it.

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles, Bell } from "lucide-react";
 import { PwaInstallPanel } from "@/components/pwa-install-panel";
 import { T } from "@/components/language-provider";
 
@@ -15,6 +15,7 @@ export default function InstallPage() {
     <h1><T text="Your SV Groups website, now app-ready."/></h1>
     <p className="pwa-install-lede"><T text="Explore the catalogue in an app-like experience, right from your device's home screen."/></p>
     <PwaInstallPanel/>
+    <Link className="pwa-install-back" href="/notifications"><Bell size={16} aria-hidden="true"/> <T text="Manage Notifications"/></Link>
     <Link className="pwa-install-back" href="/"><ArrowLeft size={16} aria-hidden="true"/> <T text="Back to website"/></Link>
   </main>;
 }

@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminId } from "@/lib/auth";
@@ -67,6 +68,8 @@ export async function PATCH(request: Request) {
 
   try {
     await publishPromoCards(parsed.data.cards, customDestinations);
+    try { revalidateTag("sv-promo-cards", { expire: 0 }); }
+    catch (error) { console.error("Could not invalidate public carousel cache", error); }
     return privateJson({
       saved: true,
       cards: parsed.data.cards,

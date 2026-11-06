@@ -123,6 +123,28 @@ async function activateApprovedHeroOnce(record: Record<string, unknown>) {
       console.warn("Approved Deepavali hero was not found in existing image storage; preserving current artwork.");
       return null;
     }
+    // This site has an older SiteThemeSettings table. The previous publisher
+    // added columns only after a successful PATCH, which was blocked by the
+    // incorrect URL validator. Backfill the optional columns BEFORE activating
+    // the previously uploaded PNG. Safe and idempotent on existing databases.
+    await db.$executeRaw`
+      ALTER TABLE "SiteThemeSettings"
+      ADD COLUMN IF NOT EXISTS "lightHeroArtwork" TEXT NOT NULL DEFAULT 'crackers'
+      CHECK ("lightHeroArtwork" IN ('crackers', 'diya'))
+    `;
+    await db.$executeRaw`
+      ALTER TABLE "SiteThemeSettings"
+      ADD COLUMN IF NOT EXISTS "logo" TEXT NOT NULL DEFAULT 'ganesh'
+      CHECK ("logo" IN ('ganesh', 'diamond'))
+    `;
+    await db.$executeRaw`
+      ALTER TABLE "SiteThemeSettings"
+      ADD COLUMN IF NOT EXISTS "heroArtworkSelection" TEXT NOT NULL DEFAULT 'crackers'
+    `;
+    await db.$executeRaw`
+      ALTER TABLE "SiteThemeSettings"
+      ADD COLUMN IF NOT EXISTS "heroImageUrl" TEXT
+    `;
     await db.$executeRaw`
       ALTER TABLE "SiteThemeSettings"
       ADD COLUMN IF NOT EXISTS "heroSelectionVersion" INTEGER NOT NULL DEFAULT 0

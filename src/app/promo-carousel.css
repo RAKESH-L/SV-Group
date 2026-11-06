@@ -120,3 +120,39 @@ html[data-theme="light"] .promo-admin-preview-3{background:linear-gradient(110de
   .promo-3d-card,.promo-carousel-dots button,.promo-carousel-arrow,.promo-3d-link{transition:none!important}
   .promo-3d-glimmer,.promo-3d-active:after{animation:none!important}
 }
+
+
+/* Admin-managed button destination directory, shared by all three banners. */
+.promo-destination-manager{margin:0 0 22px;padding:19px;border:1px solid var(--line);background:var(--panel);border-radius:12px;min-width:0}
+.promo-destination-heading{display:flex;gap:12px;align-items:flex-start;margin-bottom:15px}
+.promo-destination-heading>svg{flex:none;color:var(--gold);margin-top:3px}
+.promo-destination-heading h3{color:var(--ink);font-size:17px;line-height:1.3;margin:0 0 6px;font-weight:750}
+.promo-destination-heading p{color:var(--muted);font-size:11px;line-height:1.8;margin:0;max-width:850px}
+.promo-destination-builtins{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:18px}
+.promo-destination-builtins>span{display:inline-flex;align-items:center;gap:7px;min-height:31px;padding:5px 10px;border:1px solid var(--line);border-radius:99px;color:var(--ink);background:rgba(213,171,94,.06);font-size:11px;font-weight:700;max-width:100%}
+.promo-destination-builtins small{color:var(--muted);font-size:10px;font-weight:400;overflow-wrap:anywhere}
+.promo-destination-custom{padding-top:14px;border-top:1px solid var(--line)}
+.promo-destination-custom h4{display:flex;align-items:center;gap:9px;font-size:13px;line-height:1.4;font-weight:750;color:var(--ink);margin:0 0 11px}
+.promo-destination-custom h4>span{font-weight:400;color:var(--muted);font-size:11px}
+.promo-destination-empty{color:var(--muted);font-size:11px;margin:0 0 14px;line-height:1.7}
+.promo-destination-list{list-style:none;margin:0 0 15px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.promo-destination-list>li{display:flex;justify-content:space-between;align-items:center;gap:12px;min-width:0;padding:9px 10px 9px 13px;border:1px solid var(--line);border-radius:7px;background:color-mix(in srgb,var(--panel) 80%,var(--bg))}
+.promo-destination-list>li>span{display:flex;align-items:center;gap:9px;min-width:0;flex-wrap:wrap}
+.promo-destination-list strong{font-size:11px;color:var(--ink)}
+.promo-destination-list code,.promo-destination-hint code{font-size:11px;color:var(--gold);overflow-wrap:anywhere;word-break:break-word}
+.promo-destination-list button{flex:none;display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line);border-radius:6px;color:var(--muted);background:transparent;cursor:pointer}
+.promo-destination-list button:hover:not(:disabled){color:#e7a28a;border-color:#b8705a}
+.promo-destination-list button:disabled{opacity:.5;cursor:wait}
+.promo-destination-add{display:grid;grid-template-columns:minmax(160px,1fr) minmax(160px,1fr) auto;align-items:end;gap:11px;margin-top:8px}
+.promo-destination-add label{display:grid;gap:6px;font-size:11px;font-weight:650;color:var(--ink);min-width:0}
+.promo-destination-add input{display:block;width:100%;min-width:0;min-height:42px;padding:9px 11px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--ink);font-size:12px;font-weight:400}
+.promo-destination-add input:focus-visible{border-color:var(--gold);outline:2px solid rgba(231,187,102,.28)}
+.promo-destination-add .button{min-height:42px;white-space:nowrap}
+.promo-destination-add .button:focus-visible,.promo-destination-list button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.promo-destination-hint{max-width:900px;color:var(--muted);font-size:10px;line-height:1.8;margin:11px 0 0}
+html[data-theme="light"] .promo-destination-manager{background:#fffdf8;border-color:#dedfd3}
+html[data-theme="light"] .promo-destination-add input{background:#fff;color:#194333;border-color:#d7dfd1}
+html[data-theme="light"] .promo-destination-list code,html[data-theme="light"] .promo-destination-hint code{color:#926022}
+html[data-theme="light"] .promo-destination-list>li{background:#f8f5ed}
+@media(max-width:800px){.promo-destination-add{grid-template-columns:repeat(2,minmax(0,1fr))}.promo-destination-add .button{width:fit-content}}
+@media(max-width:580px){.promo-destination-manager{padding:14px}.promo-destination-list{grid-template-columns:1fr}.promo-destination-add{grid-template-columns:1fr}.promo-destination-add .button{width:100%}.promo-destination-builtins>span{font-size:10px}}

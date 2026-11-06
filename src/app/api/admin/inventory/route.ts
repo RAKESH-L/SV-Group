@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminId } from "@/lib/auth";
+import { invalidatePublicCatalogue } from "@/lib/public-catalogue-data";
 import { listInventoryProducts, saveInventoryProduct } from "@/lib/inventory-store";
 
 export const runtime = "nodejs";
@@ -42,6 +43,7 @@ export async function PATCH(request: NextRequest) {
   try {
     const product = await saveInventoryProduct(parsed.data);
     if (!product) return reply({ error: "Product no longer exists. Refresh inventory." }, 404);
+    invalidatePublicCatalogue();
     return reply({ saved: true, product });
   } catch {
     return reply({ error: "Inventory could not be updated. Please try again; no changes were committed." }, 503);

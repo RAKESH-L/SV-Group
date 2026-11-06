@@ -62,3 +62,12 @@ html[data-theme="light"] .analytics-error{color:#aa3c2b;background:#fff1ed;borde
 @media(max-width:640px){.analytics-heading{align-items:flex-start;flex-direction:column;gap:14px}.analytics-heading h2{font-size:32px}.analytics-metrics{gap:9px}.analytics-metric{padding:13px 11px}.analytics-metric-head{font-size:10px;min-height:39px}.analytics-metric-icon{height:25px;width:25px}.analytics-metric-icon svg{height:15px;width:15px}.analytics-metric>strong{font-size:29px}.analytics-metric>small{font-size:9px}.analytics-graph-card,.analytics-popular-card{padding:14px}.analytics-chart-toggles button{font-size:9px}.analytics-total-strip{grid-template-columns:1fr}.analytics-total-strip>div{border-right:0;border-bottom:1px solid var(--analytics-edge);padding:13px 16px}.analytics-total-strip>div:last-child{border:0}.analytics-section-label{font-size:9px}.analytics-section-label span:last-child{font-size:9px;letter-spacing:0}}
 @media(max-width:360px){.analytics-metrics{grid-template-columns:1fr}.analytics-metric-head{min-height:unset}.analytics-metric{padding:14px}}
 @media(prefers-reduced-motion:reduce){.analytics-chart-bar{transition:none}.analytics-spinning{animation:none}}
+
+/* PWA install analytics explanatory note — readable in dark and light themes. */
+.analytics-pwa-note{display:flex;align-items:flex-start;gap:11px;margin:12px 0 20px;padding:13px 16px;border:1px solid var(--analytics-edge);border-radius:8px;background:var(--analytics-soft);color:var(--analytics-muted);font-size:11px;line-height:1.8}
+.analytics-pwa-note>svg{flex:none;color:var(--analytics-accent);margin-top:2px}
+.analytics-pwa-note span{min-width:0}
+.analytics-pwa-note a{color:var(--analytics-accent);font-weight:750;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.analytics-pwa-note a:hover{text-decoration:underline}
+.analytics-pwa-note a:focus-visible{outline:2px solid var(--analytics-accent);outline-offset:3px}
+@media(max-width:640px){.analytics-pwa-note{padding:11px 12px;font-size:10px}}

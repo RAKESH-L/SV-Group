@@ -93,118 +93,167 @@ html[data-theme="light"] .dark-hero-mini-offer{display:none}
 }
 @media(prefers-reduced-motion:reduce){.hero-mini-offer-cta{transition:none}.hero-mini-offer-cta:hover{transform:none}}
 
-/* Three miniature sky shots: a fresh, lightweight interpretation of the
- * reference fireworks. Kept in a clipped illustration layer behind the copy
- * and CTA so the compact offer stays just as readable and clickable.
- * All animation is CSS-only (no client-side JS or large uploaded SVG).
+/* 2026-11 — Reference-inspired outside-the-card fireworks.
+   The previous SVG was clipped INSIDE the offer. These rockets start below
+   the physical banner, fly upwards across the border and burst above its
+   headline area. The artwork extends beyond the card without affecting its
+   dimensions or the surrounding hero layout.
+   SVG is decorative and never intercepts clicks, touches or keyboard input.
  */
 .hero-mini-offer{
-  position:relative;
   isolation:isolate;
-  overflow:hidden;
+  overflow:visible;
 }
+/* Text and CTA are always above the colourful burst layer. */
 .hero-mini-offer > :not(.hero-mini-sky-shots){
   position:relative;
-  z-index:1;
+  z-index:2;
 }
 .hero-mini-sky-shots{
   position:absolute;
-  z-index:0;
-  inset:0;
+  z-index:1;
+  left:-22px;
+  top:-88px;
+  width:calc(100% + 44px);
+  height:calc(100% + 230px);
+  overflow:visible;
   display:block;
-  width:100%;
-  height:100%;
   pointer-events:none;
   user-select:none;
-  overflow:hidden;
-  opacity:.72;
+  opacity:1;
 }
-.hero-mini-sky-haze{
-  color:#b8a173;
-  opacity:.55;
+.hero-mini-sky-shot{
+  --sky-cycle:7.2s;
+  --sky-secondary:#ffe58b;
 }
-.hero-mini-sky-gold{
-  color:#c29045;
-  --mini-sky-offset:0s;
-}
-.hero-mini-sky-green{
-  color:#598f73;
-  --mini-sky-offset:-2.35s;
-}
-.hero-mini-sky-rose{
-  color:#cf856c;
-  --mini-sky-offset:-4.7s;
-}
-.hero-mini-sky-burst{
-  transform-box:fill-box;
-  transform-origin:center;
-  animation:heroMiniSkyBurst 7.05s ease-out var(--mini-sky-offset) infinite;
-}
+.hero-mini-sky-coral{color:#dd5345;--sky-secondary:#f5b851}
+.hero-mini-sky-teal{color:#128eb4;--sky-secondary:#56d0d0}
+.hero-mini-sky-gold{color:#d99c21;--sky-secondary:#ffe475}
+.hero-mini-sky-lime{color:#7aab24;--sky-secondary:#c1de59}
 .hero-mini-sky-rocket{
   transform-box:fill-box;
   transform-origin:center;
-  animation:heroMiniSkyRise 7.05s cubic-bezier(.3,.05,.35,1) var(--mini-sky-offset) infinite;
+  opacity:0;
+  animation:skyShotOutsideFlight var(--sky-cycle) cubic-bezier(.24,.08,.27,1)
+    var(--sky-offset) infinite;
+  filter:drop-shadow(0 0 2px currentColor);
 }
-.hero-mini-sky-rays{
-  filter:drop-shadow(0 0 1.5px currentColor);
-}
-.hero-mini-sky-inner{
-  opacity:.72;
-}
-.hero-mini-sky-glow{
-  filter:drop-shadow(0 0 3px currentColor);
-}
-.hero-mini-sky-twinkles{
-  color:#cda65f;
-  opacity:.46;
+.hero-mini-sky-explosion{
   transform-box:fill-box;
   transform-origin:center;
-  animation:heroMiniSkyTwinkle 4.2s ease-in-out infinite alternate;
+  opacity:0;
+  animation:skyShotOutsideBurst var(--sky-cycle) cubic-bezier(.12,.05,.24,1)
+    var(--sky-offset) infinite;
+  filter:drop-shadow(0 0 2px currentColor);
 }
-@keyframes heroMiniSkyRise{
-  0%,4%{opacity:0;transform:translateY(10px) scale(.72)}
-  8%{opacity:.18;transform:translateY(8px) scale(.85)}
-  17%{opacity:.95;transform:translateY(-26px) scale(1)}
-  30%{opacity:.95;transform:translateY(-73px) scale(.85)}
-  32%{opacity:0;transform:translateY(-77px) scale(.7)}
-  33%,100%{opacity:0;transform:translateY(-77px) scale(.7)}
+.hero-mini-sky-spokes{
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:skyShotPetalSpin var(--sky-cycle) ease-out
+    var(--sky-offset) infinite;
 }
-@keyframes heroMiniSkyBurst{
-  0%,29%{opacity:0;transform:scale(.13) rotate(-10deg)}
-  33%{opacity:.3;transform:scale(.38) rotate(-5deg)}
-  40%{opacity:.83;transform:scale(.8) rotate(0deg)}
-  46%{opacity:1;transform:scale(1.08) rotate(6deg)}
-  58%{opacity:.42;transform:scale(1.24) rotate(13deg)}
-  69%,100%{opacity:0;transform:scale(1.35) rotate(16deg)}
+.hero-mini-sky-flying-dots{
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:skyShotFlyingSparks var(--sky-cycle) ease-out
+    var(--sky-offset) infinite;
 }
-@keyframes heroMiniSkyTwinkle{
-  0%{opacity:.14;transform:scale(.94)}
-  100%{opacity:.51;transform:scale(1.04)}
+.hero-mini-sky-flash{
+  animation:skyShotCoreFlash var(--sky-cycle) ease-out
+    var(--sky-offset) infinite;
+}
+.hero-mini-sky-ring{opacity:.65}
+.hero-mini-sky-static-twinkles{
+  color:#d9a552;
+  opacity:.38;
+  animation:skyShotAmbientTwinkle 5s ease-in-out infinite alternate;
 }
 
-/* The same artwork follows existing Forest, Terracotta and Gold choices. */
-.hero-mini-offer-terracotta .hero-mini-sky-gold{color:#c78d54}
-.hero-mini-offer-terracotta .hero-mini-sky-green{color:#948c6d}
-.hero-mini-offer-terracotta .hero-mini-sky-rose{color:#c66e58}
-.hero-mini-offer-gold .hero-mini-sky-gold{color:#b58b35}
-.hero-mini-offer-gold .hero-mini-sky-green{color:#9c9756}
-.hero-mini-offer-gold .hero-mini-sky-rose{color:#c69556}
-.dark-hero-mini-offer .hero-mini-sky-shots{opacity:.62}
-.dark-hero-mini-offer .hero-mini-sky-gold{color:#f1c77d}
-.dark-hero-mini-offer .hero-mini-sky-green{color:#a5d2ab}
-.dark-hero-mini-offer .hero-mini-sky-rose{color:#efaa93}
-.dark-hero-mini-offer .hero-mini-sky-twinkles{color:#f5d38a}
+/* One complete sequence: rocket rises from below the offer; its glowing
+   centre reaches the top edge; radial petals and sparks pop, expand, fade.
+   Each of four rockets runs on a different staggered phase. */
+@keyframes skyShotOutsideFlight{
+  0%,3%{opacity:0;transform:translateY(23px) scale(.75)}
+  6%{opacity:.75;transform:translateY(9px) scale(.85)}
+  15%{opacity:1;transform:translateY(calc(var(--sky-flight) * .43)) scale(1)}
+  25%{opacity:1;transform:translateY(calc(var(--sky-flight) * .85)) scale(1)}
+  29%{opacity:.96;transform:translateY(var(--sky-flight)) scale(.82)}
+  32%,100%{opacity:0;transform:translateY(var(--sky-flight)) scale(.5)}
+}
+@keyframes skyShotOutsideBurst{
+  0%,28%{opacity:0;transform:scale(.04) rotate(-14deg)}
+  30%{opacity:.6;transform:scale(.21) rotate(-7deg)}
+  35%{opacity:1;transform:scale(.75) rotate(0deg)}
+  40%{opacity:1;transform:scale(1.05) rotate(5deg)}
+  47%{opacity:.91;transform:scale(1.18) rotate(12deg)}
+  58%{opacity:.32;transform:scale(1.38) rotate(18deg)}
+  67%,100%{opacity:0;transform:scale(1.48) rotate(21deg)}
+}
+@keyframes skyShotPetalSpin{
+  0%,27%{transform:rotate(-7deg) scale(.95)}
+  41%{transform:rotate(3deg) scale(1)}
+  60%,100%{transform:rotate(14deg) scale(.87)}
+}
+@keyframes skyShotFlyingSparks{
+  0%,28%{opacity:0;transform:scale(.35)}
+  38%{opacity:1;transform:scale(.9)}
+  47%{opacity:1;transform:scale(1.14)}
+  64%,100%{opacity:0;transform:scale(1.32)}
+}
+@keyframes skyShotCoreFlash{
+  0%,28%{opacity:0}
+  32%{opacity:.66}
+  38%{opacity:.28}
+  48%,100%{opacity:0}
+}
+@keyframes skyShotAmbientTwinkle{
+  from{opacity:.15;transform:translateY(3px)}
+  to{opacity:.45;transform:translateY(-3px)}
+}
 
-/* No layout change on compact mobile cards. Avoid busy decoration behind
- * short text on narrow screens. The same SVG also appears in the admin preview. */
+/* Gold, Forest and Terracotta admin tone choices retain their own style
+   while all explosions remain vividly multi-coloured. */
+.hero-mini-offer-terracotta .hero-mini-sky-coral{color:#d94e47;--sky-secondary:#f9b34c}
+.hero-mini-offer-terracotta .hero-mini-sky-gold{color:#ce951f;--sky-secondary:#ffdf67}
+.hero-mini-offer-gold .hero-mini-sky-teal{color:#0589a1;--sky-secondary:#43bdb4}
+.hero-mini-offer-gold .hero-mini-sky-lime{color:#72a52b;--sky-secondary:#bdd958}
+.dark-hero-mini-offer .hero-mini-sky-coral{color:#ff846d;--sky-secondary:#ffd27b}
+.dark-hero-mini-offer .hero-mini-sky-teal{color:#54d5ef;--sky-secondary:#8bfff2}
+.dark-hero-mini-offer .hero-mini-sky-gold{color:#ffcc60;--sky-secondary:#fff1a4}
+.dark-hero-mini-offer .hero-mini-sky-lime{color:#b2db5d;--sky-secondary:#e4ff95}
+.dark-hero-mini-offer .hero-mini-sky-explosion{filter:drop-shadow(0 0 4px currentColor)}
+.dark-hero-mini-offer .hero-mini-sky-static-twinkles{color:#ffe4a6;opacity:.52}
+
+/* The actual banner stays completely transparent outside its border, so
+   fireworks can rise over the illustration below it instead of appearing
+   as a decorative watermark confined to the offer card. */
+@media(max-width:760px){
+  .light-hero-mini-offer .hero-mini-sky-shots{z-index:1}
+}
 @media(max-width:480px){
-  .hero-mini-sky-shots{opacity:.42}
-  .dark-hero-mini-offer .hero-mini-sky-shots{opacity:.38}
+  .hero-mini-sky-shots{
+    left:-12px;
+    top:-75px;
+    width:calc(100% + 24px);
+    height:calc(100% + 188px);
+  }
+  /* Three distinct colours on small mobiles; avoids covering the copy. */
+  .hero-mini-sky-shot-4{display:none}
+  .hero-mini-sky-explosion{filter:drop-shadow(0 0 1.5px currentColor)}
 }
+/* Admin → Banners uses the same real, live artwork, with space outside the
+   card to view the entire launch/explosion and without touching form inputs. */
+.admin-mini-offer-preview .hero-mini-offer{position:relative;margin:34px 12px 70px}
+.admin-mini-offer-preview .hero-mini-sky-shots{z-index:1}
+
 @media(prefers-reduced-motion:reduce){
   .hero-mini-sky-rocket{animation:none;opacity:0}
-  .hero-mini-sky-burst{animation:none;opacity:.23;transform:scale(.84)}
-  .hero-mini-sky-twinkles{animation:none;opacity:.25;transform:none}
+  .hero-mini-sky-explosion{animation:none;opacity:.24;transform:scale(.64)}
+  .hero-mini-sky-spokes,.hero-mini-sky-flying-dots,
+  .hero-mini-sky-flash,.hero-mini-sky-static-twinkles{
+    animation:none;transform:none;
+  }
+  .hero-mini-sky-flash{opacity:.08}
 }
 
 /* Admin → Banners has an independent mini hero offer publishing control. */

@@ -34,7 +34,7 @@ export const defaultMiniHeroOffer: MiniHeroOffer = {
  * Reads do not create or alter tables, and the public homepage never fails
  * because of promotion configuration.
  */
-export const getPublishedMiniHeroOffer = unstable_cache(async (): Promise<MiniHeroOffer> {
+export const getPublishedMiniHeroOffer = unstable_cache(async (): Promise<MiniHeroOffer> => {
   try {
     const rows = await db.$queryRaw<Array<{ settings: unknown }>>`
       SELECT "settings" FROM "SiteHeroMiniOffer" WHERE "id" = 1 LIMIT 1

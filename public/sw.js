@@ -2,7 +2,7 @@
  * Never persist authenticated pages, customer selections, APIs, enquiry forms,
  * user-uploaded product images, or price-bearing HTML.
  */
-const VERSION = "sv-pwa-v1";
+const VERSION = "sv-pwa-v2";
 const STATIC_CACHE = VERSION + "-public-static";
 const OFFLINE_CACHE = VERSION + "-offline";
 const OFFLINE_PAGE = "/offline.html";
@@ -73,5 +73,43 @@ self.addEventListener("fetch", event => {
     } catch {
       return existing || Response.error();
     }
+  })());
+});
+
+/* Web Push: shown only after an explicit user-saved browser subscription.
+ * Notification content contains no customer or enquiry details. Never cache
+ * notification payloads or attempt subscriptions without user consent.
+ */
+self.addEventListener("push", event => {
+  if (!event.data) return;
+  let payload;
+  try { payload = event.data.json(); } catch { return; }
+  const title = typeof payload.title === "string" ? payload.title.slice(0, 80) : "Sri Vinayaka Groups";
+  const body = typeof payload.body === "string" ? payload.body.slice(0, 220) : "";
+  let url = "/";
+  if (typeof payload.url === "string" && /^\/(?!\/)[a-z0-9\/-]{0,120}$/i.test(payload.url) &&
+      !/^\/(?:admin|api|auth|_next)(?:\/|$)/i.test(payload.url)) url = payload.url;
+  event.waitUntil(self.registration.showNotification(title, {
+    body, icon: "/api/pwa/icon/192?logo=ganesh",
+    badge: "/api/pwa/icon/192?logo=ganesh",
+    tag: "sv-groups-announcement",
+    renotify: false, data: { url },
+  }));
+});
+
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+  const path = event.notification.data?.url || "/";
+  const url = new URL(path, self.location.origin);
+  if (url.origin !== self.location.origin) return;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const open = windows.find(client => new URL(client.url).origin === url.origin);
+    if (open) {
+      await open.focus();
+      if ("navigate" in open) await open.navigate(url.href);
+      return;
+    }
+    await self.clients.openWindow(url.href);
   })());
 });

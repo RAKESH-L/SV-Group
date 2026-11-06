@@ -1,3 +1,4 @@
+import { revalidateTag, unstable_cache } from "next/cache";
 import { z } from "zod";
 import { db } from "@/lib/db";
 
@@ -90,7 +91,7 @@ export const defaultPromoCards: PromoCard[] = [
  * destination column exists. All reads are non-mutating and fail to safe
  * defaults when database settings are unavailable.
  */
-export async function getPublishedPromoCards(): Promise<PromoCard[]> {
+export const getPublishedPromoCards = unstable_cache(async (): Promise<PromoCard[]> {
   try {
     const rows = await db.$queryRaw<Array<{ cards: unknown }>>`
       SELECT "cards" FROM "SitePromoCarousel" WHERE "id" = 1 LIMIT 1
@@ -100,7 +101,7 @@ export async function getPublishedPromoCards(): Promise<PromoCard[]> {
   } catch {
     return defaultPromoCards;
   }
-}
+}, ["sv-promo-cards-v1"], { tags: ["sv-promo-cards"], revalidate: 60 });
 
 export async function getPublishedCustomPromoDestinations(): Promise<PromoDestination[]> {
   try {
@@ -153,4 +154,6 @@ export async function publishPromoCards(cards: PromoCard[], destinations: PromoD
         "destinations" = EXCLUDED."destinations",
         "updatedAt" = NOW()
   `;
+  try { revalidateTag("sv-promo-cards", { expire: 0 }); }
+  catch (error) { console.error("Could not invalidate public banner settings", error); }
 }

@@ -14,7 +14,6 @@ export function SiteThemeSettings() {
   const [publishedArtwork, setPublishedArtwork] = useState<LightHeroArtwork>("crackers");
   const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
   const [publishedHeroImageUrl, setPublishedHeroImageUrl] = useState<string | null>(null);
-  const [uploadingHero, setUploadingHero] = useState(false);
   const [logo, setLogo] = useState<SiteLogo>("ganesh");
   const [publishedLogo, setPublishedLogo] = useState<SiteLogo>("ganesh");
   const [loading, setLoading] = useState(true);
@@ -36,24 +35,6 @@ export function SiteThemeSettings() {
       .finally(() => { if (mounted) setLoading(false); });
     return () => { mounted = false; };
   }, []);
-
-  async function uploadApprovedHero(file: File) {
-    setError(""); setMessage("");
-    if (file.type !== "image/png" || file.size < 64 || file.size > 4 * 1024 * 1024) {
-      setError("Please select the exact approved PNG image (maximum 4 MB)."); return;
-    }
-    setUploadingHero(true);
-    try {
-      const body = new FormData(); body.append("image", file, file.name);
-      const result = await fetch("/api/admin/hero-artwork-upload", { method: "POST", body, credentials: "same-origin" });
-      const payload = await result.json() as { url?: string; error?: string };
-      if (!result.ok || !payload.url) throw new Error(payload.error || "Could not upload the approved PNG.");
-      setHeroImageUrl(payload.url); setArtwork("deepavali");
-      setMessage("Approved PNG uploaded unchanged. Click Publish appearance & logo to activate this illustration for website visitors.");
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not upload the approved PNG.");
-    } finally { setUploadingHero(false); }
-  }
 
   async function publish() {
     setError(""); setMessage(""); setSaving(true);
@@ -100,12 +81,16 @@ export function SiteThemeSettings() {
           </div>
           <LightArtworkChoices artwork={artwork} publishedArtwork={publishedArtwork} heroImageUrl={heroImageUrl} onChange={setArtwork}/>
           <div className="approved-hero-upload">
-            <div><h3>Approved Deepavali artwork</h3><p>Upload the exact, approved Happy Deepavali PNG. It is stored without changing brightness, saturation, colours, quality or typography. Uploading does not publish it until you click Publish below.</p></div>
-            <label className="approved-hero-upload-control">Choose approved PNG
-              <input type="file" accept="image/png,.png" disabled={uploadingHero || saving} onChange={event => { const file = event.currentTarget.files?.[0]; if (file) void uploadApprovedHero(file); event.currentTarget.value = ""; }}/>
-            </label>
-            {uploadingHero && <span role="status" className="approved-hero-progress">Uploading original artwork…</span>}
-            {heroImageUrl && <figure className="approved-hero-preview"><img src={heroImageUrl} alt="Approved Happy Deepavali illustration currently available for publishing"/><figcaption>Approved PNG ready · original colours preserved. You can switch back to either earlier hero at any time.</figcaption></figure>}
+            <div>
+              <h3>Approved Happy Deepavali artwork</h3>
+              <p>The approved Ganesha-and-mandala PNG is managed by the website. There is no file upload step. Its original colours, lettering and brightness are preserved; only the hero illustration changes when you switch designs.</p>
+            </div>
+            {heroImageUrl
+              ? <figure className="approved-hero-preview">
+                  <img src={heroImageUrl} alt="Your approved Happy Deepavali illustration with Ganesha emblem, mandala, diyas and celebration quote" loading="lazy"/>
+                  <figcaption>Approved image ready. You can switch between Happy Deepavali, the Firecracker Box and Traditional Diyas whenever you choose.</figcaption>
+                </figure>
+              : <p className="form-status error" role="alert">The approved image has not yet been found in existing image storage. Earlier illustrations remain available while this is resolved.</p>}
           </div>
           <div className="site-logo-admin-section">
             <div className="site-logo-admin-intro"><h3>Website logo</h3><p>Select which emblem appears beside SV GROUPS in the header, homepage, and footer. The browser icon will match. Both are transparent SVGs and work with either theme.</p></div>
@@ -119,12 +104,12 @@ export function SiteThemeSettings() {
             </div>
           </div>
           <div className="theme-admin-actions">
-            <button type="button" className="button button-gold" disabled={saving || uploadingHero || (artwork === "deepavali" && !heroImageUrl) || (published === choice && publishedArtwork === artwork && publishedLogo === logo && publishedHeroImageUrl === heroImageUrl)} onClick={publish}>
+            <button type="button" className="button button-gold" disabled={saving || (artwork === "deepavali" && !heroImageUrl) || (published === choice && publishedArtwork === artwork && publishedLogo === logo && publishedHeroImageUrl === heroImageUrl)} onClick={publish}>
               {saving ? "Publishing…" : published === choice && publishedArtwork === artwork && publishedLogo === logo && publishedHeroImageUrl === heroImageUrl ? "Appearance is published" : "Publish appearance & logo"}
             </button>
             <a href="/" target="_blank" rel="noreferrer" className="button button-outline">Preview public homepage</a>
           </div>
-          <p className="theme-admin-note">Theme, selected hero illustration, approved PNG URL, and logo are saved together on the server. The original two CSS/SVG hero illustrations are permanently preserved in code. Either logo can be selected with either theme. Visitors may need to refresh to see changes; animations respect reduced-motion preferences.</p>
+          <p className="theme-admin-note">Theme, selected hero illustration and logo are saved together on the server. The approved PNG is stored without colour modification and the original CSS/SVG illustrations remain preserved. No new upload is required to change designs. Either logo can be selected with either theme. Visitors may need to refresh to see changes; animations respect reduced-motion preferences.</p>
         </>
       )}
       {message && <p className="form-status" role="status">{message}</p>}

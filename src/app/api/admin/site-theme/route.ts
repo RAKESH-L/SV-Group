@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminId } from "@/lib/auth";
-import { getPublishedSitePreferences, publishSiteTheme } from "@/lib/site-theme";
+import { allowedHeroUrl, getPublishedSitePreferences, publishSiteTheme } from "@/lib/site-theme";
 
 const schema = z.object({
   theme: z.enum(["dark", "light"]),
@@ -9,23 +9,6 @@ const schema = z.object({
   logo: z.enum(["ganesh", "diamond"]).optional(),
   heroImageUrl: z.string().url().max(800).nullable().optional(),
 }).strict();
-
-function allowedHeroUrl(url: string): boolean {
-  try {
-    const origin = process.env.SUPABASE_URL;
-    if (!origin) return false;
-    const source = new URL(url);
-    const supabase = new URL(origin);
-    const bucket = process.env.SUPABASE_STORAGE_BUCKET || "product-images";
-    const prefix = `/storage/v1/object/public/${bucket}/hero-artwork/`;
-    const filename = source.pathname.startsWith(prefix) ? source.pathname.slice(prefix.length) : "";
-    return source.protocol === "https:"
-      && source.origin === supabase.origin
-      && source.search === ""
-      && source.hash === ""
-      && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.png$/i.test(filename);
-  } catch { return false; }
-}
 
 export async function GET() {
   if (!(await getAdminId())) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
@@ -46,10 +29,10 @@ export async function PATCH(request: Request) {
     const logo = parsed.data.logo ?? previous.logo;
     const heroImageUrl = parsed.data.heroImageUrl ?? previous.heroImageUrl;
     if (heroImageUrl && !allowedHeroUrl(heroImageUrl)) {
-      return NextResponse.json({ error: "Use a verified image uploaded with the Approved Deepavali artwork uploader." }, { status: 400 });
+      return NextResponse.json({ error: "The approved illustration URL is invalid. Please refresh Appearance to load the saved image." }, { status: 400 });
     }
     if (parsed.data.lightHeroArtwork === "deepavali" && !heroImageUrl) {
-      return NextResponse.json({ error: "Upload the approved Deepavali PNG before publishing this hero." }, { status: 400 });
+      return NextResponse.json({ error: "The approved Deepavali artwork is not available in saved storage." }, { status: 400 });
     }
     await publishSiteTheme(parsed.data.theme, parsed.data.lightHeroArtwork, logo, heroImageUrl);
     return NextResponse.json({ theme: parsed.data.theme, lightHeroArtwork: parsed.data.lightHeroArtwork, logo, heroImageUrl, saved: true }, { headers: { "Cache-Control": "private, no-store, max-age=0" } });

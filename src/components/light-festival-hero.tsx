@@ -5,6 +5,7 @@ import { CrackerFestivalIllustration } from "@/components/cracker-festival-illus
 import type { LightHeroArtwork } from "@/lib/site-theme";
 import type { MiniHeroOffer } from "@/lib/site-hero-mini-offer";
 import { HeroMiniOffer } from "@/components/hero-mini-offer";
+import { DeepavaliHeroImage } from "@/components/deepavali-hero-image";
 
 /** Illustration is CSS/SVG artwork, not an uploaded logo or an animation library. */
 function FestivalIllustration() {
@@ -69,17 +70,9 @@ function FestivalIllustration() {
 function ApprovedDeepavaliIllustration({ url }: { url: string }) {
   return (
     <div className="light-festival-illustration light-festival-deepavali">
-      {/* Use the original uploaded PNG without colour filters, gradients,
-          overlays or image transformations. The illustration itself includes
-          its greeting, approved Ganesh emblem and message. */}
-      <img
-        src={url}
-        alt="Happy Deepavali — ornamental floral mandala, approved gold Ganesha emblem, glowing diyas and a celebration greeting"
-        width={1122}
-        height={1402}
-        decoding="async"
-        fetchPriority="high"
-      />
+      {/* The public route removes only the pale poster substrate and old frame.
+          It never modifies artwork RGB values. Old CSS/SVG heroes remain. */}
+      <DeepavaliHeroImage originalUrl={url} priority/>
     </div>
   );
 }

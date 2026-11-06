@@ -9,6 +9,8 @@ export const promoLinkOptions = [
   { value: "/cart", label: "Price Calculator" },
   { value: "/contact", label: "Contact" },
   { value: "/install", label: "Install App" },
+  { value: "/wishlist", label: "Favorites" },
+  { value: "/notifications", label: "Notifications" },
   { value: "/developer", label: "Website Developer" },
   { value: "/legal-compliance", label: "Legal information" },
   { value: "/privacy", label: "Privacy notice" },

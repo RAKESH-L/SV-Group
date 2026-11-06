@@ -100,25 +100,32 @@ async function findAlreadyUploadedApprovedHero(): Promise<string | null> {
  */
 async function activateApprovedHeroOnce(record: Record<string, unknown>) {
   if (record.heroSelectionVersion === HERO_SELECTION_VERSION) return null;
-  const url = await findAlreadyUploadedApprovedHero();
-  if (!url) {
-    console.warn("Approved Deepavali hero was not found in existing image storage; preserving current artwork.");
+  // Preview builds must never modify the live site's public appearance.
+  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production") return null;
+  try {
+    const url = await findAlreadyUploadedApprovedHero();
+    if (!url) {
+      console.warn("Approved Deepavali hero was not found in existing image storage; preserving current artwork.");
+      return null;
+    }
+    await db.$executeRaw`
+      ALTER TABLE "SiteThemeSettings"
+      ADD COLUMN IF NOT EXISTS "heroSelectionVersion" INTEGER NOT NULL DEFAULT 0
+    `;
+    const changed = await db.$executeRaw`
+      UPDATE "SiteThemeSettings"
+      SET "heroArtworkSelection" = 'deepavali',
+          "lightHeroArtwork" = 'crackers',
+          "heroImageUrl" = ${url},
+          "heroSelectionVersion" = ${HERO_SELECTION_VERSION},
+          "updatedAt" = NOW()
+      WHERE "id" = 1 AND "heroSelectionVersion" <> ${HERO_SELECTION_VERSION}
+    `;
+    return changed ? url : null;
+  } catch (error) {
+    console.error("Could not activate approved Deepavali hero; preserving current appearance.", error);
     return null;
   }
-  await db.$executeRaw`
-    ALTER TABLE "SiteThemeSettings"
-    ADD COLUMN IF NOT EXISTS "heroSelectionVersion" INTEGER NOT NULL DEFAULT 0
-  `;
-  const changed = await db.$executeRaw`
-    UPDATE "SiteThemeSettings"
-    SET "heroArtworkSelection" = 'deepavali',
-        "lightHeroArtwork" = 'crackers',
-        "heroImageUrl" = ${url},
-        "heroSelectionVersion" = ${HERO_SELECTION_VERSION},
-        "updatedAt" = NOW()
-    WHERE "id" = 1 AND "heroSelectionVersion" <> ${HERO_SELECTION_VERSION}
-  `;
-  return changed ? url : null;
 }
 
 /**

@@ -1,0 +1,128 @@
+/* Small, independent App Offer card in the blank upper-right of the Light
+ * homepage hero. In Dark theme it floats beside the existing hero artwork.
+ * Always kept out of the headline's flow on wide screens.
+ */
+.hero-mini-offer{
+  box-sizing:border-box;align-items:center;gap:12px;
+  padding:13px 15px;border:1px solid #c9d9c7;border-left:3px solid #ba8d43;
+  border-radius:12px;background:linear-gradient(113deg,rgba(255,252,244,.98),rgba(236,245,235,.98));
+  box-shadow:0 12px 28px rgba(28,74,52,.075);
+  color:#173e32;min-width:0;min-height:100px;
+}
+.hero-mini-offer-symbol{
+  display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;
+  border-radius:11px;color:#eac990;background:#184c3d;box-shadow:0 6px 13px rgba(20,65,50,.12);
+}
+.hero-mini-offer-copy{display:flex;flex-direction:column;gap:4px;flex:1 1 auto;min-width:0}
+.hero-mini-offer-eyebrow{font-size:8px;font-weight:850;letter-spacing:.115em;line-height:1.4;color:#a45d34;text-transform:uppercase}
+.hero-mini-offer-title{font-size:clamp(12px,1.1vw,16px);line-height:1.32;font-weight:800;color:#173e32;overflow-wrap:anywhere}
+.hero-mini-offer-description{font-size:10px;line-height:1.5;color:#567063;overflow-wrap:anywhere}
+.hero-mini-offer-cta{
+  display:inline-flex;justify-content:center;align-items:center;gap:5px;
+  min-height:37px;flex:0 0 auto;max-width:113px;padding:8px 10px;border-radius:7px;
+  background:#184c3b;color:#fff7df;font-size:10px;font-weight:800;text-align:center;
+  line-height:1.3;text-decoration:none;transition:transform .2s,background .2s;
+}
+.hero-mini-offer-cta svg{flex:none}
+.hero-mini-offer-cta:hover{background:#2c6953;transform:translateY(-2px)}
+.hero-mini-offer-cta:focus-visible{outline:3px solid #cb813a;outline-offset:3px}
+.hero-mini-offer-terracotta{border-color:#e7b9a5;border-left-color:#b9573f;background:linear-gradient(110deg,#fff8ef,#fae8de)}
+.hero-mini-offer-terracotta .hero-mini-offer-symbol,.hero-mini-offer-terracotta .hero-mini-offer-cta{background:#a5462e}
+.hero-mini-offer-terracotta .hero-mini-offer-cta:hover{background:#bc5d3f}
+.hero-mini-offer-gold{border-color:#e5d3a6;border-left-color:#b17e30;background:linear-gradient(110deg,#fffaf0,#f9edcf)}
+.hero-mini-offer-gold .hero-mini-offer-symbol,.hero-mini-offer-gold .hero-mini-offer-cta{background:#745321}
+.hero-mini-offer-gold .hero-mini-offer-cta:hover{background:#98702d}
+
+/* The screenshot's marked location: above the light-theme illustration. */
+.light-hero-mini-offer{display:none}
+html[data-theme="light"] .light-festival-hero{position:relative}
+html[data-theme="light"] .light-hero-mini-offer{
+  display:flex;position:absolute;z-index:4;
+  top:clamp(14px,2.5vw,36px);right:clamp(23px,7vw,130px);
+  width:min(450px,calc(46% - 8px));
+}
+html[data-theme="light"] .dark-hero-mini-offer{display:none}
+
+/* Dark presentation uses the same admin-selected copy without replacing
+ * the original art. Hidden in the Light theme's secondary editorial hero. */
+.dark-hero-mini-offer{position:absolute;right:clamp(24px,6vw,140px);top:20px;width:min(440px,44%);z-index:4;display:flex}
+.dark-hero-mini-offer.hero-mini-offer{
+  color:#f8ead4;border:1px solid rgba(220,183,117,.45);border-left:3px solid #dbb46d;
+  background:linear-gradient(115deg,rgba(38,52,37,.97),rgba(28,34,24,.96));
+  box-shadow:0 15px 38px rgba(0,0,0,.18);
+}
+.dark-hero-mini-offer .hero-mini-offer-title{color:#f7f0df}
+.dark-hero-mini-offer .hero-mini-offer-eyebrow{color:#e9c788}
+.dark-hero-mini-offer .hero-mini-offer-description{color:#dccfb9}
+.dark-hero-mini-offer .hero-mini-offer-cta{background:#d6ab61;color:#241a0e}
+.dark-hero-mini-offer .hero-mini-offer-cta:hover{background:#eac47f}
+.dark-hero-mini-offer .hero-mini-offer-symbol{color:#2e271a;background:#e4bc75}
+.dark-hero-mini-offer.hero-mini-offer-terracotta{border-left-color:#d8856e;background:linear-gradient(110deg,#432825,#301d20)}
+.dark-hero-mini-offer.hero-mini-offer-gold{border-left-color:#eacb8d;background:linear-gradient(110deg,#443722,#2c271c)}
+
+/* Under laptop width, shorten the badge rather than overlap the hero copy. */
+@media(max-width:1050px){
+  html[data-theme="light"] .light-hero-mini-offer{width:44%;right:5vw;top:12px;padding:10px;gap:8px;min-height:85px}
+  .light-hero-mini-offer .hero-mini-offer-symbol{display:none}
+  .hero-mini-offer-description{font-size:9px}
+  .dark-hero-mini-offer{width:43%;right:4vw;padding:10px;gap:8px}
+}
+@media(max-width:760px){
+  html[data-theme="light"] .light-hero-mini-offer{
+    position:relative;top:auto;right:auto;grid-column:1;grid-row:2;
+    width:100%;max-width:620px;margin:0 auto -30px;
+    min-height:94px;padding:13px 14px;gap:12px;
+  }
+  .light-hero-mini-offer .hero-mini-offer-symbol{display:grid}
+  .light-hero-mini-offer .hero-mini-offer-title{font-size:15px}
+  .light-hero-mini-offer .hero-mini-offer-description{font-size:10px}
+  .dark-hero-mini-offer{width:min(440px,80%);right:5vw;top:12px}
+}
+@media(max-width:650px){
+  .dark-hero-mini-offer{position:relative;top:auto;right:auto;width:100%;z-index:3;grid-column:1;align-self:start;margin:18px 0 0}
+  .hero .hero-art{pointer-events:none}
+  .hero-mini-offer-cta{min-height:39px}
+}
+@media(max-width:440px){
+  html[data-theme="light"] .light-hero-mini-offer{flex-wrap:wrap;gap:10px;margin-bottom:-22px}
+  .light-hero-mini-offer .hero-mini-offer-copy{flex-basis:calc(100% - 52px)}
+  .light-hero-mini-offer .hero-mini-offer-cta{margin-left:50px;max-width:none;flex:1}
+  .dark-hero-mini-offer{flex-wrap:wrap}
+  .dark-hero-mini-offer .hero-mini-offer-copy{flex-basis:calc(100% - 52px)}
+  .dark-hero-mini-offer .hero-mini-offer-cta{margin-left:50px;max-width:none;flex:1}
+}
+@media(prefers-reduced-motion:reduce){.hero-mini-offer-cta{transition:none}.hero-mini-offer-cta:hover{transform:none}}
+
+/* Admin → Banners has an independent mini hero offer publishing control. */
+.admin-mini-offer-editor{margin:27px 0;padding:20px;border:1px solid var(--line);background:var(--panel);border-radius:12px;min-width:0}
+.admin-mini-offer-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin:0 0 18px}
+.admin-mini-offer-heading h3{margin:0;color:var(--ink);font-size:19px;line-height:1.4}
+.admin-mini-offer-heading p{margin:6px 0 0;color:var(--muted);font-size:11px;line-height:1.8;max-width:760px}
+.admin-mini-offer-toggle{display:inline-flex;align-items:center;gap:9px;padding:10px 13px;border:1px solid var(--line);border-radius:8px;color:var(--ink);cursor:pointer;font-size:12px;font-weight:750}
+.admin-mini-offer-toggle input{accent-color:var(--gold);width:17px;height:17px;cursor:pointer}
+.admin-mini-offer-form{display:grid;gap:17px}
+.admin-mini-offer-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.admin-mini-offer-fields label{display:grid;gap:6px;min-width:0;color:var(--ink);font-size:11px;font-weight:700}
+.admin-mini-offer-fields label small{font-size:10px;color:var(--muted);font-weight:400}
+.admin-mini-offer-fields input,.admin-mini-offer-fields select,.admin-mini-offer-fields textarea{
+  min-height:40px;box-sizing:border-box;width:100%;min-width:0;padding:10px 12px;
+  background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:7px;
+  font-size:12px;font-weight:400;line-height:1.6;font-family:inherit;
+}
+.admin-mini-offer-fields input:focus-visible,.admin-mini-offer-fields select:focus-visible,.admin-mini-offer-fields textarea:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.admin-mini-offer-fields textarea{resize:vertical;min-height:72px}
+.admin-mini-offer-fields .wide{grid-column:1/-1}
+.admin-mini-offer-preview{display:grid;gap:9px;min-width:0}
+.admin-mini-offer-preview>span{color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.admin-mini-offer-preview .hero-mini-offer{width:min(100%,450px);display:flex;box-shadow:0 12px 30px rgba(20,42,28,.08)}
+.admin-mini-offer-preview .hero-mini-offer-title{font-size:14px}
+.admin-mini-offer-status{color:var(--muted);font-size:11px}
+.admin-mini-offer-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.admin-mini-offer-actions .button{min-height:41px}
+.admin-mini-offer-error{padding:10px 13px;color:#e6b3a2;border:1px solid rgba(196,76,57,.5);border-radius:7px;background:rgba(170,55,43,.12);font-size:12px;line-height:1.6}
+.admin-mini-offer-success{padding:10px 13px;color:#b9d6b4;border:1px solid rgba(100,165,100,.45);border-radius:7px;background:rgba(73,127,67,.12);font-size:12px;line-height:1.6}
+html[data-theme="light"] .admin-mini-offer-editor{background:#fffdf8;border-color:#dedfd3}
+html[data-theme="light"] .admin-mini-offer-fields input,html[data-theme="light"] .admin-mini-offer-fields select,html[data-theme="light"] .admin-mini-offer-fields textarea{background:#fff;color:#194333;border-color:#d7dfd1}
+html[data-theme="light"] .admin-mini-offer-error{color:#973a2d;background:#fff0ea}
+html[data-theme="light"] .admin-mini-offer-success{color:#276440;background:#e8f4e7}
+@media(max-width:700px){.admin-mini-offer-fields{grid-template-columns:1fr}.admin-mini-offer-editor{padding:14px}}

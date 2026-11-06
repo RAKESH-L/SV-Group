@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Check, Layers3, Link2, Plus, Save, Trash2 } from "lucide-react";
+import { AdminHeroMiniOfferEditor } from "@/components/admin-hero-mini-offer-editor";
 import {
   isSafePromoPath,
   promoLinkOptions,
@@ -130,10 +131,12 @@ export function AdminPromoCards() {
       <div className="promo-admin-heading">
         <Layers3 size={27} aria-hidden="true"/>
         <div>
-          <h2>Homepage 3D Banners</h2>
-          <p>Edit the three announcement cards below the public header. Set each button to an existing page, or register a new public page for future website features.</p>
+          <h2>Homepage Banners</h2>
+          <p>Manage the compact hero app offer and the three rotating announcement cards independently. All banners adapt to the published Light or Dark theme.</p>
         </div>
       </div>
+      <AdminHeroMiniOfferEditor/>
+      <div className="promo-admin-heading"><Layers3 size={22} aria-hidden="true"/><div><h3>Rotating announcement cards (1–3)</h3><p>These existing cards remain separate from the compact hero offer above.</p></div></div>
       {loading ? <p role="status">Loading published banners…</p> : cards.length === 3 ? (
         <form onSubmit={save}>
           <section className="promo-destination-manager" aria-labelledby="promo-destination-heading">

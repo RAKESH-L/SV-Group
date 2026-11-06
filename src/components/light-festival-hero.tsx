@@ -3,6 +3,8 @@ import { T } from "@/components/language-provider";
 import { ArrowUpRight, Leaf, Sparkles } from "lucide-react";
 import { CrackerFestivalIllustration } from "@/components/cracker-festival-illustration";
 import type { LightHeroArtwork } from "@/lib/site-theme";
+import type { MiniHeroOffer } from "@/lib/site-hero-mini-offer";
+import { HeroMiniOffer } from "@/components/hero-mini-offer";
 
 /** Illustration is CSS/SVG artwork, not an uploaded logo or an animation library. */
 function FestivalIllustration() {
@@ -64,7 +66,7 @@ function FestivalIllustration() {
   );
 }
 
-export function LightFestivalHero({ artwork = "crackers" }: { artwork?: LightHeroArtwork }) {
+export function LightFestivalHero({ artwork = "crackers", offer }: { artwork?: LightHeroArtwork; offer: MiniHeroOffer }) {
   return (
     <>
       <section className="light-festival-hero" aria-labelledby="light-festival-heading">
@@ -76,6 +78,7 @@ export function LightFestivalHero({ artwork = "crackers" }: { artwork?: LightHer
           <Link className="light-festival-cta" href="#collection"><T text="Explore the collection"/> <ArrowUpRight size={22} aria-hidden="true"/></Link>
           <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> <T text="Rooted in tradition. Celebrated with care."/></p>
         </div>
+        <HeroMiniOffer offer={offer} className="light-hero-mini-offer"/>
         {artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
       </section>
       <section className="light-festival-values" aria-label="Our approach">

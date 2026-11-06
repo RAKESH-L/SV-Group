@@ -14,6 +14,7 @@ import "./language.css";
 import "./ganesh-branding.css";
 import "./site-logo-options.css";
 import "./pwa-install.css";
+import "./hero-mini-offer.css";
 import { Header } from "@/components/header";
 import { LanguageProvider } from "@/components/language-provider";
 import { PwaProvider } from "@/components/pwa-provider";

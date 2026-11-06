@@ -3,20 +3,21 @@ import { revalidateTag, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 
 export type SiteTheme = "dark" | "light";
-export type LightHeroArtwork = "crackers" | "diya";
+export type LightHeroArtwork = "crackers" | "diya" | "deepavali";
 export type SiteLogo = "ganesh" | "diamond";
 export const DEFAULT_SITE_LOGO: SiteLogo = "ganesh";
 export const DEFAULT_LIGHT_HERO_ARTWORK: LightHeroArtwork = "crackers";
 const DEFAULT_THEME: SiteTheme = "dark";
 
 export type PublishedSitePreferences = {
-  theme: SiteTheme; lightHeroArtwork: LightHeroArtwork; logo: SiteLogo;
+  theme: SiteTheme; lightHeroArtwork: LightHeroArtwork; logo: SiteLogo; heroImageUrl: string | null;
 };
 
 const defaults: PublishedSitePreferences = {
   theme: DEFAULT_THEME,
   lightHeroArtwork: DEFAULT_LIGHT_HERO_ARTWORK,
   logo: DEFAULT_SITE_LOGO,
+  heroImageUrl: null,
 };
 
 /**
@@ -41,7 +42,8 @@ const cachedPreferences = unstable_cache(async (): Promise<PublishedSitePreferen
     return {
       theme: record.theme === "light" ? "light" : DEFAULT_THEME,
       logo: record.logo === "diamond" ? "diamond" : DEFAULT_SITE_LOGO,
-      lightHeroArtwork: record.lightHeroArtwork === "diya" ? "diya" : DEFAULT_LIGHT_HERO_ARTWORK,
+      lightHeroArtwork: record.heroArtworkSelection === "deepavali" ? "deepavali" : record.heroArtworkSelection === "diya" || record.lightHeroArtwork === "diya" && record.heroArtworkSelection !== "crackers" ? "diya" : DEFAULT_LIGHT_HERO_ARTWORK,
+      heroImageUrl: typeof record.heroImageUrl === "string" && /^https:\/\/[^/]+\/storage\/v1\/object\/public\/[^/]+\/hero-artwork\/[0-9a-f-]{36}\.png$/i.test(record.heroImageUrl) ? record.heroImageUrl : null,
     };
   } catch {
     return defaults;
@@ -59,9 +61,13 @@ export async function getPublishedLightHeroArtwork(): Promise<LightHeroArtwork> 
 export async function getPublishedSiteLogo(): Promise<SiteLogo> {
   return (await getPublishedSitePreferences()).logo;
 }
+export async function getPublishedHeroImageUrl(): Promise<string | null> {
+  return (await getPublishedSitePreferences()).heroImageUrl;
+}
 
 /** Admin-only publishing keeps the existing table and current theme/logo. */
-export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: LightHeroArtwork = DEFAULT_LIGHT_HERO_ARTWORK, logo: SiteLogo = DEFAULT_SITE_LOGO): Promise<void> {
+export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: LightHeroArtwork = DEFAULT_LIGHT_HERO_ARTWORK, logo: SiteLogo = DEFAULT_SITE_LOGO, heroImageUrl: string | null = null): Promise<void> {
+  if (lightHeroArtwork === "deepavali" && !heroImageUrl) throw new Error("A verified approved Deepavali image is required before publishing.");
   await db.$executeRaw`
     CREATE TABLE IF NOT EXISTS "SiteThemeSettings" (
       "id" INTEGER PRIMARY KEY,
@@ -81,11 +87,23 @@ export async function publishSiteTheme(theme: SiteTheme, lightHeroArtwork: Light
     CHECK ("logo" IN ('ganesh', 'diamond'))
   `;
   await db.$executeRaw`
-    INSERT INTO "SiteThemeSettings" ("id", "theme", "lightHeroArtwork", "logo", "updatedAt")
-    VALUES (1, ${theme}, ${lightHeroArtwork}, ${logo}, NOW())
+    ALTER TABLE "SiteThemeSettings"
+    ADD COLUMN IF NOT EXISTS "heroArtworkSelection" TEXT NOT NULL DEFAULT 'crackers'
+  `;
+  await db.$executeRaw`
+    ALTER TABLE "SiteThemeSettings"
+    ADD COLUMN IF NOT EXISTS "heroImageUrl" TEXT
+  `;
+  // Keep the original artwork column and its legacy CHECK constraint valid.
+  const legacyArtwork = lightHeroArtwork === "deepavali" ? "crackers" : lightHeroArtwork;
+  await db.$executeRaw`
+    INSERT INTO "SiteThemeSettings" ("id", "theme", "lightHeroArtwork", "heroArtworkSelection", "heroImageUrl", "logo", "updatedAt")
+    VALUES (1, ${theme}, ${legacyArtwork}, ${lightHeroArtwork}, ${heroImageUrl}, ${logo}, NOW())
     ON CONFLICT ("id") DO UPDATE
     SET "theme" = EXCLUDED."theme",
         "lightHeroArtwork" = EXCLUDED."lightHeroArtwork",
+        "heroArtworkSelection" = EXCLUDED."heroArtworkSelection",
+        "heroImageUrl" = COALESCE(EXCLUDED."heroImageUrl", "SiteThemeSettings"."heroImageUrl"),
         "logo" = EXCLUDED."logo",
         "updatedAt" = NOW()
   `;

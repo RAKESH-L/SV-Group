@@ -63,7 +63,7 @@ function ColourfulBurst() {
 function SkyShot({ shot, index }: { shot: Shot; index: number }) {
   const vars = {
     "--sky-offset": `${shot.delay}s`,
-    "--sky-flight": `-${shot.flight}px`,
+    // The compact SVG is 225px tall, versus the former ~340px artwork.\n    // Scale the travel distance so each rocket reaches its burst point.\n    "--sky-flight": `-${Math.round(shot.flight * 0.66)}px`,
   } as CSSProperties;
 
   return (

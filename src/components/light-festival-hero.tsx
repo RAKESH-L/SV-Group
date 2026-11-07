@@ -91,8 +91,13 @@ export function LightFestivalHero({ artwork = "crackers", offer, heroImageUrl, c
           <Link className="light-festival-cta" href="#collection"><T text="Explore the collection"/> <ArrowUpRight size={22} aria-hidden="true"/></Link>
           <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> <T text="Rooted in tradition. Celebrated with care."/></p>
         </div>
-        <HeroMiniOffer offer={offer} className="light-hero-mini-offer" coupon={coupon}/>
-        {artwork === "deepavali" && heroImageUrl ? <ApprovedDeepavaliIllustration url={heroImageUrl}/> : artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
+        {/* This visual column owns both blocks in normal document flow.
+            The banner no longer floats over the mandala/diya hero artwork.
+            Their spacing is explicitly responsive and preserves every art option. */}
+        <div className="light-festival-visual-stack">
+          <HeroMiniOffer offer={offer} className="light-hero-mini-offer" coupon={coupon}/>
+          {artwork === "deepavali" && heroImageUrl ? <ApprovedDeepavaliIllustration url={heroImageUrl}/> : artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
+        </div>
       </section>
       <section className="light-festival-values" aria-label="Our approach">
         <span><Leaf size={18} aria-hidden="true"/> <T text="Celebrate thoughtfully"/></span>

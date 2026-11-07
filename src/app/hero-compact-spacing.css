@@ -1,0 +1,343 @@
+/*
+ * Compact hero / illustration collision fix (2026-11).
+ *
+ * The light homepage previously placed its mini offer absolutely over the
+ * right-hand artwork. A smaller absolute card would still overlap at some
+ * sizes. Move both objects into one normal-flow visual column, with a gap
+ * that also accommodates the sky-shot launch beneath the offer.
+ *
+ * The dark hero uses separate grid tracks, with its illustration in the
+ * following row instead of positioning the compact card above the image.
+ * Keep this stylesheet loaded after the existing hero theme styles.
+ */
+html[data-theme="light"] .light-festival-hero .light-festival-visual-stack{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  grid-column:2;
+  align-self:center;
+  min-width:0;
+  width:100%;
+  gap:82px;
+}
+html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.light-hero-mini-offer{
+  position:relative;
+  inset:auto;
+  top:auto;
+  right:auto;
+  bottom:auto;
+  left:auto;
+  grid-column:auto;
+  grid-row:auto;
+  display:flex;
+  flex:0 0 auto;
+  width:min(100%,400px);
+  max-width:400px;
+  min-width:0;
+  min-height:0;
+  margin:0;
+  padding:10px 13px;
+  z-index:3;
+}
+html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.light-festival-illustration{
+  flex:0 0 auto;
+  align-self:center;
+  width:min(100%,550px);
+  max-width:550px;
+  min-width:0;
+  position:relative;
+  margin:0 auto;
+}
+/* The approved background-free Deepavali graphic has no extra card border
+ * and remains centered below, never behind, the offer. */
+html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.light-festival-deepavali{
+  width:min(100%,550px);
+  max-width:550px;
+}
+html[data-theme="light"] .light-festival-hero:has(.light-festival-visual-stack){
+  align-items:center;
+}
+
+/* Retain two readable columns through laptop and desktop sizes. */
+@media(min-width:761px) and (max-width:1160px){
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack{
+    gap:78px;
+  }
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.light-hero-mini-offer{
+    width:min(100%,400px);
+    padding:10px 11px;
+  }
+}
+/* One-column layout: copy first, offer second, illustration third. */
+@media(max-width:760px){
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack{
+    grid-column:1;
+    grid-row:auto;
+    gap:80px;
+    margin:0 auto;
+    width:100%;
+    max-width:630px;
+  }
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.light-hero-mini-offer{
+    width:min(100%,400px);
+    min-height:0;
+    margin:0;
+    padding:10px 13px;
+  }
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.light-festival-illustration{
+    width:min(100%,550px);
+    max-width:550px;
+    margin:0 auto;
+  }
+}
+@media(max-width:380px){
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack{
+    gap:78px;
+  }
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.light-hero-mini-offer{
+    padding:10px 11px;
+  }
+}
+
+/* Standalone coupon returns to roughly the previous compact-card footprint.
+ * Admin can write longer copy; it wraps and expands the card in flow rather
+ * than spilling over the illustration. The original feature mode inherits
+ * the same non-overlapping placement. */
+.hero-mini-offer.hero-mini-offer-coupon{
+  min-height:0;
+  padding:10px 13px;
+  gap:0;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:center;
+}
+.hero-mini-offer-coupon .hero-mini-coupon{
+  flex:0 0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  width:100%;
+  min-width:0;
+  padding:0;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-topline{
+  flex-wrap:nowrap;
+  gap:5px;
+  min-height:20px;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-kicker{
+  font-size:8px;
+  letter-spacing:.085em;
+  min-width:0;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-percent{
+  flex:none;
+  font-size:9px;
+  gap:4px;
+  padding:4px 7px;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-percent svg{width:12px;height:12px}
+.hero-mini-offer-coupon .hero-mini-coupon-content{
+  gap:1px;
+  min-width:0;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-content>strong{
+  font:700 clamp(13px,1vw,15px)/1.28 Georgia,"Times New Roman",serif;
+  letter-spacing:-.01em;
+  overflow-wrap:anywhere;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-content>p{
+  margin:0;
+  font-size:9px;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-line-clamp:1;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-bottom{
+  display:flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  gap:7px;
+  padding-top:5px;
+  border-top:1px dashed rgba(144,108,58,.38);
+}
+.hero-mini-offer-coupon .hero-mini-coupon-code{
+  flex:1 1 auto;
+  min-width:0;
+  gap:1px;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-code>span{
+  font-size:7px;
+  letter-spacing:.1em;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-code>b{
+  font-size:clamp(16px,1.35vw,20px);
+  line-height:1.1;
+  letter-spacing:.04em;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-actions{
+  flex:0 0 auto;
+  min-width:0;
+  margin:0;
+  gap:3px;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-copy{
+  min-height:32px;
+  padding:5px 9px;
+  gap:5px;
+  font-size:10px;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-copy svg{width:14px;height:14px}
+.hero-mini-offer-coupon .hero-mini-coupon-use{
+  font-size:9px;
+  line-height:1.2;
+  text-align:center;
+  justify-content:center;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-validity{
+  font-size:8px;
+  line-height:1.2;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-feedback:not(:empty){
+  margin-top:2px;
+  font-size:9px;
+}
+
+/* Rocket tips appear just BELOW the compact card, with expanding colour
+ * bursts over the banner. The 82px spacing above the art reserves the
+ * launch zone without letting the physical offer cover the illustration. */
+.light-festival-visual-stack .hero-mini-sky-shots,
+html[data-theme="dark"] .hero .dark-hero-mini-offer .hero-mini-sky-shots{
+  left:-12px;
+  top:-35px;
+  width:calc(100% + 24px);
+  height:225px;
+}
+@media(max-width:440px){
+  html[data-theme="light"] .light-festival-visual-stack .hero-mini-offer-coupon{
+    padding:10px 11px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-bottom{
+    flex-wrap:nowrap;
+    align-items:center;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-actions{
+    flex:0 0 auto;
+    margin:0;
+    min-width:0;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-copy{
+    flex:0 0 auto;
+    min-height:33px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-use{flex:none}
+  .hero-mini-offer-coupon .hero-mini-coupon-code>b{font-size:17px}
+  .hero-mini-offer-coupon .hero-mini-coupon-content>strong{font-size:14px}
+}
+
+/* Dark theme: use independent grid tracks. The old absolute banner and
+ * blurred mobile overlay could sit directly over the diya illustration.
+ * Both are now real grid children, even on TV and phone widths. */
+html[data-theme="dark"] .hero{
+  height:auto;
+  max-height:none;
+  min-height:650px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,.93fr);
+  grid-template-rows:auto auto;
+  column-gap:clamp(25px,4vw,80px);
+  row-gap:82px;
+  align-items:center;
+  padding-top:clamp(58px,6vw,100px);
+  padding-bottom:clamp(90px,7vw,120px);
+  overflow:hidden;
+}
+html[data-theme="dark"] .hero .hero-content{
+  grid-column:1;
+  grid-row:1 / span 2;
+  align-self:center;
+  min-width:0;
+}
+html[data-theme="dark"] .hero .dark-hero-mini-offer{
+  position:relative;
+  inset:auto;
+  top:auto;
+  right:auto;
+  bottom:auto;
+  left:auto;
+  grid-column:2;
+  grid-row:1;
+  align-self:end;
+  justify-self:center;
+  display:flex;
+  width:min(100%,400px);
+  max-width:400px;
+  min-width:0;
+  margin:0;
+  padding:10px 13px;
+  min-height:0;
+  z-index:3;
+}
+html[data-theme="dark"] .hero .hero-art{
+  position:relative;
+  inset:auto;
+  transform:none;
+  opacity:1;
+  width:100%;
+  min-width:0;
+  height:min(400px,37vw);
+  min-height:285px;
+  grid-column:2;
+  grid-row:2;
+  align-self:start;
+  justify-self:center;
+  pointer-events:none;
+}
+@media(max-width:760px){
+  html[data-theme="dark"] .hero{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:auto auto auto;
+    gap:0;
+    min-height:0;
+    padding-top:64px;
+    padding-bottom:90px;
+  }
+  html[data-theme="dark"] .hero .hero-content{
+    grid-column:1;
+    grid-row:1;
+    margin:0 0 32px;
+  }
+  html[data-theme="dark"] .hero .dark-hero-mini-offer{
+    grid-column:1;
+    grid-row:2;
+    margin:0 auto 82px;
+    width:min(100%,400px);
+  }
+  html[data-theme="dark"] .hero .hero-art{
+    grid-column:1;
+    grid-row:3;
+    height:315px;
+    min-height:260px;
+    width:100%;
+    margin:0 auto;
+    opacity:1;
+    transform:none;
+  }
+}
+@media(max-width:370px){
+  html[data-theme="dark"] .hero .hero-art{
+    height:280px;
+    min-height:260px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-mini-offer-coupon .hero-mini-coupon-copy{transition:none}
+}

@@ -5,6 +5,7 @@ import { calculateEffectiveDiscountPercent, calculateLineAmounts, formatPaiseExa
 import { useCart } from "@/components/cart-provider";
 import { InformationRequestForm } from "@/components/information-request-form";
 import { PersonalEstimateDownload } from "@/components/personal-estimate-download";
+import { CouponEntry, useCouponApplication } from "@/components/cart-coupon";
 import { SelectionTools } from "@/components/selection-tools";
 import { useState } from "react";
 import { useLanguage } from "@/components/language-provider";
@@ -13,9 +14,10 @@ export function Cart() {
   const { lines, ready, totals, setQuantity, remove, clear } = useCart();
   const { t } = useLanguage();
   const [requestOpen, setRequestOpen] = useState(false);
+  const coupon = useCouponApplication(ready, totals.indicativePaise);
   if (!ready) return <main className="page-shell"><div className="eyebrow">{t("YOUR PRICE CALCULATOR")}</div><h1 className="page-title">{t("Your")} <em>{t("selection")}</em></h1><p role="status" className="page-lede">{t("Loading your saved selection…")}</p></main>;
   const savings = totals.originalPaise - totals.indicativePaise;
-  const effectiveDiscount = calculateEffectiveDiscountPercent(totals.originalPaise, savings);
+  const effectiveDiscount = calculateEffectiveDiscountPercent(totals.originalPaise, totals.originalPaise - coupon.finalPaise);
   return <main className="page-shell"><div className="eyebrow">{t("YOUR PRICE CALCULATOR")}</div><h1 className="page-title">{t("Your")} <em>{t("selection")}</em></h1><p className="page-lede">{t("Compare indicative prices and savings for your own planning.")}</p>
     {!lines.length ? <div className="empty-state"><div className="empty-icon">✦</div><h2>{t("Your selection is empty")}</h2><p>{t("Add products from the catalogue to compare prices.")}</p><Link className="button button-gold" href="/catalogue">{t("Explore catalogue")}</Link></div> : <div className="cart-layout"><div className="cart-lines">
       {lines.map(line => {
@@ -40,7 +42,12 @@ export function Cart() {
         </article>;
       })}
       <button className="text-button" onClick={clear}>{t("Clear selection")}</button>
-    </div><aside className="summary-card"><h2>{t("Indicative price summary")}</h2><div className="summary-row"><span>{t("Total selected product lines")}</span><span>{lines.length}</span></div><div className="summary-row"><span>{t("Total quantity")}</span><span>{totals.totalQuantity}</span></div><div className="summary-row"><span>{t("Total original price")}</span><span>{formatPaiseExact(totals.originalPaise)}</span></div><div className="summary-row savings"><span>{t("Total discount amount")}</span><span>{formatPaiseExact(savings)}</span></div><div className="summary-row"><span>{t("Effective discount")}</span><span>{effectiveDiscount.toFixed(2)}%</span></div><div className="summary-total"><span>{t("Indicative discounted price")}</span><strong>{formatPaiseExact(totals.indicativePaise)}</strong></div><p>{t("Prices are indicative and may change. This calculator does not create an order, reservation or purchase request.")}</p><PersonalEstimateDownload lines={lines}/><button className="button button-gold information-request-trigger" onClick={() => setRequestOpen(true)}>{t("Send Information Request")}</button></aside></div>}
+    </div><aside className="summary-card"><h2>{t("Indicative price summary")}</h2><div className="summary-row"><span>{t("Total selected product lines")}</span><span>{lines.length}</span></div><div className="summary-row"><span>{t("Total quantity")}</span><span>{totals.totalQuantity}</span></div><div className="summary-row"><span>{t("Total original price")}</span><span>{formatPaiseExact(totals.originalPaise)}</span></div><div className="summary-row savings"><span>{t("Catalogue discount / savings")}</span><span>{formatPaiseExact(savings)}</span></div>
+      <div className="summary-row"><span>{t("Discounted subtotal before coupon")}</span><span>{formatPaiseExact(totals.indicativePaise)}</span></div>
+      <CouponEntry application={coupon} subtotalPaise={totals.indicativePaise}/>
+      {coupon.applied && <div className="summary-row savings coupon-savings-line"><span>{t("Additional coupon discount")} ({coupon.applied.percentOff}%)</span><strong>−{formatPaiseExact(coupon.savingsPaise)}</strong></div>}
+      <div className="summary-row"><span>{t("Effective discount")}</span><span>{effectiveDiscount.toFixed(2)}%</span></div>
+      <div className="summary-total"><span>{t("Indicative final total")}</span><strong>{formatPaiseExact(coupon.finalPaise)}</strong></div><p>{t("Prices are indicative and may change. This calculator does not create an order, reservation or purchase request.")}</p><PersonalEstimateDownload lines={lines} coupon={coupon.applied}/><button className="button button-gold information-request-trigger" onClick={() => setRequestOpen(true)}>{t("Send Information Request")}</button></aside></div>}
     <SelectionTools/>
     {requestOpen&&<InformationRequestForm topics={lines.map(({product,quantity})=>({id:product.id,name:product.name,quantity}))} onClose={()=>setRequestOpen(false)}/>}
   </main>;

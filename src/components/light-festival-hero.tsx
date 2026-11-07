@@ -77,8 +77,8 @@ function ApprovedDeepavaliIllustration({ url }: { url: string }) {
   );
 }
 
-export function LightFestivalHero({ artwork = "crackers", offer, heroImageUrl }: {
-  artwork?: LightHeroArtwork; offer: MiniHeroOffer; heroImageUrl?: string | null;
+export function LightFestivalHero({ artwork = "crackers", offer, heroImageUrl, coupon }: {
+  artwork?: LightHeroArtwork; offer: MiniHeroOffer; heroImageUrl?: string | null; coupon?: import("@/lib/coupon").PublicCoupon | null;
 }) {
   return (
     <>
@@ -91,7 +91,7 @@ export function LightFestivalHero({ artwork = "crackers", offer, heroImageUrl }:
           <Link className="light-festival-cta" href="#collection"><T text="Explore the collection"/> <ArrowUpRight size={22} aria-hidden="true"/></Link>
           <p className="light-festival-signoff"><Sparkles size={22} aria-hidden="true"/> <T text="Rooted in tradition. Celebrated with care."/></p>
         </div>
-        <HeroMiniOffer offer={offer} className="light-hero-mini-offer"/>
+        <HeroMiniOffer offer={offer} className="light-hero-mini-offer" coupon={coupon}/>
         {artwork === "deepavali" && heroImageUrl ? <ApprovedDeepavaliIllustration url={heroImageUrl}/> : artwork === "diya" ? <FestivalIllustration/> : <CrackerFestivalIllustration/>}
       </section>
       <section className="light-festival-values" aria-label="Our approach">

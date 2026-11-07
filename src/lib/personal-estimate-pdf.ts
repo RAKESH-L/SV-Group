@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage } from "pdf-lib";
 import type { CartLine } from "@/lib/cart-calculations";
 import { toPaise } from "@/lib/cart-calculations";
+import { couponIsActive, couponMinimumMet, couponSavingsPaise, type PublicCoupon } from "@/lib/coupon";
 import { business } from "@/lib/business";
 import { ESTIMATE_MARGIN, ESTIMATE_PAGE_HEIGHT, ESTIMATE_PAGE_WIDTH, ESTIMATE_RIGHT, estimatePdfPalette, formatEstimatePdfPaise, printablePdfText, wrapPdfText } from "@/lib/pdf-design";
 
@@ -30,7 +31,7 @@ async function loadLogo(pdf: PDFDocument): Promise<PDFImage> {
   return pdf.embedPng(png);
 }
 
-export async function createPersonalEstimatePdf(lines: CartLine[]) {
+export async function createPersonalEstimatePdf(lines: CartLine[], coupon?: PublicCoupon | null) {
   if (!lines.length) throw new Error("Add at least one product before downloading an estimate.");
   const pdf = await PDFDocument.create();
   pdf.setTitle("SRI VINAYAKA GROUPS - PERSONAL PRICE ESTIMATE");
@@ -47,6 +48,10 @@ export async function createPersonalEstimatePdf(lines: CartLine[]) {
     return { quantity: sum.quantity + qty, original: sum.original + originalUnit * qty, indicative: sum.indicative + indicativeUnit * qty };
   }, { quantity: 0, original: 0, indicative: 0 });
   const savings = totals.original - totals.indicative;
+  const validCoupon = coupon && couponIsActive(coupon) && couponMinimumMet(coupon, totals.indicative) ? coupon : null;
+  const couponDiscount = validCoupon ? couponSavingsPaise(totals.indicative, validCoupon.percentOff) : 0;
+  const estimatedFinal = totals.indicative - couponDiscount;
+  const combinedSavings = totals.original - estimatedFinal;
   const pages: PDFPage[] = [];
   let page!: PDFPage;
   let y = 0;
@@ -91,20 +96,27 @@ export async function createPersonalEstimatePdf(lines: CartLine[]) {
 
   const disclaimer = "This is a personal price estimate for informational use only. It is not a quotation for acceptance, order, reservation, invoice, or confirmation of sale. Prices are indicative and may change.";
   const disclaimerLines = wrapPdfText(disclaimer, regular, 7.5, right - left - 20);
-  const summaryHeight = 164, disclaimerHeight = disclaimerLines.length * 10 + 24;
+  const summaryHeight = validCoupon ? 214 : 164, disclaimerHeight = disclaimerLines.length * 10 + 24;
   if (y - summaryHeight - disclaimerHeight < 56) { newPage(); y -= 12; }
   y -= 12;
   page.drawRectangle({ x: left, y: y - summaryHeight, width: right - left, height: summaryHeight, color: pale, borderColor: gold, borderWidth: 1 });
   page.drawText("ESTIMATE SUMMARY", { x: left + 14, y: y - 20, size: 9, font: bold, color: gold });
   const rows: [string, string][] = [
     ["Distinct products", String(activeLines.length)], ["Total quantity", String(totals.quantity)],
-    ["Original subtotal", formatEstimatePdfPaise(totals.original)], ["Indicative subtotal", formatEstimatePdfPaise(totals.indicative)],
-    ["Total estimated savings", formatEstimatePdfPaise(savings)], ["Effective discount", totals.original > 0 ? `${((savings * 100) / totals.original).toFixed(2)}%` : "0.00%"], ["Estimated final total", formatEstimatePdfPaise(totals.indicative)],
+    ["Original subtotal", formatEstimatePdfPaise(totals.original)], ["Discounted catalogue subtotal", formatEstimatePdfPaise(totals.indicative)],
+    ["Catalogue savings", formatEstimatePdfPaise(savings)],
+    ...(validCoupon ? [
+      ["Coupon applied", `${validCoupon.code} (${validCoupon.percentOff}% extra)`],
+      ["Additional coupon savings", formatEstimatePdfPaise(couponDiscount)],
+    ] as [string, string][] : []),
+    ["Total estimated savings", formatEstimatePdfPaise(combinedSavings)],
+    ["Effective discount", totals.original > 0 ? `${((combinedSavings * 100) / totals.original).toFixed(2)}%` : "0.00%"],
+    ["Estimated final total", formatEstimatePdfPaise(estimatedFinal)],
   ];
   rows.forEach(([label, value], index) => {
     const rowY = y - 37 - index * 15;
-    page.drawText(label, { x: left + 14, y: rowY, size: index === 6 ? 8 : 7.5, font: index === 6 ? bold : regular, color: ink });
-    rightText(page, value, right - 170, rowY, 155, index === 6 ? bold : regular, index === 6 ? 9 : 7.5, index === 6 ? gold : ink);
+    page.drawText(label, { x: left + 14, y: rowY, size: index === rows.length - 1 ? 8 : 7.5, font: index === rows.length - 1 ? bold : regular, color: ink });
+    rightText(page, value, right - 230, rowY, 215, index === rows.length - 1 ? bold : regular, index === rows.length - 1 ? 9 : 7.5, index === rows.length - 1 ? gold : ink);
   });
   y -= summaryHeight + 15;
   page.drawRectangle({ x: left, y: y - disclaimerHeight, width: right - left, height: disclaimerHeight, color: rgb(0.99, 0.95, 0.84), borderColor: gold, borderWidth: 0.7 });

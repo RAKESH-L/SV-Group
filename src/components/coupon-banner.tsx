@@ -41,7 +41,7 @@ export function CouponBanner({ coupon }: { coupon: PublicCoupon }) {
       <span className="hero-mini-offer-symbol hero-mini-coupon-symbol" aria-hidden="true">
         <TicketPercent size={19}/>
       </span>
-      <div className="hero-mini-offer-copy hero-mini-coupon-copy">
+      <div className="hero-mini-offer-copy hero-mini-coupon-text">
         <span className="hero-mini-offer-eyebrow">{t("EXTRA SAVINGS COUPON")}</span>
         <strong className="hero-mini-offer-title hero-mini-coupon-code-title">{coupon.code}</strong>
         <span className="hero-mini-offer-description hero-mini-coupon-supporting">{summary}</span>

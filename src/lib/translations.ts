@@ -385,6 +385,8 @@ export const KN: Record<string, string> = {
   "Additional savings on indicative catalogue prices": "ಕ್ಯಾಟಲಾಗ್‌ನ ಅಂದಾಜು ಬೆಲೆಗಳ ಮೇಲೆ ಹೆಚ್ಚುವರಿ ಉಳಿತಾಯ",
   "Coupon code copied!": "ಕೂಪನ್ ಕೋಡ್ ನಕಲಿಸಲಾಗಿದೆ!",
   "Copy Code": "ಕೋಡ್ ನಕಲಿಸಿ",
+  "Use your coupon in the Price Calculator for an additional": "ಬೆಲೆ ಲೆಕ್ಕಾಚಾರದಲ್ಲಿ ನಿಮ್ಮ ಕೂಪನ್ ಬಳಸಿ ಹೆಚ್ಚುವರಿ",
+  "off the total amount.": "ಒಟ್ಟು ಮೊತ್ತದ ಮೇಲೆ ರಿಯಾಯಿತಿ ಪಡೆಯಿರಿ.",
   "Copied!": "ನಕಲಿಸಲಾಗಿದೆ!",
   "Use in calculator": "ಬೆಲೆ ಲೆಕ್ಕಾಚಾರದಲ್ಲಿ ಬಳಸಿ",
   "Copy unavailable. Select the code shown above.": "ನಕಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮೇಲಿನ ಕೋಡ್ ಆಯ್ಕೆಮಾಡಿ.",

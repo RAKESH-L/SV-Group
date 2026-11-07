@@ -1,0 +1,178 @@
+/*
+ * Coupon = original compact hero offer structure.
+ * Loaded last so the old ticket/badge rules cannot enlarge this banner.
+ * Only the coupon variant is affected; feature announcements are unchanged.
+ */
+.hero-mini-offer.hero-mini-offer-coupon{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  justify-content:flex-start;
+  align-items:center;
+  gap:11px;
+  min-height:100px;
+  padding:12px 14px;
+  border-radius:12px;
+}
+.hero-mini-offer.hero-mini-offer-coupon::before{
+  content:none;
+  display:none;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-symbol{
+  display:grid;
+  flex:0 0 38px;
+  width:38px;
+  height:38px;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-text{
+  display:flex;
+  flex:1 1 auto;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  gap:4px;
+  min-width:0;
+  margin:0;
+  padding:0;
+  border:0;
+  background:none;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-code-title{
+  margin:0;
+  color:#174637;
+  font-family:inherit;
+  font-size:clamp(14px,1.35vw,18px);
+  font-weight:850;
+  line-height:1.2;
+  letter-spacing:.045em;
+  overflow-wrap:anywhere;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-supporting{
+  margin:0;
+  color:#567063;
+  font-size:10px;
+  font-weight:400;
+  line-height:1.42;
+  overflow-wrap:break-word;
+  /* Never truncate the requested supporting message. */
+  display:block;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-compact-actions{
+  display:flex;
+  flex:0 0 auto;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  width:106px;
+  max-width:106px;
+  min-width:0;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-compact-copy-button{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  flex:0 0 auto;
+  gap:6px;
+  min-height:38px;
+  width:100%;
+  max-width:none;
+  padding:8px 9px;
+  margin:0;
+  border:0;
+  border-radius:7px;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-compact-link{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:3px;
+  max-width:100%;
+  color:#245a46;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  font-size:9px;
+  line-height:1.3;
+  font-weight:700;
+  text-align:center;
+  white-space:normal;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-compact-link:focus-visible,
+.hero-mini-offer-coupon .hero-mini-coupon-compact-copy-button:focus-visible{
+  outline:3px solid #c7893d;
+  outline-offset:3px;
+}
+/* The original small feature banner's dark theme palette applies as before. */
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-code-title{
+  color:#f7ead4;
+}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-supporting{
+  color:#dccfb9;
+}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-compact-link{
+  color:#eed09a;
+}
+html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.hero-mini-offer-coupon{
+  width:min(100%,400px);
+  max-width:400px;
+  margin:0;
+  padding:12px 14px;
+  gap:10px;
+}
+html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.hero-mini-offer-coupon .hero-mini-coupon-symbol{
+  display:grid;
+}
+/* The existing visual stack keeps the coupon separate from the illustration
+ * at phone, tablet, laptop, desktop and large-display widths. */
+@media(max-width:450px){
+  .hero-mini-offer.hero-mini-offer-coupon{
+    gap:8px;
+    padding:10px 11px;
+  }
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.hero-mini-offer-coupon{
+    padding:10px 11px;
+    gap:8px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-symbol{
+    flex-basis:32px;
+    width:32px;
+    height:32px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-compact-actions{
+    width:94px;
+    max-width:94px;
+    gap:4px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-compact-copy-button{
+    min-height:37px;
+    padding:7px 6px;
+    gap:4px;
+    font-size:10px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-compact-link{
+    font-size:8px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-code-title{
+    font-size:14px;
+    letter-spacing:0;
+  }
+}
+@media(max-width:340px){
+  .hero-mini-offer-coupon .hero-mini-coupon-symbol,
+  html[data-theme="light"] .light-festival-hero .light-festival-visual-stack>.hero-mini-offer-coupon .hero-mini-coupon-symbol{
+    display:none;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-compact-actions{
+    width:88px;
+    max-width:88px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-mini-offer-coupon .hero-mini-coupon-compact-copy-button{
+    transition:none;
+  }
+}

@@ -10,6 +10,9 @@ export const miniHeroOfferSchema = z.object({
   // Existing saved banner settings predate this choice. Make the coupon the
   // exclusive default without losing previous feature copy/links.
   mode: z.enum(["coupon", "feature"]).default("coupon"),
+  // Migration marker: the first simplified-coupon rollout selects coupon once;
+  // afterwards admins can freely switch between coupon and feature again.
+  compactCouponVersion: z.literal(2).default(2),
   eyebrow: z.string().trim().min(2).max(28),
   title: z.string().trim().min(4).max(70),
   description: z.string().trim().max(140),
@@ -25,6 +28,7 @@ export type MiniHeroOffer = z.infer<typeof miniHeroOfferSchema>;
 export const defaultMiniHeroOffer: MiniHeroOffer = {
   enabled: true,
   mode: "coupon",
+  compactCouponVersion: 2,
   eyebrow: "SV GROUPS ON YOUR PHONE",
   title: "Your festive favourites, one tap away",
   description: "Install our app for quick access to the catalogue and latest offers.",
@@ -42,8 +46,16 @@ export async function getPublishedMiniHeroOffer(): Promise<MiniHeroOffer> {
     const rows = await db.$queryRaw<Array<{ settings: unknown }>>`
       SELECT "settings" FROM "SiteHeroMiniOffer" WHERE "id" = 1 LIMIT 1
     `;
-    const parsed = miniHeroOfferSchema.safeParse(rows[0]?.settings);
-    return parsed.success ? parsed.data : defaultMiniHeroOffer;
+    const raw = rows[0]?.settings;
+    const parsed = miniHeroOfferSchema.safeParse(raw);
+    if (!parsed.success) return defaultMiniHeroOffer;
+    // Legacy rows include mode="feature" but predate the newly approved
+    // compact coupon design. Select coupon ONCE for this requested release.
+    // When an admin later publishes either mode, compactCouponVersion is
+    // persisted, and all subsequent explicit choices are respected.
+    const legacy = raw && typeof raw === "object" &&
+      !("compactCouponVersion" in raw);
+    return legacy ? { ...parsed.data, mode: "coupon" } : parsed.data;
   } catch {
     return defaultMiniHeroOffer;
   }

@@ -15,6 +15,6 @@ export const getCachedPublishedPromoCards = unstable_cache(
 
 export const getCachedPublishedMiniHeroOffer = unstable_cache(
   getPublishedMiniHeroOffer,
-  ["sv-mini-hero-offer-v1"],
+  ["sv-mini-hero-offer-v2"],
   { tags: ["sv-mini-hero-offer"], revalidate: 60 },
 );

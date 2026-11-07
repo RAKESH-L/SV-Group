@@ -16,6 +16,7 @@ import "./site-logo-options.css";
 import "./pwa-install.css";
 import "./hero-mini-offer.css";
 import "./coupon-offers.css";
+import "./hero-coupon-exclusive.css";
 import "./engagement-features.css";
 import "./performance-loading.css";
 import { Header } from "@/components/header";

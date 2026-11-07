@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Check, RotateCcw, Save, Smartphone } from "lucide-react";
+import { Check, RotateCcw, Save, TicketPercent } from "lucide-react";
 import { HeroMiniOffer } from "@/components/hero-mini-offer";
 import {
   defaultMiniHeroOffer,
@@ -74,8 +74,10 @@ export function AdminHeroMiniOfferEditor() {
       setPublished(body.offer);
       setOffer(body.offer);
       setNotice(body.offer.enabled
-        ? "Mini offer published. Refresh the homepage to see it above the Light theme illustration."
-        : "Mini offer hidden. Refresh the homepage to confirm it is no longer displayed.");
+        ? body.offer.mode === "coupon"
+          ? "Coupon-only hero selected. Visitors will see the code and sky-shot fireworks while the coupon is active; the old Install App announcement is preserved but hidden."
+          : "Feature-only hero selected. The coupon ticket is hidden; fireworks remain with the selected feature announcement."
+        : "Compact hero offer hidden. Refresh the homepage to confirm.");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not publish this banner.");
     } finally { setSaving(false); }
@@ -86,8 +88,8 @@ export function AdminHeroMiniOfferEditor() {
   return <section className="admin-mini-offer-editor" aria-labelledby="admin-mini-offer-title">
     <div className="admin-mini-offer-heading">
       <div>
-        <h3 id="admin-mini-offer-title"><Smartphone size={19} aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle", marginRight: 8 }}/> Compact Hero Offer</h3>
-        <p>Small app/offer banner in the upper-right of the Light homepage hero, above the festive artwork. Also adapts to the Dark theme. Edit, hide or republish it independently of Cards 1–3.</p>
+        <h3 id="admin-mini-offer-title"><TicketPercent size={19} aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle", marginRight: 8 }}/> Compact Hero Offer</h3>
+        <p>Choose exactly one hero banner at a time: the active coupon offer (currently selected), or your saved feature announcement. Colourful sky-shot fireworks decorate either selection. Both website themes are supported, and Cards 1–3 remain independent.</p>
       </div>
       <label className="admin-mini-offer-toggle">
         <input type="checkbox" checked={offer.enabled} disabled={loading || saving}
@@ -102,11 +104,20 @@ export function AdminHeroMiniOfferEditor() {
 
     {!loading && <form className="admin-mini-offer-form" onSubmit={event => void save(event)}>
       <div className="admin-mini-offer-preview">
-        <span>Live design preview · {offer.enabled ? "Visible after publishing" : "Will be hidden after publishing"}</span>
-        <HeroMiniOffer offer={{ ...offer, enabled: true }} coupon={activeCoupon}/>
+        <span>Live design preview · {offer.mode === "coupon" ? "Coupon offer only" : "Feature offer only"} · {offer.enabled ? "Visible after publishing" : "Will be hidden after publishing"}</span>
+        {offer.mode === "coupon" && !activeCoupon ? <p className="admin-mini-offer-status">No active coupon is available. Configure the code and validity dates in Admin → Coupons. The homepage banner will stay hidden until the coupon becomes active.</p> : <HeroMiniOffer offer={{ ...offer, enabled: true }} coupon={activeCoupon}/>}
       </div>
 
-      <div className="admin-mini-offer-fields">
+      <div className="admin-mini-banner-mode">
+        <label htmlFor="mini-banner-display-mode">What should visitors see in the compact hero banner?</label>
+        <select id="mini-banner-display-mode" value={offer.mode} disabled={saving}
+          onChange={event => edit("mode", event.target.value as MiniHeroOffer["mode"])}>
+          <option value="coupon">Coupon offer (DEEPAVALI26 or currently active coupon)</option>
+          <option value="feature">Feature announcement (preserved previous design)</option>
+        </select>
+        <small>Only one will appear, never both. Fireworks continue for whichever design you select. To change code, percent, dates and coupon message, use Admin → Coupons.</small>
+      </div>
+      {offer.mode === "feature" && <div className="admin-mini-offer-fields">
         <label>Small heading <small>Maximum 28 characters</small>
           <input required minLength={2} maxLength={28} value={offer.eyebrow}
             onChange={event => edit("eyebrow", event.target.value)} disabled={saving}/>
@@ -144,7 +155,7 @@ export function AdminHeroMiniOfferEditor() {
             </optgroup>}
           </select>
         </label>
-      </div>
+      </div>}
 
       <div className="admin-mini-offer-actions">
         <button type="submit" className="button button-gold" disabled={saving || !changed}>

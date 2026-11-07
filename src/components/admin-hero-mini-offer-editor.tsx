@@ -89,7 +89,7 @@ export function AdminHeroMiniOfferEditor() {
     <div className="admin-mini-offer-heading">
       <div>
         <h3 id="admin-mini-offer-title"><TicketPercent size={19} aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle", marginRight: 8 }}/> Compact Hero Offer</h3>
-        <p>Choose exactly one hero banner at a time: the active coupon offer (currently selected), or your saved feature announcement. Colourful sky-shot fireworks decorate either selection. Both website themes are supported, and Cards 1–3 remain independent.</p>
+        <p>Choose exactly one hero banner at a time: the active coupon offer, or your saved feature announcement. Colourful sky-shot fireworks decorate either selection. Both website themes are supported, and Cards 1–3 remain independent.</p>
       </div>
       <label className="admin-mini-offer-toggle">
         <input type="checkbox" checked={offer.enabled} disabled={loading || saving}

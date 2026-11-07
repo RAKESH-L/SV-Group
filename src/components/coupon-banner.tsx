@@ -60,7 +60,7 @@ export function CouponBanner({ coupon }: { coupon: PublicCoupon }) {
           {t("Use in calculator")} <ArrowUpRight size={12} aria-hidden="true"/>
         </Link>
       </div>
-      <span className="visually-hidden" role="status" aria-live="polite">
+      <span className="sr-only" role="status" aria-live="polite">
         {error ? t("Copy unavailable. Select the code shown above.") : copied ? t("Coupon code copied!") : ""}
       </span>
     </>

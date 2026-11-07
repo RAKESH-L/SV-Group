@@ -1,0 +1,273 @@
+/* One hero = one offer. No nested ticket inside an Install App banner.
+   The original sky-shot artwork belongs to the shared outer hero card. */
+.hero-mini-offer.hero-mini-offer-coupon{
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:center;
+  gap:0;
+  padding:16px 18px;
+  min-height:170px;
+  border:1px solid #c8d8c5;
+  border-left:4px solid #c28f3c;
+  border-radius:15px;
+  background:linear-gradient(124deg,#fffaf0 0%,#f5f2e5 48%,#e8f2e6 100%);
+  box-shadow:0 14px 37px rgba(34,72,50,.12),inset 0 1px 0 rgba(255,255,255,.65);
+  color:#154538;
+}
+.hero-mini-offer-coupon::before{
+  content:"";
+  pointer-events:none;
+  position:absolute;
+  inset:5px;
+  border:1px solid rgba(194,143,60,.23);
+  border-radius:11px;
+  z-index:0;
+}
+.hero-mini-offer-coupon .hero-mini-coupon{
+  display:flex;
+  flex:1 1 auto;
+  flex-direction:column;
+  justify-content:center;
+  align-items:stretch;
+  width:100%;
+  min-width:0;
+  gap:10px;
+  padding:0;
+  margin:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.hero-mini-offer-coupon .hero-mini-coupon::before,
+.hero-mini-offer-coupon .hero-mini-coupon::after{content:none}
+.hero-mini-coupon-topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:#a46a2a;
+  letter-spacing:.14em;
+  font-size:9px;
+  font-weight:850;
+}
+.hero-mini-coupon-percent{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#194a3a;
+  color:#fff1b8;
+  border:1px solid #2a624e;
+  box-shadow:0 3px 7px rgba(12,42,30,.1);
+  border-radius:99px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.03em;
+  padding:6px 10px;
+  white-space:nowrap;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-content{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width:0;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-content>strong{
+  color:#154637;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(17px,1.4vw,21px);
+  line-height:1.25;
+  font-weight:700;
+  letter-spacing:-.015em;
+  overflow-wrap:anywhere;
+}
+.hero-mini-coupon-content>p{
+  margin:0;
+  font-size:clamp(10px,1vw,12px);
+  line-height:1.5;
+  color:#4e695a;
+  overflow-wrap:anywhere;
+}
+.hero-mini-coupon-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border-top:1px dashed rgba(144,108,58,.48);
+  padding-top:10px;
+  flex-wrap:wrap;
+}
+.hero-mini-coupon-code{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  gap:2px;
+}
+.hero-mini-coupon-code>span{
+  color:#94672c;
+  font-size:8px;
+  font-weight:850;
+  letter-spacing:.14em;
+}
+.hero-mini-coupon-code>b{
+  font-family:Georgia,serif;
+  font-size:clamp(19px,2.1vw,25px);
+  line-height:1.14;
+  letter-spacing:.065em;
+  color:#1a523d;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:6px;
+  margin-left:auto;
+  min-width:124px;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-copy{
+  min-height:39px;
+  padding:9px 15px;
+  border-radius:7px;
+  border:1px solid #245744;
+  background:#1a4b3b;
+  color:#fff8e5;
+  box-shadow:0 4px 10px rgba(26,75,59,.13);
+  font-size:11px;
+  transition:background-color .2s ease,transform .2s ease;
+}
+.hero-mini-offer-coupon .hero-mini-coupon-copy:hover{
+  background:#296b51;
+  transform:translateY(-1px);
+}
+.hero-mini-offer-coupon .hero-mini-coupon-use{
+  color:#194b3a;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  font-size:10px;
+  font-weight:800;
+  white-space:normal;
+}
+.hero-mini-coupon-validity{
+  display:block;
+  color:#647769;
+  font-size:9px;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+.hero-mini-coupon-feedback{
+  display:block;
+  color:#267346;
+  font-size:10px;
+  min-height:0;
+}
+.hero-mini-coupon-feedback:empty{display:none}
+
+/* Existing hero tone choices continue to influence the standalone coupon. */
+.hero-mini-offer-coupon.hero-mini-offer-terracotta{
+  border-color:#e2bfa4;
+  border-left-color:#ba6d40;
+  background:linear-gradient(125deg,#fff9ef,#f7e8d9 60%,#ebeedf);
+}
+.hero-mini-offer-coupon.hero-mini-offer-gold{
+  border-color:#e2cba3;
+  border-left-color:#bd9244;
+  background:linear-gradient(125deg,#fffbf0,#f7edcf 60%,#eef1e0);
+}
+.dark-hero-mini-offer.hero-mini-offer-coupon{
+  background:linear-gradient(121deg,#293b30,#1c342b 62%,#142f2a);
+  border-color:rgba(221,185,120,.42);
+  border-left:4px solid #e9b86b;
+  color:#f6ead5;
+  box-shadow:0 15px 35px rgba(0,0,0,.2);
+}
+.dark-hero-mini-offer.hero-mini-offer-coupon::before{border-color:rgba(231,187,111,.16)}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-kicker{color:#f1c784}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-percent{
+  background:#dfb66e;
+  color:#1c2c21;
+  border-color:#edc887;
+}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-content>strong{color:#fff1d0}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-content>p{color:#d1d6bf}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-code>b{color:#f4d088}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-code>span{color:#e5bf78}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-validity{color:#d2c6ab}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-copy{
+  background:#e8bd75;
+  color:#233327;
+  border-color:#f1d19a;
+}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-copy:hover{background:#f8d28d}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-use{color:#f2d490}
+.dark-hero-mini-offer.hero-mini-offer-coupon .hero-mini-coupon-feedback{color:#b5e8b7}
+.dark-hero-mini-offer.hero-mini-offer-coupon.hero-mini-offer-terracotta{background:linear-gradient(115deg,#462f2b,#2c3026)}
+.dark-hero-mini-offer.hero-mini-offer-coupon.hero-mini-offer-gold{background:linear-gradient(115deg,#443a2a,#29332a)}
+
+.admin-mini-banner-mode{
+  display:grid;
+  gap:8px;
+  margin:10px 0 18px;
+  padding:15px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:9px;
+}
+.admin-mini-banner-mode>label{font-size:13px;font-weight:800;color:var(--ink)}
+.admin-mini-banner-mode>select{
+  width:100%;
+  min-height:43px;
+  padding:9px 11px;
+  border:1px solid var(--line);
+  background:var(--bg);
+  color:var(--ink);
+  border-radius:6px;
+  font-size:12px;
+}
+.admin-mini-banner-mode>select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.admin-mini-banner-mode>small{font-size:11px;color:var(--muted);line-height:1.7}
+.admin-mini-offer-preview .hero-mini-offer-coupon{
+  width:min(100%,520px);
+  margin:34px auto 70px;
+}
+
+@media(max-width:1050px){
+  html[data-theme="light"] .light-hero-mini-offer.hero-mini-offer-coupon{
+    width:min(465px,46%);
+    padding:14px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-content>strong{font-size:17px}
+}
+@media(max-width:760px){
+  html[data-theme="light"] .light-hero-mini-offer.hero-mini-offer-coupon{
+    width:100%;
+    max-width:620px;
+    margin:0 auto -30px;
+    padding:15px 16px;
+  }
+  .hero-mini-offer-coupon .hero-mini-coupon-content>strong{font-size:19px}
+}
+@media(max-width:650px){
+  .dark-hero-mini-offer.hero-mini-offer-coupon{width:100%;padding:15px 16px}
+}
+@media(max-width:440px){
+  html[data-theme="light"] .light-hero-mini-offer.hero-mini-offer-coupon{padding:13px 14px}
+  .hero-mini-offer-coupon .hero-mini-coupon-bottom{align-items:stretch}
+  .hero-mini-offer-coupon .hero-mini-coupon-code{flex:1 1 auto}
+  .hero-mini-offer-coupon .hero-mini-coupon-actions{margin-left:0;flex:1 1 100%;flex-direction:row;align-items:center;justify-content:space-between;gap:9px}
+  .hero-mini-offer-coupon .hero-mini-coupon-copy{flex:1;min-height:43px}
+  .hero-mini-offer-coupon .hero-mini-coupon-use{flex:1;line-height:1.4}
+  .hero-mini-coupon-percent{font-size:10px}
+  .hero-mini-offer-coupon .hero-mini-coupon-content>strong{font-size:18px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-mini-offer-coupon .hero-mini-coupon-copy{transition:none}
+  .hero-mini-offer-coupon .hero-mini-coupon-copy:hover{transform:none}
+}

@@ -8,6 +8,7 @@ import {
   type MiniHeroOffer,
 } from "@/lib/site-hero-mini-offer";
 import { promoLinkOptions, type PromoDestination } from "@/lib/site-promo-cards";
+import type { PublicCoupon } from "@/lib/coupon";
 
 type ApiResponse = { offer?: MiniHeroOffer; saved?: boolean; error?: string };
 
@@ -19,6 +20,7 @@ export function AdminHeroMiniOfferEditor() {
   const [published, setPublished] = useState<MiniHeroOffer>(defaultMiniHeroOffer);
   const [customDestinations, setCustomDestinations] = useState<PromoDestination[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeCoupon, setActiveCoupon] = useState<PublicCoupon | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -31,6 +33,10 @@ export function AdminHeroMiniOfferEditor() {
       if (!response.ok || !body.offer) throw new Error(body.error || "Could not load mini offer settings.");
       setOffer(body.offer);
       setPublished(body.offer);
+      void fetch("/api/coupons/active", { cache: "no-store", signal: controller.signal })
+        .then(async response => response.ok ? response.json() as Promise<{ coupon?: PublicCoupon | null }> : null)
+        .then(data => { if (!controller.signal.aborted) setActiveCoupon(data?.coupon || null); })
+        .catch(() => undefined);
       // Existing admin-managed destination choices are optional. The mini
       // offer always supports /install, /catalogue and the other built-ins.
       void fetch("/api/admin/promo-cards", { cache: "no-store", signal: controller.signal })
@@ -97,7 +103,7 @@ export function AdminHeroMiniOfferEditor() {
     {!loading && <form className="admin-mini-offer-form" onSubmit={event => void save(event)}>
       <div className="admin-mini-offer-preview">
         <span>Live design preview · {offer.enabled ? "Visible after publishing" : "Will be hidden after publishing"}</span>
-        <HeroMiniOffer offer={{ ...offer, enabled: true }}/>
+        <HeroMiniOffer offer={{ ...offer, enabled: true }} coupon={activeCoupon}/>
       </div>
 
       <div className="admin-mini-offer-fields">

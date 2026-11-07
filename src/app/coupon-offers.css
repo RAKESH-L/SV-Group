@@ -1,0 +1,102 @@
+/* SV Groups coupon feature — theme-aware, responsive and reduced motion friendly. */
+.hero-mini-offer:has(.hero-mini-coupon){flex-wrap:wrap;align-content:center;gap:9px 12px}
+.hero-mini-coupon{
+  box-sizing:border-box;position:relative;flex:1 0 100%;width:100%;min-width:0;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 12px;
+  padding:11px 13px;border:1px dashed rgba(181,114,37,.63);border-radius:9px;
+  background:linear-gradient(115deg,rgba(255,239,193,.77),rgba(255,249,229,.87));
+  box-shadow:0 3px 14px rgba(107,69,19,.07);
+}
+.hero-mini-coupon::before,.hero-mini-coupon::after{
+  content:"";position:absolute;top:50%;width:12px;height:12px;border-radius:50%;
+  background:var(--coupon-hole,#f8f6ef);transform:translateY(-50%);
+  border:1px solid rgba(181,114,37,.4);pointer-events:none
+}
+.hero-mini-coupon::before{left:-7px}.hero-mini-coupon::after{right:-7px}
+.hero-mini-coupon-content{display:grid;gap:3px;min-width:0}
+.hero-mini-coupon-kicker{display:inline-flex;align-items:center;gap:5px;color:#91521e;font-size:9px;font-weight:900;letter-spacing:.08em}
+.hero-mini-coupon-content>strong{font-size:clamp(12px,1vw,15px);color:#174b38;font-weight:850;line-height:1.3}
+.hero-mini-coupon-content>small{font-size:10px;color:#655337;line-height:1.5;overflow-wrap:anywhere}
+.hero-mini-coupon-content>small b{letter-spacing:.075em;color:#9a451a}
+.hero-mini-coupon-actions{display:flex;flex-direction:column;gap:5px;align-items:stretch}
+.hero-mini-coupon-copy{display:inline-flex;justify-content:center;align-items:center;gap:6px;cursor:pointer;min-height:34px;border:1px solid #aa7131;border-radius:6px;padding:7px 10px;background:#1a503e;color:#fff6d8;font-size:10px;font-weight:850;white-space:nowrap}
+.hero-mini-coupon-copy:hover{background:#2e7155}
+.hero-mini-coupon-copy:focus-visible,.hero-mini-coupon-use:focus-visible{outline:3px solid #e59b43;outline-offset:3px}
+.hero-mini-coupon-use{display:inline-flex;align-items:center;justify-content:center;gap:5px;color:#174b38;font-size:9px;text-align:center;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.hero-mini-coupon-copy-error{grid-column:1/-1;font-size:10px;color:#a34126}
+.hero-mini-offer-terracotta .hero-mini-coupon{--coupon-hole:#fae8de;background:linear-gradient(115deg,#fff0d4,#f5d7c4)}
+.hero-mini-offer-gold .hero-mini-coupon{--coupon-hole:#f9edcf;background:linear-gradient(115deg,#fff7de,#f4e1b2)}
+.dark-hero-mini-offer .hero-mini-coupon{--coupon-hole:#263425;background:linear-gradient(112deg,rgba(115,67,39,.40),rgba(58,64,39,.48));border-color:rgba(241,193,111,.67)}
+.dark-hero-mini-offer .hero-mini-coupon-content>strong,.dark-hero-mini-offer .hero-mini-coupon-use{color:#ffe2a6}
+.dark-hero-mini-offer .hero-mini-coupon-kicker{color:#ffd495}
+.dark-hero-mini-offer .hero-mini-coupon-content>small{color:#e8d6b3}
+.dark-hero-mini-offer .hero-mini-coupon-content>small b{color:#ffd17a}
+.dark-hero-mini-offer .hero-mini-coupon-copy{background:#e5b870;color:#262014}
+.dark-hero-mini-offer .hero-mini-coupon-copy:hover{background:#ffd08a}
+@media(max-width:1080px){.hero-mini-coupon{grid-template-columns:1fr}.hero-mini-coupon-actions{flex-direction:row;flex-wrap:wrap;align-items:center}}
+@media(max-width:760px){.hero-mini-coupon{grid-template-columns:minmax(0,1fr) auto}.hero-mini-coupon-actions{flex-direction:column;align-items:stretch}}
+@media(max-width:460px){.hero-mini-coupon{grid-template-columns:1fr;padding:10px 12px}.hero-mini-coupon-actions{flex-direction:row;flex-wrap:wrap;align-items:center}.hero-mini-coupon-content>strong{font-size:14px}}
+
+/* Price Calculator coupon field and extra savings total. */
+.calculator-coupon{margin:16px 0;padding:15px;border:1px dashed var(--gold);border-radius:10px;background:rgba(212,165,85,.08);display:grid;gap:10px;min-width:0}
+.calculator-coupon-heading{display:flex;align-items:start;gap:10px;color:var(--gold)}
+.calculator-coupon-heading svg{flex:none;margin-top:3px}
+.calculator-coupon-heading>div{display:grid;gap:4px}
+.calculator-coupon-heading strong{font-size:15px;color:var(--ink)}
+.calculator-coupon-heading span{font-size:11px;line-height:1.5;color:var(--muted)}
+.calculator-coupon-form{display:flex;gap:7px;flex-wrap:wrap}
+.calculator-coupon-form>input{flex:1 1 115px;min-width:0;min-height:42px;padding:10px 11px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.calculator-coupon-form>input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.calculator-coupon-form>button{display:inline-flex;justify-content:center;align-items:center;gap:6px;border:1px solid var(--gold);border-radius:6px;padding:9px 13px;min-height:42px;background:var(--gold);color:#251b0c;font-size:12px;font-weight:800;cursor:pointer}
+.calculator-coupon-form>button:disabled{opacity:.5;cursor:not-allowed}
+.calculator-coupon-form>.calculator-coupon-remove{width:42px;padding:0;background:transparent;color:var(--ink);border-color:var(--line)}
+.calculator-coupon-message{font-size:11px;color:var(--muted);line-height:1.6;margin:0;overflow-wrap:anywhere}
+.calculator-coupon-message.valid{color:#6dbb83}
+html[data-theme="light"] .calculator-coupon-message.valid{color:#237144}
+.calculator-coupon-applied{display:flex;align-items:center;gap:9px;border:1px solid rgba(81,158,108,.45);background:rgba(45,126,75,.10);border-radius:7px;padding:10px;color:#87ce99}
+.calculator-coupon-applied>div{display:grid;gap:2px;min-width:0;flex:1}
+.calculator-coupon-applied>div b{font-size:12px;letter-spacing:.04em}
+.calculator-coupon-applied small{font-size:10px;color:var(--muted)}
+.calculator-coupon-applied>strong{font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+html[data-theme="light"] .calculator-coupon-applied{color:#237144}
+.calculator-coupon-note{display:flex;align-items:start;gap:6px;font-size:10px;line-height:1.6;color:var(--muted);margin:0}
+.calculator-coupon-note svg{flex:none;margin-top:2px}
+.summary-row.coupon-savings-line{color:#86cc98}
+html[data-theme="light"] .summary-row.coupon-savings-line{color:#247146}
+@media(max-width:380px){.calculator-coupon{padding:10px}.calculator-coupon-form>input{flex:1 1 100%}}
+
+/* Admin → Coupons: attractive ticket preview and publishing controls. */
+.coupon-admin{min-width:0;max-width:1180px;display:grid;gap:23px;margin:18px auto 45px}
+.coupon-admin-heading{display:flex;align-items:start;gap:15px}
+.coupon-admin-icon{flex:none;display:grid;place-items:center;width:50px;height:50px;border:1px solid var(--gold);border-radius:13px;background:rgba(217,163,75,.11);color:var(--gold)}
+.coupon-admin-eyebrow{font-size:10px;letter-spacing:.16em;color:var(--gold);font-weight:800}
+.coupon-admin-heading h2{font:600 clamp(26px,3.8vw,43px) Georgia,serif;letter-spacing:-.03em;color:var(--ink);margin:7px 0 8px}
+.coupon-admin-heading p{font-size:12px;color:var(--muted);line-height:1.75;max-width:900px}
+.coupon-admin-form{display:grid;gap:24px}
+.coupon-admin-preview{padding:23px;border:1px dashed #c6954f;border-radius:15px;display:grid;gap:9px;background:linear-gradient(120deg,rgba(247,223,173,.18),rgba(51,109,80,.11));position:relative;overflow:hidden}
+.coupon-admin-preview::after{content:"✧";font-size:90px;position:absolute;right:18px;top:-15px;color:var(--gold);opacity:.18;pointer-events:none}
+.coupon-preview-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.13em;font-weight:850;color:var(--gold)}
+.coupon-admin-preview>strong{font:600 clamp(20px,3vw,31px) Georgia,serif;color:var(--ink)}
+.coupon-admin-preview>p{font-size:12px;line-height:1.7;color:var(--muted);margin:0;max-width:690px}
+.coupon-preview-ticket{display:flex;align-items:center;flex-wrap:wrap;gap:10px 25px;max-width:520px;background:rgba(183,128,54,.11);border:1px dashed var(--gold);border-radius:9px;padding:11px 15px}
+.coupon-preview-ticket>span{display:flex;align-items:center;gap:7px;color:var(--gold);font-size:13px}
+.coupon-preview-ticket>span:first-child{display:grid;gap:3px}
+.coupon-preview-ticket small{font-size:9px;letter-spacing:.12em;color:var(--muted)}
+.coupon-preview-ticket b{color:var(--ink);letter-spacing:.04em}
+.coupon-admin-preview>small{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;line-height:1.5}
+.coupon-admin-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.coupon-admin-fields label{display:grid;align-content:start;gap:7px;min-width:0;font-size:12px;font-weight:750;color:var(--ink)}
+.coupon-admin-fields label.wide,.coupon-admin-fields label.coupon-enabled{grid-column:1/-1}
+.coupon-admin-fields label.coupon-enabled{display:flex;align-items:center;gap:11px;font-size:13px}
+.coupon-admin-fields label.coupon-enabled input{width:20px;height:20px;accent-color:var(--gold);flex:none}
+.coupon-admin-fields input:not([type="checkbox"]),.coupon-admin-fields textarea{width:100%;min-width:0;box-sizing:border-box;padding:11px 12px;min-height:43px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:13px;font-family:inherit}
+.coupon-admin-fields input:focus-visible,.coupon-admin-fields textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.coupon-admin-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.coupon-admin-actions .button{min-height:43px}
+.coupon-admin-note{display:flex;align-items:flex-start;gap:9px;margin:0;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:11px;color:var(--muted);line-height:1.8}
+.coupon-admin-note svg{flex:none;margin-top:2px;color:var(--gold)}
+.coupon-feedback{margin:0;padding:13px;border-radius:7px;border:1px solid var(--line);font-size:12px;line-height:1.6}
+.coupon-feedback.error{color:#e89988;border-color:#ae5443}.coupon-feedback.success{color:#74c98c;border-color:#458c5c}
+html[data-theme="light"] .coupon-feedback.error{color:#a23e2c}html[data-theme="light"] .coupon-feedback.success{color:#237544}
+@media(max-width:600px){.coupon-admin-fields{grid-template-columns:1fr}.coupon-admin-preview{padding:16px}.coupon-admin-heading{gap:10px}.coupon-admin-icon{width:40px;height:40px}.coupon-admin-fields label.wide,.coupon-admin-fields label.coupon-enabled{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){.hero-mini-coupon-copy{transition:none}}

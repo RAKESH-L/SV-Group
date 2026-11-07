@@ -7,6 +7,9 @@ import { promoDestinationPathSchema } from "@/lib/site-promo-cards";
  */
 export const miniHeroOfferSchema = z.object({
   enabled: z.boolean(),
+  // Existing saved banner settings predate this choice. Make the coupon the
+  // exclusive default without losing previous feature copy/links.
+  mode: z.enum(["coupon", "feature"]).default("coupon"),
   eyebrow: z.string().trim().min(2).max(28),
   title: z.string().trim().min(4).max(70),
   description: z.string().trim().max(140),
@@ -16,11 +19,12 @@ export const miniHeroOfferSchema = z.object({
 }).strict();
 export type MiniHeroOffer = z.infer<typeof miniHeroOfferSchema>;
 
-/** Show a small, truthful install invitation on first deployment.
- * No invented discounts, purchases or exclusive-app entitlement.
+/** Preserve the original app-banner message as an admin-selectable option;
+ * the default published hero slot now shows the coupon exclusively.
  */
 export const defaultMiniHeroOffer: MiniHeroOffer = {
   enabled: true,
+  mode: "coupon",
   eyebrow: "SV GROUPS ON YOUR PHONE",
   title: "Your festive favourites, one tap away",
   description: "Install our app for quick access to the catalogue and latest offers.",

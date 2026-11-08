@@ -42,9 +42,11 @@ export function drawEstimatePdfBrandHeader(
 
   // The uploaded SVG renders with transparent surroundings. No solid image
   // tile, white square, legacy diamond emblem or compression artifacts.
-  const size = logo.scale(Math.min(54 / logo.width, 54 / logo.height));
+  // 64pt square leaves the approved SVG's own transparent breathing room,
+  // so the visible Ganesha symbol is about 38 x 49pt in the document header.
+  const size = logo.scale(Math.min(64 / logo.width, 64 / logo.height));
   page.drawImage(logo, {
-    x: margin + 1,
+    x: margin - 6,
     y: height - headerHeight + Math.max(10, (headerHeight - size.height) / 2),
     width: size.width,
     height: size.height,

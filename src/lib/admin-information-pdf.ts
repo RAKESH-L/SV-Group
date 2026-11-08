@@ -1,9 +1,7 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { PDFDocument, StandardFonts, rgb, type PDFImage, type PDFPage } from "pdf-lib";
-import sharp from "sharp";
+import { PDFDocument, StandardFonts, rgb, type PDFPage } from "pdf-lib";
 import { business } from "@/lib/business";
-import { ESTIMATE_MARGIN, ESTIMATE_PAGE_HEIGHT, ESTIMATE_PAGE_WIDTH, ESTIMATE_RIGHT, estimatePdfPalette, printablePdfText, wrapPdfText } from "@/lib/pdf-design";
+import { embedServerGaneshPdfLogo } from "@/lib/pdf-logo-server";
+import { ESTIMATE_MARGIN, ESTIMATE_PAGE_HEIGHT, ESTIMATE_PAGE_WIDTH, ESTIMATE_RIGHT, drawEstimatePdfBrandHeader, estimatePdfPalette, printablePdfText, wrapPdfText } from "@/lib/pdf-design";
 
 export type AdminInformationTopic = {
   name: string;
@@ -38,23 +36,12 @@ export async function createAdminInformationPdf(data: AdminInformationPdfData) {
   let page!: PDFPage;
   let y = 0;
   let productTableActive = false;
-  let logo: PDFImage | null = null;
-
-  try {
-    const source = await readFile(path.join(process.cwd(), "public", "branding", "sv-logo-full.webp"));
-    const png = await sharp(source).resize({ width: 720, withoutEnlargement: true }).png({ compressionLevel: 9, palette: true }).toBuffer();
-    logo = await pdf.embedPng(png);
-  } catch { /* Keep admin downloads available if the logo asset cannot be read. */ }
+  const logo = await embedServerGaneshPdfLogo(pdf);
 
   function newPage() {
     page = pdf.addPage([ESTIMATE_PAGE_WIDTH, ESTIMATE_PAGE_HEIGHT]);
     pages.push(page);
-    page.drawRectangle({ x: 0, y: ESTIMATE_PAGE_HEIGHT - 108, width, height: 108, color: dark });
-    page.drawRectangle({ x: 0, y: ESTIMATE_PAGE_HEIGHT - 111, width, height: 3, color: gold });
-    if (logo) {
-      const dimensions = logo.scale(Math.min(176 / logo.width, 61 / logo.height));
-      page.drawImage(logo, { x: margin, y: ESTIMATE_PAGE_HEIGHT - 94, width: dimensions.width, height: dimensions.height });
-    }
+    drawEstimatePdfBrandHeader(page, logo, regular, bold, width, ESTIMATE_PAGE_HEIGHT, 108, margin);
     page.drawText("PRODUCT INFORMATION ENQUIRY", { x: 252, y: ESTIMATE_PAGE_HEIGHT - 49, size: 12.5, font: bold, color: gold });
     page.drawText(`Reference ${printablePdfText(data.reference)}`, { x: 252, y: ESTIMATE_PAGE_HEIGHT - 69, size: 8, font: bold, color: white });
     page.drawText(`Submitted ${new Intl.DateTimeFormat("en-IN", { dateStyle: "long", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(data.createdAt)} IST`, { x: 252, y: ESTIMATE_PAGE_HEIGHT - 87, size: 7, font: regular, color: white });

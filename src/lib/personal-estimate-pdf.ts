@@ -3,7 +3,7 @@ import type { CartLine } from "@/lib/cart-calculations";
 import { toPaise } from "@/lib/cart-calculations";
 import { couponIsActive, couponMinimumMet, couponSavingsPaise, type PublicCoupon } from "@/lib/coupon";
 import { business } from "@/lib/business";
-import { ESTIMATE_MARGIN, ESTIMATE_PAGE_HEIGHT, ESTIMATE_PAGE_WIDTH, ESTIMATE_RIGHT, estimatePdfPalette, formatEstimatePdfPaise, printablePdfText, wrapPdfText } from "@/lib/pdf-design";
+import { ESTIMATE_MARGIN, ESTIMATE_PAGE_HEIGHT, ESTIMATE_PAGE_WIDTH, ESTIMATE_RIGHT, drawEstimatePdfBrandHeader, estimatePdfPalette, formatEstimatePdfPaise, printablePdfText, wrapPdfText } from "@/lib/pdf-design";
 
 const pageWidth = ESTIMATE_PAGE_WIDTH;
 const pageHeight = ESTIMATE_PAGE_HEIGHT;
@@ -16,19 +16,34 @@ function rightText(page: PDFPage, value: string, x: number, y: number, width: nu
 }
 
 async function loadLogo(pdf: PDFDocument): Promise<PDFImage> {
-  const response = await fetch("/branding/sv-logo-full.webp", { cache: "force-cache" });
-  if (!response.ok) throw new Error("The Sri Vinayaka Groups logo could not be loaded.");
-  const bitmap = await createImageBitmap(await response.blob());
-  const canvas = document.createElement("canvas");
-  const scale = Math.min(640 / bitmap.width, 1);
-  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("Your browser could not prepare the estimate logo.");
-  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
-  const png = await new Promise<Uint8Array>((resolve, reject) => canvas.toBlob(blob => blob ? blob.arrayBuffer().then(bytes => resolve(new Uint8Array(bytes))) : reject(new Error("The estimate logo could not be prepared.")), "image/png"));
-  return pdf.embedPng(png);
+  // The approved, transparent gold Ganesha SVG is exactly the source also
+  // used by the server-side admin/requested-items PDF generator.
+  const response = await fetch("/branding/pdf-ganesh-gold.svg", { cache: "force-cache" });
+  if (!response.ok) throw new Error("The approved SV Groups Ganesha logo could not be loaded.");
+  const blob = await response.blob();
+  const src = URL.createObjectURL(blob);
+  let image: HTMLImageElement;
+  try {
+    image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const logo = new Image();
+      logo.onload = () => resolve(logo);
+      logo.onerror = () => reject(new Error("The approved Ganesha logo could not be rendered."));
+      logo.src = src;
+    });
+    // Transparent lossless PNG from exact SVG geometry, without an image tile.
+    const canvas = document.createElement("canvas");
+    canvas.width = 640;
+    canvas.height = 640;
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Your browser could not prepare the estimate logo.");
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const png = await new Promise<Uint8Array>((resolve, reject) => {
+      canvas.toBlob(file => file ? file.arrayBuffer().then(bytes => resolve(new Uint8Array(bytes))).catch(reject) : reject(new Error("The Ganesha logo could not be embedded.")), "image/png");
+    });
+    return pdf.embedPng(png);
+  } finally {
+    URL.revokeObjectURL(src);
+  }
 }
 
 export async function createPersonalEstimatePdf(lines: CartLine[], coupon?: PublicCoupon | null) {
@@ -57,10 +72,7 @@ export async function createPersonalEstimatePdf(lines: CartLine[], coupon?: Publ
   let y = 0;
   const newPage = () => {
     page = pdf.addPage([pageWidth, pageHeight]); pages.push(page);
-    page.drawRectangle({ x: 0, y: pageHeight - 105, width: pageWidth, height: 105, color: dark });
-    page.drawRectangle({ x: 0, y: pageHeight - 108, width: pageWidth, height: 3, color: gold });
-    const dims = logo.scale(Math.min(176 / logo.width, 61 / logo.height));
-    page.drawImage(logo, { x: left, y: pageHeight - 91, width: dims.width, height: dims.height });
+    drawEstimatePdfBrandHeader(page, logo, regular, bold, pageWidth, pageHeight, 105, left);
     page.drawText("PERSONAL PRICE ESTIMATE", { x: 252, y: pageHeight - 53, size: 13, font: bold, color: gold });
     page.drawText("Indicative catalogue pricing", { x: 252, y: pageHeight - 72, size: 8, font: regular, color: white });
     page.drawText(`Prepared ${new Intl.DateTimeFormat("en-IN", { dateStyle: "long", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date())} IST`, { x: 252, y: pageHeight - 88, size: 7, font: regular, color: white });
@@ -123,7 +135,12 @@ export async function createPersonalEstimatePdf(lines: CartLine[], coupon?: Publ
   page.drawText("INFORMATIONAL USE ONLY", { x: left + 10, y: y - 14, size: 7.5, font: bold, color: ink });
   disclaimerLines.forEach((line, index) => page.drawText(line, { x: left + 10, y: y - 26 - index * 10, size: 7.5, font: regular, color: ink }));
   y -= disclaimerHeight + 15;
-  page.drawText(`${business.name} | ${business.phone} | ${business.email} | ${business.address}`, { x: left, y: Math.max(24, y), size: 7, font: regular, color: muted, maxWidth: right - left });
-  pages.forEach((current, index) => current.drawText(`Page ${index + 1} of ${pages.length}`, { x: right - 55, y: 24, size: 7, font: regular, color: muted }));
+  pages.forEach((current, index) => {
+    current.drawLine({ start: { x: left, y: 42 }, end: { x: right, y: 42 }, thickness: 0.6, color: gold });
+    current.drawText(`${business.name} | ${business.phone} | ${business.email} | ${business.address}`,
+      { x: left, y: 27, size: 6.5, font: regular, color: muted, maxWidth: right - left - 78 });
+    current.drawText(`Page ${index + 1} of ${pages.length}`,
+      { x: right - 64, y: 27, size: 6.5, font: regular, color: muted });
+  });
   return pdf.save();
 }

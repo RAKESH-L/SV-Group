@@ -1,10 +1,8 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage } from "pdf-lib";
-import sharp from "sharp";
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import { business } from "@/lib/business";
+import { embedServerGaneshPdfLogo } from "@/lib/pdf-logo-server";
 import type { AdminEstimateProduct } from "@/lib/admin-estimate";
-import { formatEstimatePdfPaise, printablePdfText, wrapPdfText, estimatePdfPalette } from "@/lib/pdf-design";
+import { drawEstimatePdfBrandHeader, formatEstimatePdfPaise, printablePdfText, wrapPdfText, estimatePdfPalette } from "@/lib/pdf-design";
 
 const pageWidth = 841.89;
 const pageHeight = 595.28;
@@ -35,12 +33,7 @@ export async function createAdminPriceEstimatePdf(data: EstimatePdfInput) {
   const regular = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const { dark, gold, ink, muted, pale, white, rule } = estimatePdfPalette;
-  let logo: PDFImage | null = null;
-  try {
-    const source = await readFile(path.join(process.cwd(), "public", "branding", "sv-logo-full.webp"));
-    const png = await sharp(source).resize({ width: 640, withoutEnlargement: true }).png({ compressionLevel: 9, palette: true }).toBuffer();
-    logo = await pdf.embedPng(png);
-  } catch { /* Keep authenticated estimate downloads available if optional branding fails. */ }
+  const logo = await embedServerGaneshPdfLogo(pdf);
 
   const pages: PDFPage[] = [];
   let page!: PDFPage;
@@ -48,12 +41,7 @@ export async function createAdminPriceEstimatePdf(data: EstimatePdfInput) {
   function newPage() {
     page = pdf.addPage([pageWidth, pageHeight]);
     pages.push(page);
-    page.drawRectangle({ x: 0, y: pageHeight - 88, width: pageWidth, height: 88, color: dark });
-    page.drawRectangle({ x: 0, y: pageHeight - 91, width: pageWidth, height: 3, color: gold });
-    if (logo) {
-      const size = logo.scale(Math.min(158 / logo.width, 52 / logo.height));
-      page.drawImage(logo, { x: left, y: pageHeight - 77, width: size.width, height: size.height });
-    }
+    drawEstimatePdfBrandHeader(page, logo, regular, bold, pageWidth, pageHeight, 88, left);
     page.drawText(data.source === "CUSTOMER_SUBMITTED" ? "REQUESTED ITEMS PRICE ESTIMATE" : "ADMIN PRICE ESTIMATE", { x: 220, y: pageHeight - 40, size: 13, font: bold, color: gold });
     page.drawText(data.source === "CUSTOMER_SUBMITTED" ? "Customer-selected quantities · indicative prices captured at submission" : "Current indicative catalogue values · administrator entered quantities", { x: 220, y: pageHeight - 58, size: 7.5, font: regular, color: white });
     page.drawText(`Enquiry ${printablePdfText(data.reference)}`, { x: right - 145, y: pageHeight - 39, size: 8, font: bold, color: white });
